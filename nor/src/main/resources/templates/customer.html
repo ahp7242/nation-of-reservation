@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>CUSTOMER</title>
+</head>
+<body>
+	<h1>customer</h1>
+	<!-- 	<div th:each="list:${seat}">
+		<div th:text="${list}"></div>
+	</div> -->
+	<table border="1" id="seat">
+	</table>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script th:inline="javascript">
+ let seat = /*[[${seat}]]*/
+ //console.log(seat);
+ let html = "";
+ let a = 0;
+ let b = 0;
+ let rowMax = 0;
+ let colsMax = 0;
+ 
+ $(seat).each(function(index,item){
+	 if(item.seatRow > rowMax){
+		 rowMax = item.seatRow;
+	 }
+	 if(item.seatCols > colsMax){
+		 colsMax = item.seatCols
+	 }
+ })
+ console.log(rowMax)
+ console.log(colsMax)
+ 
+ for(let row=1; row<=rowMax; row++){
+	 html += "<tr id='"+row+"'>"
+	 
+	 for(let cols=1; cols<=colsMax; cols++){
+		 html += "<td id='"+cols+"'></td>"
+	 }
+	 
+	 html += "</tr>"
+ }
+ $("#seat").html(html);
+ $(document).ready(function(){
+	 $(seat).each(function(index,item){
+		 console.log($("#seat").children().attr('id'))
+	})
+ })
+
+</script>
+</html>
