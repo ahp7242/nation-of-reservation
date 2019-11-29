@@ -18,43 +18,39 @@ let drag = function(pc) {
    // 처음 마우스클릭
    
    //클릭시 확인용도로 행,열,id값
-   $(document).on("click","#seat td",function(){
-                  // click한 땅 id 가져오기   
-                  
-	  var trid = $(this).closest('tr').attr('id'); //행id값생성
-      var tdid = $(this).closest('td').attr('id'); //열id값
-      count = pc.pop();
-      //let clickId1 = ($(this).html("count"));
-      
-      //console.log("클릭테이블Id: ",clickId1);
-      
-      
-      let clickId = ($(this).attr("value"));
-     
-      console.log("클릭테이블Id: ",clickId);
-      console.log("클릭테이블row: ",trid);
-      console.log("클릭테이블cols: ",tdid);    
-	});
-   
-   
    $("#seat td").mousedown(function() {
       isMouseDown = true;
       
+      $("#save").click(function() {
+          //배열 선언
+          
+          $("#seat tr td").each(function(index,item){
+        	  var trid = $(this).closest('tr').attr('id');
+         	  var tdid = $(this).closest('td').attr('id');
+         	  console.log(item);
+          })
+          
+          /* console.log(seatMap); */
+          //ajax 호출
+          /* $.ajax({
+              url         :   "/franchiseeSeat",
+              method	  :	  "POST",
+              dataType    :   "json",
+              contentType :   "application/x-www-form-urlencoded; charset=UTF-8",
+              type        :   "post",
+              data        :   {"seatMap":seatMap}
+          }); */
+          
+      })
       // pc버튼 눌렀을 때, 드래그한 td가 pc가 아닐 경우 번호 추가 
       if(click == "pc" && $(this).hasClass("pc") == false){
          count = pc.pop();
+         
          var trid = $(this).closest('tr').attr('id');
          var tdid = $(this).closest('td').attr('id'); 
          
          $(this).html(count);
-         $(this).attr("value",count);
-         $(this).attr("trid",trid);
-         $(this).attr("tdid",tdid);
-            
-         console.log("좌석id: "+count); //카운트출력
-         console.log("행: "+trid);
-         console.log("열: "+tdid);
-            
+         
          // 처리 후 클래스 변경
          $(this).addClass(click);
       // hallway버튼 눌렀을 때, 드래그한 td가 pc일 경우 번호 삭제
@@ -74,14 +70,7 @@ let drag = function(pc) {
             count = pc.pop();
             var trid = $(this).closest('tr').attr('id');
             var tdid = $(this).closest('td').attr('id'); 
-               $(this).attr("value",count);
-               $(this).attr("trid",trid);
-               $(this).attr("tdid",tdid);
-               
-               console.log("좌석id: "+count); //카운트출력
-               console.log("행: "+trid);
-               console.log("열: "+tdid);
-               
+
             $(this).html(count);
             // 처리 후 클래스 변경
             $(this).addClass(click);
@@ -105,7 +94,7 @@ let drag = function(pc) {
       pc = pc.sort(function(a,b) {
          return b - a;
       });
-      //console.log("pc: ", pc);
+      //console.log("pc: ");//////////////////////////
       
    });
 };
@@ -146,7 +135,7 @@ let type = function(row, cols){
    <div>
       <button type="button" class="type" value="pc">pc</button>
       <button type="button" class="type" value="">hallway</button>
-       <button type="button" class="type" value="save">save</button><!-- 
+       <button type="button" class="type" value="save" id="save">save</button><!-- 
       <button type="button" class="type" value="e">exit</button>
       <button type="button" class="type" value="f">Facilities</button>
       <button type="button" class="type" value="c">count</button>
@@ -166,7 +155,7 @@ let type = function(row, cols){
    let pc = new Array();
    let row = 10;
    let cols = 10;
-   let len = row*cols;
+   let len = row*cols
    console.log("len: ", len);
    for(let i=len; i>0; i--) {
       pc.push(i);
@@ -190,23 +179,5 @@ let type = function(row, cols){
       type(row, cols);
       drag(pc);
    });
-   
-   let arr = new Array("count", "trid", "tdid");
-   for(let i=0; i<arr.length; i++){
-   }
-   
-   $("#save").click(function(){
-	$.ajax({
-		url:"/nor/addFranchiseeSeat",
-		method:"POST",
-
-		success:function(){
-			alert("입력 완료");
-		}
-		console.log(save);
-		$("#seat").empty(); 
-		}
-   });
-   
 </script>
 </html>
