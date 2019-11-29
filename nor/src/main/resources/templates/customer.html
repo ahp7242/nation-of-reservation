@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
+<meta name="viewport"content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+	<!-- Bootstrap core CSS -->
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<link href="css/heroic-features.css" rel="stylesheet">
+</head>
 <title>CUSTOMER</title>
+<style>
+	.box{
+		height:50px;
+		width:50px;
+		text-align:center;
+	}
+</style>
 </head>
 <body>
-	<h1>customer</h1>
-	<!-- 	<div th:each="list:${seat}">
-		<div th:text="${list}"></div>
-	</div> -->
-	<table border="1" id="seat">
-	</table>
+	<div th:include="/part/templet::nav"></div>
+	
+	<div class="container">
+		<h1>customer</h1>
+		<table border="1" id="seat"></table>
+	</div>
+	<div th:include="/part/templet::copyright"></div>
 </body>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script th:inline="javascript">
  let seat = /*[[${seat}]]*/
@@ -30,24 +48,36 @@
 		 colsMax = item.seatCols
 	 }
  })
- console.log(rowMax)
- console.log(colsMax)
+ //console.log(rowMax)
+ //console.log(colsMax)
  
  for(let row=1; row<=rowMax; row++){
 	 html += "<tr id='"+row+"'>"
 	 
 	 for(let cols=1; cols<=colsMax; cols++){
-		 html += "<td id='"+cols+"'></td>"
+		 html += "<td class='box' id='"+cols+"'></td>"
 	 }
 	 
 	 html += "</tr>"
  }
  $("#seat").html(html);
- $(document).ready(function(){
-	 $(seat).each(function(index,item){
-		 console.log($("#seat").children().attr('id'))
+ 
+$(document).ready(function(){
+		$("#seat tr td").each(function(index1,item1){
+			//console.log($(this).closest('tr').attr('id'))
+			let $this = $(this)
+			let trId = $this.closest('tr').attr('id')
+			let tdId = $this.closest('td').attr('id')
+			console.log("tr",trId)
+			console.log("td",tdId)
+			$(seat).each(function(index2,item2){
+				if(trId == item2.seatRow && tdId == item2.seatCols){
+					console.log(item2.seatNo)
+					$this.append("pc"+item2.seatNo)
+				}
+			})
+		})
 	})
- })
 
 </script>
 </html>
