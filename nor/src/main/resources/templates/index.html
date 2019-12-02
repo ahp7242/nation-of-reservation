@@ -12,7 +12,8 @@
 	<link href="css/heroic-features.css" rel="stylesheet">
 </head>
 <body>
-	<div th:include="/part/templet::nav"></div>
+	<div th:if="${memberName} != null" th:include="/part/templet::afternav"></div>
+	<div th:if="${memberName} == null" th:include="/part/templet::beforenav"></div>
 	<div class="container">
 		<div th:include="/part/templet::event"></div>
 		<div th:include="/part/templet::main"></div>
