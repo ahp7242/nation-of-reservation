@@ -6,12 +6,12 @@
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
 
 	<!-- 점주가 선택한 자리의 값들을 seat db에 저장 -->
-	<insert id="insertFranchiseeSeat"
-			parameterType="com.picaboo.nor.franchisee.vo.Seat">
+	<!-- 좌석 입력 -->
+	<insert id="insertFranchiseeSeat" parameterType="com.picaboo.nor.franchisee.vo.Seat" >
 		INSERT INTO seat(
 			seat_no, 
 			seat_row, 
-			seat_cols, 
+			seat_cols
 		) VALUES(
 			#{seatNo}, 
 			#{seatRow}, 

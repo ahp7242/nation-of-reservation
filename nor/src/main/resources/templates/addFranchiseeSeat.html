@@ -1,12 +1,221 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+   td{
+      height:30px;
+      width:30px;
+   }
+   .box{
+      width:30px;
+   }
+</style>
 </head>
 <body>
-	<form action="/addFranchiseeSeat" method="post">
-		<button type = "submit">자동넣기</button>
-	</form>
+<h1>입력사항 수정시 정보가 초기화 되므로 신중한입력 바랍니다.</h1>
+   <div>
+      <button type="button" class="type" value="pc">pc 추가</button>
+      <button type="button" class="type" value="">pc 삭제</button>
+      <button type="button" id="save">입력 완료</button>
+      <!-- 
+	      <button type="button" class="type" value="e">exit</button>
+	      <button type="button" class="type" value="f">Facilities</button>
+	      <button type="button" class="type" value="c">count</button>
+	      <button type="button" class="type" value="s">smoker</button>
+	      <button type="button" class="type" value="x">x</button> 
+      -->
+   </div>
+   <div>
+   <input type="text" id="row" class="box">
+   <input type="text" id="cols" class="box">
+   <button type="button" id="put">좌석 설정</button>
+   </div>
+   <table id="seat" border="1">
+   </table>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+	
+	// 리스트에 넣을 좌석 객체 생성자
+	function Seat(seatNo, seatRow, seatCols) {
+		this.seatNo = seatNo; 
+		this.seatRow = seatRow;
+		this.seatCols = seatCols;
+	}
+	
+	// 좌석 리스트
+	let seatList = new Array();
+	
+	// 입력 완료 클릭 시
+	// 좌석 리스트 넘김
+	$("#save").click(function() {
+		$.ajax({
+			url: "addFranchiseeSeat",
+			method: "POST",
+			data: {"seatList": seatList},
+			success: function() {
+				console.log("success");
+				console.log("seatList", seatList);
+			},
+		});
+		
+	});
+	
+	// <tr>의 id: 행, <td>의 id: 열
+	// 행, 열을 입력받아 테이블 추가
+	let put = function(row, cols){
+		   $("#seat").empty();
+		   let html = "";
+		   for(i=0; i<row; i++){
+		      html += "<tr id='"
+		      html += i+1;
+		      html += "'>";
+		      
+		      for(j=0; j<cols; j++){
+		         html += "<td class='seat' id='"
+		         html += j+1;
+		         html += "'>";
+		         html += "</td>";
+		      }
+		      
+		      html += "</tr>";
+		   
+		   }
+		   $("#seat").append(html);
+		}
+	
+	// 드래그 이벤트
+	let drag = function(pc) {
+		// 클릭한 버튼의 타입 저장하는 변수(pc추가, pc삭제)
+		let click = "";
+		// pc배열에 넣고 빼는 숫자를 저장하는 변수(pc 번호)
+		let count = 0;
+		
+		// 클릭한 버튼 타입 저장
+		$(".type").click(function(){
+			click = $(this).attr("value")
+			console.log(click) 
+		})
+		
+		// 마우스 다운 여부
+		let isMouseDown = false;
+		
+		// 마우스 클릭다운 드래그 시작
+		$("#seat td").mousedown(function() {
+			isMouseDown = true;
+	      
+			// pc버튼 눌렀을 때, 드래그한 td가 pc가 아닐 경우 pc번호 추가 
+			if(click == "pc" && $(this).hasClass("pc") == false){
+				// pc 배열에서 꺼내서 테이블에 pc번호 추가
+				count = pc.pop();
+				$(this).html(count);
+	         
+				// 추가 후 클릭한 <td>의 클래스 변경
+				$(this).addClass(click);
+				
+				// 클릭한 pc번호와 <tr>,<td>의 위치좌표를 좌석배열에 저장
+				let seatNo = count;
+				let seatRow = $(this).closest('tr').attr('id');
+				let seatCols = $(this).closest('td').attr('id'); 
+				//console.log("seatNo", seatNo);
+				//console.log("seatRow", seatRow);
+				//console.log("seatCols", seatCols);
+				seatList.push( new Seat(seatNo, seatRow, seatCols) );
+				
+			// 삭제버튼 눌렀을 때, 드래그한 td가 pc일 경우 pc번호 삭제
+			} else if(click == "" && $(this).hasClass("pc") == true){
+				count = $(this).text();
+				$(this).html(click);
+				pc.push(count);
+				// 삭제 후 클릭한 <td>의 클래스 변경
+				$(this).removeClass("pc");
+			}
+			return false; // 마우스 다운 끝
+		// 마우스 클릭다운 후 드래그
+		}).mouseover(function() {
+			if (isMouseDown) {
+			// pc버튼 눌렀을 때, 드래그한 td가 pc가 아닐 경우 번호 추가 
+				if(click == "pc" && $(this).hasClass("pc") == false){
+					// pc 배열에서 꺼내서 테이블에 pc번호 추가
+					count = pc.pop();
+					$(this).html(count);
+	
+			 		// 추가 후 클릭한 <td> 클래스 변경
+					$(this).addClass(click);
+			 		
+					// 클릭한 pc번호와 <tr>,<td>의 위치좌표를 좌석배열에 저장
+					let seatNo = count;
+					let seatRow = $(this).closest('tr').attr('id');
+					let seatCols = $(this).closest('td').attr('id'); 
+					//console.log("seatNo", seatNo);
+					//console.log("seatRow", seatRow);
+					//console.log("seatCols", seatCols);
+					seatList.push( new Seat(seatNo, seatRow, seatCols) );
+	
+				// 삭제버튼 눌렀을 때, 드래그한 td가 pc일 경우 번호 삭제
+				} else if(click == "" && $(this).hasClass("pc") == true){
+					count = $(this).text();
+					$(this).html(click);
+					pc.push(count);
+					// 삭제 후 클릭한 <td>의 클래스 변경
+					$(this).removeClass("pc");            
+				}
+			}
+		}).bind("selectstart", function() {
+			return false; // 드래그 끝
+		}); // 마우스 다운, 드래그 이벤트 끝
+	
+		// 드래그 끝난 이후
+		$(document).mouseup(function() {
+			isMouseDown = false;
+			// pc 배열 내림차순 정렬
+			pc = pc.sort(function(a,b) {
+				return b - a;
+			});
+	      
+		});
+	};	// 드래그 끝
+	
+	// 좌석에 추가할 pc번호를 행렬 크기만큼 pc 배열에 넣는다.
+	let pc = new Array();
+	// 기본 좌석 크기 설정 10X10
+	let row = 10;
+	let cols = 10;
+	let len = row*cols // 배열 길이
+	//console.log("len: ", len);
+	
+	// pc배열에 좌석 크기만큼 pc번호 추가
+	for(let i=len; i>0; i--) {
+	   pc.push(i);
+	}
+	//console.log("pc: ", pc);
+	
+	// 기본 테이블 추가
+	put(row, cols);
+	drag(pc);
+	
+	// 좌석 크기 입력버튼 클릭
+	$("#put").click(function(){
+		row = $("#row").val();
+		cols = $("#cols").val();
+		len = row*cols
+		//console.log("len: ", len);
+		console.log(row);
+		console.log(cols);
+		pc = new Array();
+		for(let i=len; i>0; i--) {
+			pc.push(i);
+		}
+		//console.log("pc: ", pc);
+		put(row, cols);
+		drag(pc);
+	});
+	
+	
+	
+});
+</script>
 </html>
