@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>singupType</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/heroic-features.css" rel="stylesheet">
+
+</head>
+<style>
+	td{
+		height:400px;
+		width:600px;
+		text-align:center;
+	}
+</style>
+<body>
+	<div th:if="${memberName} != null" th:include="/part/templet::afternav"></div>
+	<div th:if="${memberName} == null" th:include="/part/templet::beforenav"></div>
+	
+	<div class="container">
+		<table>
+			<tr>
+				<td>
+					<a href="/singup?customerType=F">기업</a>
+				</td>
+				<td>
+					<a href="/singup?customerType=C">일반</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div th:include="/part/templet::copyright"></div>
+</body>
+</html>

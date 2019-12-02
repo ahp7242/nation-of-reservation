@@ -2,6 +2,8 @@ package com.picaboo.nor.customer.controller;
  
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,12 +27,12 @@ public class CustomerController {
 	}
 	
 	@GetMapping({"/","/index"})
-	public String index() {
+	public String index(HttpSession session, Model model) {
+		
+		System.out.println("인덱스 세션"+session.getAttribute("memberName"));
+		if(session.getAttribute("memberName") != null) {
+			model.addAttribute("memberName",session.getAttribute("memberName"));
+		}
 		return "index";
-	}
-	
-	@GetMapping("/login")
-	public String login() {
-		return "login";
 	}
 }
