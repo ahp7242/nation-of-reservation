@@ -13,4 +13,5 @@ public class Seat {
 	private int seatRow;
 	private int seatCols;
 	private String seatUse;
+	private Franchisee franchisee;
 }

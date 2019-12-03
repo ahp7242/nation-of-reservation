@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Heroic Features - Start Bootstrap Template</title>
+	<!-- Bootstrap core CSS -->
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom styles for this template -->
+	<link href="css/heroic-features.css" rel="stylesheet">
+</head>
+<body>
+	<div th:include="/part/templet::beforenav"></div>
+	<div class="container">
+		<form action="/addFranchisee" method="post">
+		<div>
+			<label>franchisee_crn</label>
+			<input type="text" name="franchiseeCrn">
+		</div>
+		<div>
+			<label>franchisee_name</label>
+			<input type="text" name="franchiseeName">
+		</div>
+		<div>
+			<label>franchisee_phone</label>
+			<input type="text" name="franchiseePhone">
+		</div>
+		<div>
+			<button type="submit">입력</button>
+		</div>
+	</form>
+	</div>
+	<div th:include="/part/templet::copyright"></div>
+</body>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</html>
