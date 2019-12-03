@@ -46,7 +46,7 @@ $(document).ready(function() {
 		this.seatCols = seatCols;
 	}
 	
-	// 좌석 리스트
+	// 클릭하여 입력할 좌석 리스트
 	let seatList = new Array();
 	
 	// 입력 완료 클릭 시
@@ -120,16 +120,24 @@ $(document).ready(function() {
 				let seatNo = count;
 				let seatRow = $(this).closest('tr').attr('id');
 				let seatCols = $(this).closest('td').attr('id'); 
-				//console.log("seatNo", seatNo);
-				//console.log("seatRow", seatRow);
-				//console.log("seatCols", seatCols);
+				// console.log("seatNo", seatNo);
+				// console.log("seatRow", seatRow);
+				// console.log("seatCols", seatCols);
 				seatList.push( new Seat(seatNo, seatRow, seatCols) );
 				
-			// 삭제버튼 눌렀을 때, 드래그한 td가 pc일 경우 pc번호 삭제
+			// 삭제버튼 눌렀을 때, 드래그한 td가 pc일 경우
 			} else if(click == "" && $(this).hasClass("pc") == true){
+				// 선택한 테이블의 pc번호 삭제
 				count = $(this).text();
 				$(this).html(click);
 				pc.push(count);
+				
+				// 클릭한 좌석번호를 좌석리스트에서 검색하여 인덱스를 저장
+				let deleteIndex = seatList.findIndex(function(item) {return item.seatNo == count})
+				// console.log("deleteIndex:",deleteIndex);
+				// 좌석 리스트에서 삭제
+				if(deleteIndex > -1) seatList.splice(deleteIndex,1)
+				
 				// 삭제 후 클릭한 <td>의 클래스 변경
 				$(this).removeClass("pc");
 			}
@@ -150,16 +158,25 @@ $(document).ready(function() {
 					let seatNo = count;
 					let seatRow = $(this).closest('tr').attr('id');
 					let seatCols = $(this).closest('td').attr('id'); 
-					//console.log("seatNo", seatNo);
-					//console.log("seatRow", seatRow);
-					//console.log("seatCols", seatCols);
+					// console.log("seatNo", seatNo);
+					// console.log("seatRow", seatRow);
+					// console.log("seatCols", seatCols);
 					seatList.push( new Seat(seatNo, seatRow, seatCols) );
 	
-				// 삭제버튼 눌렀을 때, 드래그한 td가 pc일 경우 번호 삭제
+				// 삭제버튼 눌렀을 때, 드래그한 td가 pc일 경우
 				} else if(click == "" && $(this).hasClass("pc") == true){
+					// 선택한 테이블의 pc번호 삭제
 					count = $(this).text();
 					$(this).html(click);
 					pc.push(count);
+					
+					
+					// 클릭한 좌석번호를 좌석리스트에서 검색하여 인덱스를 저장
+					let deleteIndex = seatList.findIndex(function(item) {return item.seatNo == count})
+					// console.log("deleteIndex:",deleteIndex);
+					// 좌석 리스트에서 삭제
+					if(deleteIndex > -1) seatList.splice(deleteIndex,1)
+					
 					// 삭제 후 클릭한 <td>의 클래스 변경
 					$(this).removeClass("pc");            
 				}

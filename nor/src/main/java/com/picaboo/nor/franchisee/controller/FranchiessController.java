@@ -16,7 +16,7 @@ public class FranchiessController {
 	
 	@GetMapping("/addFranchisee")
 	public String addFranchisee() {
-		return "addFranchisee";
+		return "franchisee/addFranchisee";
 	}
 	
 	// 가맹점 좌석 입력 요청
@@ -25,16 +25,16 @@ public class FranchiessController {
 		System.out.println("addFranchiseeSeat Post 요청");
 		
 		System.out.println("addFranchiseeSeat.seatList: " + seatMap);
-		franchiseeService.addFranchiseeSeat(seatMap);
+		//franchiseeService.addFranchiseeSeat(seatMap);
 		
-		return "addFranchiseeSeat";
+		return "franchisee/addFranchiseeSeat";
 	}
 	
 	// 가맹점 좌석 추가 페이지 요청
 	@GetMapping("/addFranchiseeSeat") 
 	public String addFranchiseeSeat() {
 		System.out.println("addFranchiseeSeat Get 요청");
-		return "addFranchiseeSeat";
+		return "franchisee/addFranchiseeSeat";
 	}
 	
 	// index
