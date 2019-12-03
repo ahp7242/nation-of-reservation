@@ -10,13 +10,11 @@
 	<!-- Custom styles for this template -->
 	<link href="css/heroic-features.css" rel="stylesheet">
 	<!-- 네이버 로그인 스크립트 -->
-	<script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
-  	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <title>LOGIN</title>
 <body>
-	<div th:if="${memberName} != null" th:include="/part/templet::afternav"></div>
-	<div th:if="${memberName} == null" th:include="/part/templet::beforenav"></div>
+	<div th:include="/part/templet::nav"></div>
 	<div class="container" >
 		<div style="height:100px;">
 			<br>
@@ -45,11 +43,11 @@
 	<div style="height:10px;">
 	</div>
 	<div class="card-title text-center">
-		<input type="image" src="/loginimage/naver.png">
+		<input type="image" src="/loginimage/naver.png" class="snslogin">
 		<br>
-		<input type="image" src="/loginimage/kakao.png">
+		<input type="image" src="/loginimage/kakao.png" class="snslogin">
 		<br>
-		<input type="image" src="/loginimage/google.png">
+		<input type="image" src="/loginimage/google.png" class="snslogin">
 	</div>	
 
 	<!-- 중간 여백 -->
@@ -61,4 +59,9 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> 
+<script>
+	$(".snslogin").click(function(){
+		alert("서비스 구현예정");
+	})
+</script>
 </html>

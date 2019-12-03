@@ -4,6 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.picaboo.nor.customer.mapper.CustomerMapper">
+	<!-- 좌석 출력 -->
 	<select id="selectSeat" resultType="com.picaboo.nor.customer.vo.Seat"
 							parameterType="String">
 		SELECT franchisee_no as franchiseeNo,
@@ -13,7 +14,5 @@
 			   seat_use as seatUse
 		FROM seat 
 		WHERE franchisee_no = #{String}
-	
 	</select>
-
 </mapper>

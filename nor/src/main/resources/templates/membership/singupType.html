@@ -23,14 +23,13 @@
 	}
 </style>
 <body>
-	<div th:if="${memberName} != null" th:include="/part/templet::afternav"></div>
-	<div th:if="${memberName} == null" th:include="/part/templet::beforenav"></div>
+	<div th:include="/part/templet::nav"></div>
 	
 	<div class="container">
 		<table>
 			<tr>
 				<td>
-					<a href="/singup?customerType=F">기업</a>
+					<a href="/singup?customerType=O">기업</a>
 				</td>
 				<td>
 					<a href="/singup?customerType=C">일반</a>

@@ -1,20 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="utf-8">
-<meta name="viewport"content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="">
-<meta name="author" content="">
-<title>Heroic Features - Start Bootstrap Template</title>
-	<!-- Bootstrap core CSS -->
-	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<!-- Custom styles for this template -->
-	<link href="css/heroic-features.css" rel="stylesheet">
-</head>
 <body>
-	<div th:include="/part/templet::nav"></div>
-	<div class="container">
-		<!-- Jumbotron Header(이벤트 배너) -->
+	<!-- Navigation(상단메뉴) -->
+	<div th:fragment="nav">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+			<div class="container">
+				<a class="navbar-brand" href="/customerIndex">PI-CA-BOO</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/profile}" th:text="${memberName}"></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/logout">logout</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Services</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Contact</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+  <!-- Page Content -->
+  <div class="container">
+
+    <!-- Jumbotron Header(이벤트 배너) -->
     <div th:fragment="event">
 	    <header class="jumbotron my-4">
 	      <h1 class="display-3">EVENT!</h1>
@@ -33,7 +50,7 @@
 	            <p class="card-text">PC방 사양</p>
 	          </div>
 	          <div class="card-footer">
-	            <a href="/selectCustomerSeat" class="btn btn-primary">상세</a>
+	            <a href="#" class="btn btn-primary">상세</a>
 	          </div>
 	        </div>
 	      </div>
@@ -78,9 +95,23 @@
 	      </div>
 	    </div>
 	 </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container -->
+
+	<!-- Footer -->
+	<div th:fragment="copyright">
+		<footer class="py-5 bg-dark">
+			<div class="container">
+				<p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+			</div>
+			<!-- /.container -->
+		</footer>
 	</div>
-	<div th:include="/part/templet::copyright"></div>
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 </body>
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 </html>

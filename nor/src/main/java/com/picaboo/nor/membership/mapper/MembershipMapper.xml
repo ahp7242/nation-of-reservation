@@ -3,6 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.picaboo.nor.membership.mapper.MembershipMapper">
+	<!-- 회원가입매퍼 -->
 	<insert id="insertMembership" parameterType="com.picaboo.nor.membership.vo.Membership">
 		INSERT INTO customer(
 			customer_no,
@@ -26,14 +27,24 @@
 			#{customerType}
 		)
 	</insert>
-	
+	<!-- 회원번호의 최고값을 불러오는 매퍼 -->
 	<select id="selectMaxNo" resultType="String">
 		SELECT *
 		FROM customer_no_max
 	</select>
-	
-	<select id="selectCustomerOne" parameterType="com.picaboo.nor.membership.vo.Login" resultType="com.picaboo.nor.membership.vo.Membership">
-		SELECT  customer_id as customerId,
+	<!-- 로그인시 정보의 유무를 확인하는 매퍼 -->
+	<select id="login" parameterType="com.picaboo.nor.membership.vo.Login" resultType="com.picaboo.nor.membership.vo.Membership">
+		SELECT  customer_no as customerNo,
+				customer_id as customerId,
+				customer_name as customerName,
+				customer_type as customerType
+		FROM customer
+		where customer_id = #{customerId} AND customer_pw = #{customerPw} 
+	</select>
+	<!-- 고객의 상세정보를 불러오는 매퍼 -->
+	<select id="selectMembershipOne" parameterType="String" resultType="com.picaboo.nor.membership.vo.Membership">
+		SELECT  customer_no as customerNo,
+				customer_id as customerId,
 				customer_pw as customerPw,
 				customer_name as customerName,
 				customer_birth as customerBirth,
@@ -42,6 +53,15 @@
 				customer_phone as customerPhone,
 				customer_type as customerType
 		FROM customer
-		where customer_id = #{customerId} AND customer_pw = #{customerPw} 
+		where customer_no = #{String}
 	</select>
+	<!-- 고객의 상세정보를 수정하는 매퍼 -->
+	<update id="updateMEmbership" parameterType="com.picaboo.nor.membership.vo.Membership">
+		UPDATE customer SET 
+			customer_name = #{customerName},
+			customer_email = #{customerEmail},
+			customer_phone = #{customerPhone}
+		WHERE 
+			customer_no = #{customerNo}
+	</update>
 </mapper>
