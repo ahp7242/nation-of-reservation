@@ -9,14 +9,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.picaboo.nor.franchisee.service.FranchiseeService;
+import com.picaboo.nor.franchisee.vo.Franchisee;
 
 @Controller
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
+	// 가맹점주 페이지 요청
+	@GetMapping("/franchiseeIndex")
+	public String franchiseeIndex() {
+		return "franchiseeIndex";
+	}
 	
+	// 가맹점 등록 페이지 요청
 	@GetMapping("/addFranchisee")
 	public String addFranchisee() {
 		return "franchisee/addFranchisee";
+	}
+	
+	// 가맹점 등록 요청
+	@PostMapping("/addFranchisee")
+    public String addBoard(Franchisee franchisee) {
+        System.out.print(franchisee);
+        
+		
+        franchiseeService.addFranchisee(franchisee);
+        //System.out.printf("BoardController.AddBoard : %d 행 입력성공", row);
+        
+        
+        return "redirect:/franchiseeIndex";
 	}
 	
 	// 가맹점 좌석 입력 요청

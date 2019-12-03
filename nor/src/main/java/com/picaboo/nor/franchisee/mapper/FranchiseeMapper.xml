@@ -18,5 +18,32 @@
 			#{seatCols}
 		)
 	</insert>
-
+	
+	<!-- 가맹점 등록 -->
+	<insert id="insertFranchisee" parameterType="com.picaboo.nor.franchisee.vo.Franchisee" >
+		INSERT INTO franchisee(
+			franchisee_no, 
+			franchisee_crn, 
+			franchisee_name,
+			franchisee_phone
+		) VALUES(
+			#{franchiseeNo},
+			#{franchiseeCrn}, 
+			#{franchiseeName},
+			#{franchiseePhone}
+		)
+	</insert>
+	
+	<!-- 마지막 가맹점번호 조회 -->
+	<select id="selectFranchiseeSeq" resultType="string">
+		SELECT seq_no
+		FROM franchisee_seq
+	</select>
+	
+	<!-- 마지막 가맹점번호 갱신 -->
+	<update id="updateFranchiseeSeq" parameterType="string">
+		UPDATE franchisee_seq
+		SET seq_no = #{seqNo}
+	</update>
+	
 </mapper>
