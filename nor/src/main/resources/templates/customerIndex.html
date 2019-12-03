@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>customer index</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+</head>
+
+<body>
+	<!-- Navigation(상단메뉴) -->
+	<div th:include="/part/customerNav::nav"></div>
+	<!-- Page Content -->
+	<div class="container">
+	
+		<!-- Jumbotron Header(이벤트 배너) -->
+		<header class="jumbotron my-4">
+			<h1 class="display-3">EVENT!</h1>
+			<p class="lead">PC방 대회정보</p>
+			<a href="#" class="btn btn-primary btn-lg">나도 참가 한다!!!</a>
+		</header>
+		
+		<!-- Page Features(메인 베너) -->
+		<div class="row text-center">
+			<div class="col-lg-3 col-md-6 mb-4">
+				<div class="card h-100">
+					<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+					<div class="card-body">
+						<h4 class="card-title">PC방 이름</h4>
+						<p class="card-text">PC방 사양</p>
+					</div>
+					<div class="card-footer">
+						<a href="/selectCustomerSeat" class="btn btn-primary">상세</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-3 col-md-6 mb-4">
+				<div class="card h-100">
+					<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+					<div class="card-body">
+						<h4 class="card-title">PC방 이름</h4>
+						<p class="card-text">PC방 사양</p>
+					</div>
+					<div class="card-footer">
+						<a href="#" class="btn btn-primary">상세</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-3 col-md-6 mb-4">
+				<div class="card h-100">
+					<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+					<div class="card-body">
+						<h4 class="card-title">PC방 이름</h4>
+						<p class="card-text">PC방 사양</p>
+					</div>
+					<div class="card-footer">
+						<a href="#" class="btn btn-primary">상세</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-3 col-md-6 mb-4">
+				<div class="card h-100">
+					<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+					<div class="card-body">
+						<h4 class="card-title">PC방 이름</h4>
+						<p class="card-text">PC방 사양</p>
+					</div>
+					<div class="card-footer">
+						<a href="#" class="btn btn-primary">상세</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /.row -->
+	<!-- /.container -->
+	<!-- Footer -->
+	<div th:include="/part/customerNav::copyright"></div>
+	<!-- Bootstrap core JavaScript -->
+</body>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</html>
