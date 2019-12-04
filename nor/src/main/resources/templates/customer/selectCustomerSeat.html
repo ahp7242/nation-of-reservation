@@ -12,19 +12,31 @@
 </head>
 <title>CUSTOMER</title>
 <style>
-	.box{
-		height:50px;
-		width:50px;
-		text-align:center;
-	}
+.box {
+	height: 50px;
+	width: 50px;
+	text-align: center;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.center {
+	text-align: center;
+}
+
+#seat {
+	margin-left: auto;
+	margin-right: auto;
+}
 </style>
 </head>
 <body>
 	<div th:include="/part/customerNav::nav"></div>
-	
-	<div class="container">
-		<h1>customer</h1>
-		<table border="1" id="seat"></table>
+	<div class="container center">
+		<h1>CustomerSeat</h1>
+		<div th:text="${franchisee.franchiseeName}"></div>
+		<div>pc방 이미지<!-- <img class='card-img-top' src='http://placehold.it/500x325' alt=''> --></div>
+		<table id="seat"></table>
 	</div>
 	<div th:include="/part/customerNav::copyright"></div>
 </body>
@@ -55,7 +67,9 @@
 	 html += "<tr id='"+row+"'>"
 	 
 	 for(let cols=1; cols<=colsMax; cols++){
-		 html += "<td class='box' id='"+cols+"'></td>"
+		 html += "<td id='"+cols+"'>"
+		 html += "<div class='box'></div>";
+		 html += "</td>";
 	 }
 	 
 	 html += "</tr>"
@@ -68,13 +82,26 @@ $(document).ready(function(){
 			let $this = $(this)
 			let trId = $this.closest('tr').attr('id')
 			let tdId = $this.closest('td').attr('id')
-			console.log("tr",trId)
-			console.log("td",tdId)
+			/* console.log("tr",trId)
+			console.log("td",tdId) */
 			$(seat).each(function(index2,item2){
 				if(trId == item2.seatRow && tdId == item2.seatCols){
-					console.log(item2.seatNo)
-					$this.append("pc"+item2.seatNo)
+					/* console.log(item2.seatNo) */
+					$this.children().append("pc"+item2.seatNo)
+					console.log(item2)
+					let use = item2.seatUse
+					switch(use){
+						case "Y":
+							$this.children().css("background-color","#B5B2FF");
+							$this.children().append("<br>사용중");
+							break;
+						case "N":
+							$this.children().css("background-color","#B2CCFF");
+							$this.children().append("<br>빈자리");
+							break;
+					}
 				}
+				
 			})
 		})
 	})

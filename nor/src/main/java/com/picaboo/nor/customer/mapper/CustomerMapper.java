@@ -8,4 +8,6 @@ import com.picaboo.nor.customer.vo.*;
 public interface CustomerMapper {
 	//좌석 출력
 	public List<Seat> selectSeat(String franchiseeNo);
+	public List<Franchisee> selectFranchiseeNo();
+	public Franchisee selectFranchisee(String franchiseeNo);
 }

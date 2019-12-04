@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picaboo.nor.customer.mapper.CustomerMapper;
-import com.picaboo.nor.customer.vo.Seat;
+import com.picaboo.nor.customer.vo.*;
 
 @Service
 @Transactional
@@ -19,5 +19,17 @@ public class CustomerServiceImpl implements CustomerService {
 	public List<Seat> getSeat(String franchiseeNo) {
 		
 		return customerMapper.selectSeat(franchiseeNo);
+	}
+	
+	//프렌차이즈번호를 가져오는 서비스
+	@Override
+	public List<Franchisee> getFranchiseeNo() {
+		
+		return customerMapper.selectFranchiseeNo();
+	}
+	@Override
+	public Franchisee getFranchisee(String franchiseeNo) {
+		// TODO Auto-generated method stub
+		return customerMapper.selectFranchisee(franchiseeNo);
 	}
 }

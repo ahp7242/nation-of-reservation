@@ -15,4 +15,17 @@
 		FROM seat 
 		WHERE franchisee_no = #{String}
 	</select>
+	<select id="selectFranchiseeNo" resultType="com.picaboo.nor.customer.vo.Franchisee">
+		SELECT 
+				franchisee_no as franchiseeNo,
+				franchisee_name as franchiseeName
+		From franchisee
+	</select>
+	<select id="selectFranchisee" parameterType="String" resultType="com.picaboo.nor.customer.vo.Franchisee">
+		SELECT 
+				franchisee_no as franchiseeNo,
+				franchisee_name as franchiseeName
+		FROM franchisee
+		WHERE franchisee_no = #{franchiseeNo}
+	</select>
 </mapper>
