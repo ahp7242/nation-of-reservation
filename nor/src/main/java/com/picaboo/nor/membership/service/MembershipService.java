@@ -11,4 +11,8 @@ public interface MembershipService {
 	public Membership detailMembership(String customerNo);
 	//회원의 상세정보를 수정하는 서비스
 	public int modifyMembership(Membership membership);
+	//회원탈퇴 서비스
+	public void removeMembership(Membership membership);
+	//회원가입시 아이디 중복확인
+	public int getOverlapCustomerId(String customerId);
 }

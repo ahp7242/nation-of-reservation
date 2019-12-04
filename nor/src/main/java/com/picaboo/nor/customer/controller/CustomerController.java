@@ -23,6 +23,7 @@ public class CustomerController {
 		if (session.getAttribute("memberNo") == null) {
 			return "redirect:/";
 		}
+		model.addAttribute("memberName",session.getAttribute("memberName"));
 		//수정필요 가짜 데이터
 		String franchiseeNo = "1";
 		List<Seat> seat = customerService.getSeat(franchiseeNo);
@@ -46,9 +47,8 @@ public class CustomerController {
 		}
 		
 		System.out.println("커스텀인덱스 세션"+session.getAttribute("memberName"));
-		if(session.getAttribute("memberName") != null) {
-			model.addAttribute("memberName",session.getAttribute("memberName"));
-		}
+		model.addAttribute("memberName",session.getAttribute("memberName"));
+		
 		return "customerIndex";
 	}
 }

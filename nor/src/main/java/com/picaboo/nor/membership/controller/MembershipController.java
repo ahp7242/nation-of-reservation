@@ -15,7 +15,7 @@ public class MembershipController {
 	@Autowired private MembershipService membershipService;
 	
 	//회원가입시 회원의 타입을 결정할 페이지로 get 요청
-	@GetMapping("/singupType")
+	@GetMapping("/signupType")
 	public String singupType(HttpSession session) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
 		if (session.getAttribute("memberNo") != null) {
@@ -30,11 +30,11 @@ public class MembershipController {
 					return "redirect:/franchiseeIndex";
 			}
 		}
-		return "membership/singupType";
+		return "membership/signupType";
 	}
 	
 	//타입 선택후 회원가입 입력 폼을 get요청
-	@GetMapping("/singup")
+	@GetMapping("/signup")
 	public String singup(HttpSession session, Model model,@RequestParam("customerType")String customerType) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
 		if (session.getAttribute("memberNo") != null) {
@@ -50,10 +50,10 @@ public class MembershipController {
 			}
 		}
 		model.addAttribute("customerType",customerType);
-		return "membership/singup";
+		return "membership/signup";
 	}
 	//회원가입 입력후 post요청
-	@PostMapping("/singup")
+	@PostMapping("/signup")
 	public String singup(Membership membership) {
 		
 		//System.out.println("membershipcontroller membership : "+membership);
@@ -80,7 +80,7 @@ public class MembershipController {
 		}
 		return "membership/login";
 	}
-	//로그인 post요청
+	//로그인 post요청(고객 이름, 타입, 번호, 가맹점 번호 세션 저장)
 	@PostMapping("/login")
 	public String login(HttpSession session, Login login, Model model) {
 		Membership member = membershipService.loginMembership(login);
@@ -96,7 +96,8 @@ public class MembershipController {
 				System.out.println("고객 로그인");
 				return "redirect:/customerIndex";
 			case "O":
-				System.out.println("가맹점 로그인");
+				System.out.println("가맹점 로그인" + member.getFranchiseeNo());
+				session.setAttribute("franchiseeNo", member.getFranchiseeNo());
 				return "redirect:/franchiseeIndex";
 			}
 		}
@@ -145,5 +146,19 @@ public class MembershipController {
 		System.out.println("수정후 " + membership);
 		membershipService.modifyMembership(membership);
 		return "redirect:/profile";
+	}
+	
+	//고객 회원탈퇴 get요청
+	@GetMapping("/removeMembership")
+	public String removeMembership(HttpSession session, @RequestParam("customerId")String customerId) {
+		
+		System.out.println("remove : " + customerId);
+		Membership membership = new Membership();
+		membership.setCustomerId(customerId);
+		membership.setCustomerNo((String)session.getAttribute("memberNo"));
+		membershipService.removeMembership(membership);
+		
+		session.invalidate();
+		return "redirect:/";
 	}
 }

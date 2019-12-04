@@ -42,6 +42,7 @@
 			</tr>
 		</table>
 		<a th:href="@{/modifyMembership}">수정</a>
+		<a th:href="@{/removeMembership(customerId=${membership.customerId})}">탈퇴</a>
 	</div>
 
 	<div th:include="/part/customerNav::copyright"></div>
