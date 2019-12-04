@@ -14,8 +14,6 @@ public interface MembershipMapper {
 	public int updateCustomerSeq(String customer_no);
 	//로그인시 정보의 유무를 확인하는 매퍼
 	public Membership login(Login login);
-	//로그인시 franchisee_no 불러오는 매퍼
-	public String selectFranchiseeNo(String customerNo);
 	//고객의 상세정보를 불러오는 매퍼
 	public Membership selectMembershipOne(String customerNo);
 	//고객의 상세정보를 수정하는 매퍼

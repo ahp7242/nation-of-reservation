@@ -33,11 +33,8 @@ public class MembershipServiceImpl implements MembershipService{
 	//로그인시 회원정보의 유무를 확인하는 서비스
 	@Override
 	public Membership loginMembership(Login login) {
-		Membership membership = membershipMapper.login(login);
-		String franchiseeNo = membershipMapper.selectFranchiseeNo(membership.getCustomerNo());
-		membership.setFranchiseeNo(franchiseeNo);
 		
-		return membership;
+		return membershipMapper.login(login);
 	}
 	
 	//회원의 상세정보를 가져오는 서비스

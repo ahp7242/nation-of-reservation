@@ -96,8 +96,6 @@ public class MembershipController {
 				System.out.println("고객 로그인");
 				return "redirect:/customerIndex";
 			case "O":
-				System.out.println("가맹점 로그인" + member.getFranchiseeNo());
-				session.setAttribute("franchiseeNo", member.getFranchiseeNo());
 				return "redirect:/franchiseeIndex";
 			}
 		}

@@ -40,27 +40,37 @@
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-	let html = "";
-	for (let i=0; i<4; i++){
-		html += "<div class='col-lg-3 col-md-6 mb-4'>";
-		html += "<div class='card h-100'>";
-		html += "<img class='card-img-top' src='http://placehold.it/500x325' alt=''>";
-		html += "<div class='card-body'>";
-		html += "<h4 class='card-title'>";
-		html += "PC방 이름";
-		html += "</h4>";
-		html += "<p class='card-text'>";
-		html += "PC방 사양";
-		html += "</p>";
-		html += "</div>";
-		html += "<div class='card-footer'>";
-		html += "<a href='/selectCustomerSeat' class='btn btn-primary'>";
-		html += "상세";
-		html += "</a>";
-		html += "</div>";
-		html += "</div>";
-		html += "</div>";
-	}
-	$("#main").append(html);
+	$.ajax({
+		url:"/getFranchiseeSeatInfo",
+		method:"POST",
+		success:function(json){
+			/* console.log("success");
+			console.log(json); */
+			let html = "";
+			$(json).each(function(index, item){
+				html += "<div class='col-lg-3 col-md-6 mb-4'>";
+				html += "<div class='card h-100'>";
+				html += "<img class='card-img-top' src='http://placehold.it/500x325' alt=''>";
+				html += "<div class='card-body'>";
+				html += "<h4 class='card-title'>";
+				html += item.franchiseeName;
+				html += "</h4>";
+				html += "<p class='card-text'>";
+				html += "PC방 사양";
+				html += "</p>";
+				html += "</div>";
+				html += "<div class='card-footer'>";
+				html += "<a href='/selectCustomerSeat?franchiseeNo="
+				html += item.franchiseeNo;
+				html += "' class='btn btn-primary'>";
+				html += "상세";
+				html += "</a>";
+				html += "</div>";
+				html += "</div>";
+				html += "</div>";
+			})
+			$("#main").append(html);
+		}
+	})
 </script>
 </html>

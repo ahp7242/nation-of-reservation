@@ -13,5 +13,4 @@ public class Membership {
 	private String customerEmail;
 	private String customerPhone;
 	private String customerType;
-	private String franchiseeNo;
 }

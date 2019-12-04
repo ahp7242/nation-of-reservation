@@ -46,12 +46,6 @@
 		FROM customer
 		where customer_id = #{customerId} AND customer_pw = #{customerPw} 
 	</select>
-	<!-- 로그인시 franchisee_no를 가져오는 매퍼 -->
-	<select id="selectFranchiseeNo" parameterType="String" resultType="String">
-		SELECT franchisee_no
-		FROM franchisee
-		WHERE customer_no = #{customerNo}
-	</select>
 	<!-- 고객의 상세정보를 불러오는 매퍼 -->
 	<select id="selectMembershipOne" parameterType="String" resultType="com.picaboo.nor.membership.vo.Membership">
 		SELECT  customer_no as customerNo,
@@ -90,7 +84,7 @@
 	</insert>
 	<!-- 회원가입시 고객 아이디 중복확인하는 매퍼 -->
 	<select id="selectOverlapCustomerId" parameterType="String" resultType="int">
-		select customer_id
+		select COUNT(customer_id)
 		from ( select customer_id
 			   from customer
 			   union all
