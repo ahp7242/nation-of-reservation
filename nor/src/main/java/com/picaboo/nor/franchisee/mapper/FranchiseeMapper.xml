@@ -4,6 +4,29 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	
+	<!-- 가맹점 상세정보 조회 -->
+	<select id="selectFranchiseeOne" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Franchisee">
+		SELECT 
+			franchisee_no AS franchiseeNo,
+			franchisee_crn AS franchiseeCrn,
+			franchisee_name AS franchiseeName,
+			franchisee_phone AS franchiseePhone,
+			franchisee_pic AS franchiseePic,
+			owner_no AS ownerNo
+		FROM franchisee
+		WHERE franchisee_no = #{franchiseeNo}
+	</select>
+	
+	<!-- 로그인한 점주의 가맹점 리스트 조회 -->
+	<select id="selectFranchiseeList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Franchisee">
+		SELECT 
+			franchisee_no AS franchiseeNo,
+			franchisee_name AS franchiseeName,
+			franchisee_pic AS franchiseePic
+		FROM franchisee
+		WHERE owner_no = #{owner_no}
+	</select>
 
 	<!-- 점주가 선택한 자리의 값들을 seat db에 저장 -->
 	<!-- 좌석 입력 -->
@@ -11,11 +34,13 @@
 		INSERT INTO seat(
 			seat_no, 
 			seat_row, 
-			seat_cols
+			seat_cols,
+			franchisee_no
 		) VALUES(
 			#{seatNo}, 
 			#{seatRow}, 
-			#{seatCols}
+			#{seatCols},
+			#{franchisee.franchiseeNo}
 		)
 	</insert>
 	
@@ -25,12 +50,14 @@
 			franchisee_no, 
 			franchisee_crn, 
 			franchisee_name,
-			franchisee_phone
+			franchisee_phone,
+			owner_no
 		) VALUES(
 			#{franchiseeNo},
 			#{franchiseeCrn}, 
 			#{franchiseeName},
-			#{franchiseePhone}
+			#{franchiseePhone},
+			#{ownerNo}
 		)
 	</insert>
 	

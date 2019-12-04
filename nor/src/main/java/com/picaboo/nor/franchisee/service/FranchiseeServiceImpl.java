@@ -1,5 +1,6 @@
 package com.picaboo.nor.franchisee.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +15,34 @@ import com.picaboo.nor.franchisee.vo.Seat;
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
-		
+	
+	// 가맹점 상세정보 조회
+	@Override
+	public Franchisee getFranchiseeOne(String franchiseeNo) {
+		System.out.println("ServiceImpl.getFranchiseeOne franchiseeNo: " + franchiseeNo);
+		return franchiseeMapper.selectFranchiseeOne(franchiseeNo);
+	}
+	
+	// 가맹점 리스트 조회
+	@Override
+	public List<Franchisee> getFranchiseeList(String ownerNo) { 
+		System.out.println("ServiceImpl.getFranchiseeOne ownerNo: " + ownerNo);
+		return franchiseeMapper.selectFranchiseeList(ownerNo);
+	}
+	
 	// 가맹점 등록
 	@Override
 	public int addFranchisee(Franchisee franchisee) {
 		// 가맹점 번호: "유형" + 숫자7자리
 		// 마지막 가맹점번호 저장
 		String seqNo = franchiseeMapper.selectFranchiseeSeq();
-		System.out.println("seqNo: " + seqNo);
 		
 		// NULL값 처리
 		if(seqNo == null) {
 			seqNo = String.format("%07d", 0);
 		}
+		
+		System.out.println("seqNo: " + seqNo);
 		
 		// 증가시키기 위한 숫자만 잘라서 저장
 		seqNo = seqNo.substring(1);
@@ -52,8 +68,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		System.out.println("FranchiseeServiceImpl.addFranchiseeSeat seatMap: " + seatMap);
 		
 		// 입력한 좌석 수 계산
-		// 맵에 seatNo, seatRow, seatCols가 3개니까 나누기 3 
-		int seatCount = seatMap.size()/3;
+		// 맵에 seatNo, seatRow, seatCols, franchiseeNo 가 4개니까 나누기 4
+		int seatCount = seatMap.size()/4;
 		System.out.println("seatCount: " + seatCount);
 		int rows = 0;
 		for(int i=0; i<seatCount; i++) {
@@ -61,13 +77,17 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		    int seatNo = Integer.parseInt(seatMap.get("seatList["+i+"][seatNo]")); 
 			int seatRow = Integer.parseInt(seatMap.get("seatList["+i+"][seatRow]"));
 			int seatCols = Integer.parseInt(seatMap.get("seatList["+i+"][seatCols]"));
+			String franchiseeNo = seatMap.get("seatList["+i+"][franchiseeNo]");
 			
 			seat.setSeatNo(seatNo); 
 			seat.setSeatRow(seatRow); 
-			seat.setSeatCols(seatCols); 
+			seat.setSeatCols(seatCols);
+			seat.setFranchisee(new Franchisee());
+			seat.getFranchisee().setFranchiseeNo(franchiseeNo);
 			
 			// Map에서 좌석 하나씩 가져와 insert 수행
 			rows += franchiseeMapper.insertFranchiseeSeat(seat);
+			System.out.println("rows: " + rows);
 		}
 		
 		// 반복문 수행 후 결과 리턴

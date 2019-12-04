@@ -20,27 +20,25 @@
 
 <!-- Navigation -->
   <div th:fragment="nav">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/">PI-CA-BOO</a>
+      <a class="navbar-brand" href="/franchiseeIndex">PI-CA-BOO</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
+        
+          <!-- 멤버 이름 표시 -->
       	  <li class="nav-item">
-            <label class="nav-link" th:text="${memberName}"></label>
+            <span class="nav-link disabled text-light" th:text="${session.memberName}"></span>
           </li>
-          
           <li class="nav-item">
-            <a class="nav-link" href="/addFranchisee">addFranchisee</a>
+            <span class="nav-link disabled text-light">님 환영합니다</span>
           </li>
-          
+          <!-- 로그아웃 -->
           <li class="nav-item">
             <a class="nav-link" href="/logout">logout</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/#">modify</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
@@ -51,17 +49,31 @@
         </ul>
       </div>
     </div>
-  </nav>
-   </div>
+   </nav>
+  </div>
   <!-- Page Content -->
   <div class="container">
 
     <!-- Jumbotron Header(이벤트 배너) -->
     <div th:fragment="event">
+    	<!-- 가맹점 목록 -->
 	    <header class="jumbotron my-4">
-	      <h1 class="display-3"></h1>
-	      <p class="lead"></p>
-	      <a href="#" class="btn btn-primary btn-lg"></a>
+	    
+	    <h2 class="display-3">franchisee list</h2>
+	    <div class="row text-center">
+	      <div class="col-lg-3 col-md-6 mb-4" th:each="list:${franchiseeList}">
+	        <div class="card h-100">
+	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+	          <div class="card-body">
+	            <h4 class="card-title" th:text="${list.franchiseeName}">FranchiseeName</h4>
+	          </div>
+	          <div class="card-footer">
+	            <a href="#" class="btn btn-primary" th:href="@{/detailFranchisee?(franchiseeNo=${list.franchiseeNo})}" th:text="info">info</a>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	     
 	    </header>
 	</div>
     <!-- Page Features(메인 베너) -->
@@ -71,11 +83,11 @@
 	        <div class="card h-100">
 	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
 	          <div class="card-body">
-	            <h4 class="card-title"></h4>
-	            <p class="card-text">
+	            <h4 class="card-title">addFranchisee</h4>
+	            <p class="card-text">addFranchisee</p>
 	          </div>
 	          <div class="card-footer">
-	            <a href="/customer" class="btn btn-primary"></a>
+	            <a href="/addFranchisee" class="btn btn-primary">addFranchisee</a>
 	          </div>
 	        </div>
 	      </div>
@@ -84,11 +96,11 @@
 	        <div class="card h-100">
 	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
 	          <div class="card-body">
-	            <h4 class="card-title"></h4>
-	            <p class="card-text"></p>
+	            <h4 class="card-title">addFranchiseeSeat</h4>
+	            <p class="card-text">addFranchiseeSeat</p>
 	          </div>
 	          <div class="card-footer">
-	            <a href="#" class="btn btn-primary"></a>
+	            <a href="/addFranchiseeSeat" class="btn btn-primary">addFranchiseeSeat</a>
 	          </div>
 	        </div>
 	      </div>

@@ -13,4 +13,5 @@ public class Franchisee {
 	private String franchiseeCrn;
 	private String franchiseeName;
 	private String franchiseePhone;
+	private String ownerNo;
 }

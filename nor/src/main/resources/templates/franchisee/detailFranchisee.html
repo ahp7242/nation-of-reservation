@@ -32,10 +32,7 @@
       	  <li class="nav-item">
             <label class="nav-link" th:text="${memberName}"></label>
           </li>
-          
-          <li class="nav-item">
-            <a class="nav-link" href="/addFranchisee">addFranchisee</a>
-          </li>
+       
           <!-- 로그아웃 -->
           <li class="nav-item">
             <a class="nav-link" href="/logout">logout</a>
@@ -54,28 +51,91 @@
     </div>
   </nav>
    </div>
-  <!-- Page Content -->
-  <div class="container">
-		<form action="/addFranchisee" method="post">
-			<div>
-				<label>franchisee_crn</label>
-				<input type="text" name="franchiseeCrn">
-			</div>
-			<div>
-				<label>franchisee_name</label>
-				<input type="text" name="franchiseeName">
-			</div>
-			<div>
-				<label>franchisee_phone</label>
-				<input type="text" name="franchiseePhone">
-			</div>
-			<div>
-				<button type="submit">입력</button>
-			</div>
-		</form>
   </div>
+  <!-- Page Content -->
+	<div class="container">
+	
+	  <!-- pc방 상세 페이지 -->
+	  <h1 class="my-4" th:text="${franchisee.franchiseeName}"></h1>
+	  
+	  <!-- 좌석 정보 테이블 -->
+	  <div class="row">
+		<h2><small>좌석 정보</small></h2>
+	    <div class="col-md-8">
+	      <table class="table table-bordered">
+	      	<tr>
+	      		<td>1</td>
+	      		<td>2</td>
+	      		<td>3</td>
+	      		<td>4</td>
+	      	</tr>
+	      		<tr>
+	      		<td>5</td>
+	      		<td>6</td>
+	      		<td>7</td>
+	      		<td>8</td>
+	      	</tr>
+	      		<tr>
+	      		<td>9</td>
+	      		<td>10</td>
+	      		<td>11</td>
+	      		<td>12</td>
+	      	</tr>
+	      		<tr>
+	      		<td>13</td>
+	      		<td>14</td>
+	      		<td>15</td>
+	      		<td>16</td>
+	      </table>
+	      
+	    </div>
+		
+		<!-- pc방 정보 -->
+	    <div class="col-md-4">
+	      <h3 class="my-3">PC방 정보</h3>
+	      <div th:object="${franchisee}">
+			      <p th:text="*{franchiseeCrn}">
+			      <p th:text="*{franchiseePhone}">
+   		  </div>
+	      <h3 class="my-3">PC방 사양</h3>
+	          
+	      <ul>
+	        <li>9700</li>
+	        <li>2080</li>
+	        <li>16G</li>
+	        <li>짜파게티 보유</li>
+	      </ul>
+	    </div>
+	
+	  </div>
+	  <!-- /.row -->
+	
+	  <!-- 가맹점 관리 버튼 -->
+	  <h3 class="my-4">Related Projects</h3>
+	
+	  <div class="row">
+			
+	    <div class="col-md-3 col-sm-6 mb-4">
+	      <a href="#" th:href="@{/addFranchiseeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 입력</a>
+	    </div>
+	
+	    <div class="col-md-3 col-sm-6 mb-4">
+	      <a href="#"></a>
+	    </div>
+	
+	    <div class="col-md-3 col-sm-6 mb-4">
+	      <a href="#"></a>
+	    </div>
+	
+	    <div class="col-md-3 col-sm-6 mb-4">
+	      <a href="#"></a>
+	    </div>
+	
+	  </div>
+	  <!-- /.row -->
+	
+	</div>
   <!-- /.container -->
-
   <!-- Footer -->
   <div th:fragment="copyright">
 	  <footer class="py-5 bg-dark">
