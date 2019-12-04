@@ -2,85 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
-<meta name="viewport"content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
 <title>Heroic Features - Start Bootstrap Template</title>
-	<!-- Bootstrap core CSS -->
-	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<!-- Custom styles for this template -->
-	<link href="css/heroic-features.css" rel="stylesheet">
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
 </head>
 <body>
 	<div th:include="/part/templet::nav"></div>
 	<div class="container">
 		<!-- Jumbotron Header(이벤트 배너) -->
-    <div th:fragment="event">
-	    <header class="jumbotron my-4">
-	      <h1 class="display-3">EVENT!</h1>
-	      <p class="lead">PC방 대회정보</p>
-	      <a href="#" class="btn btn-primary btn-lg">나도 참가 한다!!!</a>
-	    </header>
-	</div>
-    <!-- Page Features(메인 베너) -->
-    <div th:fragment="main">
-	    <div class="row text-center">
-	      <div class="col-lg-3 col-md-6 mb-4">
-	        <div class="card h-100">
-	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-	          <div class="card-body">
-	            <h4 class="card-title">PC방 이름</h4>
-	            <p class="card-text">PC방 사양</p>
-	          </div>
-	          <div class="card-footer">
-	            <a href="/selectCustomerSeat" class="btn btn-primary">상세</a>
-	          </div>
-	        </div>
-	      </div>
-	
-	      <div class="col-lg-3 col-md-6 mb-4">
-	        <div class="card h-100">
-	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-	          <div class="card-body">
-	            <h4 class="card-title">PC방 이름</h4>
-	            <p class="card-text">PC방 사양</p>
-	          </div>
-	          <div class="card-footer">
-	            <a href="#" class="btn btn-primary">상세</a>
-	          </div>
-	        </div>
-	      </div>
-	
-	      <div class="col-lg-3 col-md-6 mb-4">
-	        <div class="card h-100">
-	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-	          <div class="card-body">
-	            <h4 class="card-title">PC방 이름</h4>
-	            <p class="card-text">PC방 사양</p>
-	          </div>
-	          <div class="card-footer">
-	            <a href="#" class="btn btn-primary">상세</a>
-	          </div>
-	        </div>
-	      </div>
-	
-	      <div class="col-lg-3 col-md-6 mb-4">
-	        <div class="card h-100">
-	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-	          <div class="card-body">
-	            <h4 class="card-title">PC방 이름</h4>
-	            <p class="card-text">PC방 사양</p>
-	          </div>
-	          <div class="card-footer">
-	            <a href="#" class="btn btn-primary">상세</a>
-	          </div>
-	        </div>
-	      </div>
-	    </div>
-	 </div>
+		<div th:fragment="event">
+			<header class="jumbotron my-4">
+				<h1 class="display-3">EVENT!</h1>
+				<p class="lead">PC방 대회정보</p>
+				<a href="#" class="btn btn-primary btn-lg">나도 참가 한다!!!</a>
+			</header>
+		</div>
+		<!-- Page Features(메인 베너) -->
+		<div class="row text-center" id="main"></div>
 	</div>
 	<div th:include="/part/templet::copyright"></div>
 </body>
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+	$.ajax({
+		url:"/getFranchiseeSeatInfo",
+		method:"POST",
+		success:function(json){
+			/* console.log("success");
+			console.log(json); */
+			let html = "";
+			$(json).each(function(index, item){
+				html += "<div class='col-lg-3 col-md-6 mb-4'>";
+				html += "<div class='card h-100'>";
+				html += "<img class='card-img-top' src='http://placehold.it/500x325' alt=''>";
+				html += "<div class='card-body'>";
+				html += "<h4 class='card-title'>";
+				html += item.franchiseeName;
+				html += "</h4>";
+				html += "<p class='card-text'>";
+				html += "PC방 사양";
+				html += "</p>";
+				html += "</div>";
+				html += "<div class='card-footer'>";
+				html += "<a href='#' class='btn btn-primary'>";
+				html += "상세";
+				html += "</a>";
+				html += "</div>";
+				html += "</div>";
+				html += "</div>";
+			})
+			$("#main").append(html);
+		}
+	})
+</script>
 </html>
