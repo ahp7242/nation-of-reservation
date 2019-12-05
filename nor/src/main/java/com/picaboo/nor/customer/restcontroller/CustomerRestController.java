@@ -13,8 +13,9 @@ import com.picaboo.nor.customer.vo.*;
 public class CustomerRestController {
 	@Autowired private CustomerService customerService;
 	
-	@PostMapping("/getFranchiseeSeatInfo")
-	public List<Franchisee> getFranchiseeSeatInfo(){
+	//인덱스에서 출력할 프렌차이즈 목록을 List로 반환
+	@PostMapping("/getFranchiseeList")
+	public List<Franchisee> getFranchiseeList(){
 		List<Franchisee> list = customerService.getFranchiseeNo();
 		System.out.println("restcontroller"+list);
 		return list;

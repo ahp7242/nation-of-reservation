@@ -10,9 +10,16 @@
 <!-- Custom styles for this template -->
 <link href="css/heroic-features.css" rel="stylesheet">
 <!-- 네이버 로그인 스크립트 -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 </head>
 <title>LOGIN</title>
+<style>
+	.size{
+		height:50px;
+		width:255px;
+	}
+</style>
 <body>
 	<div th:include="/part/templet::nav"></div>
 	<div class="container">
@@ -41,9 +48,11 @@
 	<!-- 소셜로그인 버튼 -->
 	<div style="height: 10px;"></div>
 	<div class="card-title text-center">
-		<input type="image" src="/loginimage/naver.png" class="snslogin"> <br> 
-		<input type="image" src="/loginimage/kakao.png" class="snslogin"> <br> 
-		<input type="image" src="/loginimage/google.png" class="snslogin">
+		<div id="naver_id_login"></div>
+		<div style="height: 10px;"></div>
+		<input type="image" src="/loginimage/kakao.png" class="snslogin size">
+		<div style="height: 4px;"></div>
+		<input type="image" src="/loginimage/google.png" class="snslogin size">
 	</div>
 
 	<!-- 중간 여백 -->
@@ -58,5 +67,16 @@
 	$(".snslogin").click(function(){
 		alert("서비스 준비중😊");
 	})
+</script>
+<script type="text/javascript">
+	var naver_id_login = new naver_id_login("S1ktDM7LfYru6fV1INP1", "http://localhost/callback");
+	var state = naver_id_login.getUniqState();
+	naver_id_login.setButton("green", 2.5, 55);
+	naver_id_login.setDomain("http://localhost/customerIndex");
+	naver_id_login.setState(state);
+	//naver_id_login.setPopup();
+	naver_id_login.init_naver_id_login();
+
+	//console.log(naver_id_login.getProfileData('email'));
 </script>
 </html>

@@ -28,6 +28,9 @@
 	margin-left: auto;
 	margin-right: auto;
 }
+#seat div{
+	background-color: #EAEAEA;
+}
 </style>
 </head>
 <body>
@@ -47,15 +50,15 @@
  let seat = /*[[${seat}]]*/
  //console.log(seat);
  let html = "";
- let a = 0;
- let b = 0;
  let rowMax = 0;
  let colsMax = 0;
  
  $(seat).each(function(index,item){
+	 //seat값을 검사하여 row값의 최대값을 rowMax에 저장
 	 if(item.seatRow > rowMax){
 		 rowMax = item.seatRow;
 	 }
+	//seat값을 검사하여 cols값의 최대값을 colsMax에 저장
 	 if(item.seatCols > colsMax){
 		 colsMax = item.seatCols
 	 }
@@ -63,7 +66,8 @@
  //console.log(rowMax)
  //console.log(colsMax)
  
- for(let row=1; row<=rowMax; row++){
+ //좌석 표시중 마지막줄에 1줄 더하여 출력(pc방 길)
+ for(let row=1; row<=rowMax+1; row++){
 	 html += "<tr id='"+row+"'>"
 	 
 	 for(let cols=1; cols<=colsMax; cols++){
@@ -96,7 +100,7 @@ $(document).ready(function(){
 							$this.children().append("<br>사용중");
 							break;
 						case "N":
-							$this.children().css("background-color","#B2CCFF");
+							$this.children().css("background-color","#A0BAED");
 							$this.children().append("<br>빈자리");
 							break;
 					}

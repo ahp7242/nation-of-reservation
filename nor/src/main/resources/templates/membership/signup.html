@@ -19,64 +19,112 @@
 	<div th:include="/part/templet::nav"></div>
 	
 	<div class="container">
-		<form action="/signup" method="post">
-			<table>
-				<tr>
-					<td>*ID : </td>
-					<td><input type="text" name="customerId" id="customerId" required autofocus><button type="button" id="overlap">중복확인</button></td>
-				</tr>
-				<tr>
-					<td>*PW : </td>
-					<td><input type="password" name="customerPw" required></td>
-				</tr>
-				<tr>
-					<td>*NAME : </td>
-					<td><input type="text" name="customerName" required></td>
-				</tr>
-				<tr>
-					<td>*BIRTH : </td>
-					<td><input type="date" name="customerBirth" required></td>
-				</tr>
-				<tr>
-					<td>GENDER : </td>
-					<td>
-						<input type="radio" value="M" name="customerGender">남
-						<input type="radio" value="F" name="customerGender">여
-					</td>
-				</tr>
-				<tr>
-					<td>E-MAIL : </td>
-					<td><input type="text" name="customerEmail"></td>
-				</tr>
-				<tr>
-					<td>PHONE : </td>
-					<td><input type="text" name="customerPhone"></td>
-				</tr>
+		<table class="table table-boardered">
 				<tr hidden="hidden">
-					<td><input type="text" name="customerType" th:value="${customerType}"></td>
-				</tr>
-			</table>
-			<button type="submit">회원가입</button>
-		</form>
+				<td><input type="text" id="customerType" th:value="${customerType}"></td>
+			</tr>
+			<tr>
+				<th>아이디</th>
+				<td>
+					<input type="text" width="80%" class="form-control" id="customerId" required autofocus>
+					
+				</td>
+				<td>
+					<button type="button" class="btn-sm btn-success" id="overlap">중복체크</button>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>비밀번호</th>
+				<td><input type="password" class="form-control" id="customerPw" required></td>
+			</tr>
+			
+			<tr>
+				<th>이름</th>
+				<td><input type="text" class="form-control" id="customerName" required></td>
+			</tr>
+				<tr>
+				<th>생일</th>
+				<td><input type="date" class="form-control" id="customerBirth" required></td>
+			</tr>
+			
+			<tr>
+				<th>성별</th>
+				<td>
+					<input type="radio" value="M" id="customerGender">남
+					<input type="radio" value="F" id="customerGender">여
+				</td>
+			</tr>
+				<tr>
+				<th>이메일</th>
+				<td><input type="email" class="form-control" id="customerEmail"></td>
+			</tr>
+				<tr>
+				<th>번호</th>
+				<td><input type="text" class="form-control" id="customerPhone"></td>
+			</tr>
+		</table>
+		<button type="button" class="btn btn-primary" id="join">회원가입</button>
 	</div>
 	<div th:include="/part/templet::copyright"></div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
+	let overlapCount = 0;
 	$("#overlap").click(function(){
+		if ($("#customerId").val() == "") {
+			alert("입력해라");
+			return;
+		}
 		$.ajax({
 			url:"/overlap",
 			method:"POST",
 			data:{"customerId":$("#customerId").val()},
 			success:function(json){
-				console.log(json);
+				//console.log(json);
 				if(json == 1){
 					alert("아이디 중복이다 바꿔라")
 				}
 				else {
+					overlapCount += 1;
 					alert("굳굳")
+					//console.log("변화",overlapCount)
 					$("#overlap").attr("disabled","disabled");
 				}
+			}
+		})
+	})
+	
+
+	$("#customerId").change(function(){
+		if(overlapCount == 1){
+			//console.log("변화1",overlapCount)
+			overlapCount = 0;
+			$("#overlap").removeAttr("disabled");
+			//console.log("변화2",overlapCount)
+			return;
+		}
+	})
+	
+	$("#join").click(function(){
+		if (overlapCount == 0) {
+			alert("중복확인 하셈",overlapCount);
+			return;
+		}
+		$.ajax({
+			url:"/signup",
+			method:"POST",
+			data:{"customerId":$("#customerId").val(), 
+				  "customerPw":$("#customerPw").val(),
+				  "customerName":$("#customerName").val(), 
+				  "customerBirth":$("#customerBirth").val(), 
+				  "customerGender":$("#customerGender").val(),
+				  "customerEmail":$("#customerEmail").val(),
+				  "customerPhone":$("#customerPhone").val(),
+				  "customerType":$("#customerType").val()},
+			success:function(){
+				//console.log("가입")
+				location.href="/login"
 			}
 		})
 	})

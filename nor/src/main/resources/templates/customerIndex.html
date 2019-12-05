@@ -19,10 +19,8 @@
 	<div class="container">
 	
 		<!-- Jumbotron Header(이벤트 배너) -->
-		<header class="jumbotron my-4">
-			<h1 class="display-3">EVENT!</h1>
-			<p class="lead">PC방 대회정보</p>
-			<a href="#" class="btn btn-primary btn-lg">나도 참가 한다!!!</a>
+		<header class="jumbotron my-4" style="background-image: url('loginimage/event.jpg'); background-size:100% 100%; height:280px">
+			
 		</header>
 		
 		<!-- Page Features(메인 베너) -->
@@ -41,13 +39,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 	$.ajax({
-		url:"/getFranchiseeSeatInfo",
+		url:"/getFranchiseeList",
 		method:"POST",
 		success:function(json){
 			/* console.log("success");
 			console.log(json); */
 			let html = "";
 			$(json).each(function(index, item){
+				console.log(item);
 				html += "<div class='col-lg-3 col-md-6 mb-4'>";
 				html += "<div class='card h-100'>";
 				html += "<img class='card-img-top' src='http://placehold.it/500x325' alt=''>";

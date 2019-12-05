@@ -27,9 +27,11 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		return customerMapper.selectFranchiseeNo();
 	}
+	
+	//프렌차이즈 상세정보를 가져오는 서비스
 	@Override
 	public Franchisee getFranchisee(String franchiseeNo) {
-		// TODO Auto-generated method stub
+		
 		return customerMapper.selectFranchisee(franchiseeNo);
 	}
 }

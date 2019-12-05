@@ -22,11 +22,14 @@ public class CustomerController {
 		if (session.getAttribute("memberNo") == null) {
 			return "redirect:/";
 		}
+		//세션에 저장된 memberName값을 가져와 모델에 저장함
 		model.addAttribute("memberName",session.getAttribute("memberName"));
+		//Franchisee타입에 parameter값으로 넘어온 franchiseeNo값에 일치하는 프렌차이즈정보를 저장함
 		Franchisee franchisee = customerService.getFranchisee(franchiseeNo);
 		
+		//Seat타입의 리스트에 franchiseeNo값에 일치하는 좌석 정보를 저장함
 		List<Seat> seat = customerService.getSeat(franchiseeNo);
-		System.out.println(seat);
+		//System.out.println(seat);
 		
 		model.addAttribute("franchisee",franchisee);
 		model.addAttribute("seat", seat);
@@ -35,7 +38,7 @@ public class CustomerController {
 	}
 	
 	//기본 인덱스로 get요청
-	@GetMapping({"/","/index"})
+	@GetMapping("/")
 	public String index(HttpSession session, Model model) {
 		return "index";
 	}
@@ -43,10 +46,12 @@ public class CustomerController {
 	//로그인후 고객이 보는 인덱스로 get요청
 	@GetMapping("/customerIndex")
 	public String customerindex(HttpSession session, Model model) {
+		//세션값이 없으면 기본 인덱스로 이동
 		if (session.getAttribute("memberNo") == null) {
 			return "redirect:/";
 		}
-		System.out.println("커스텀인덱스 세션"+session.getAttribute("memberName"));
+		//System.out.println("커스텀인덱스 세션"+session.getAttribute("memberName"));
+		//세션에 저장된 memberName값을 가져와 모델에 저장함
 		model.addAttribute("memberName",session.getAttribute("memberName"));
 		
 		return "customerIndex";

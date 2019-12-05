@@ -5,8 +5,7 @@
   
 <mapper namespace="com.picaboo.nor.customer.mapper.CustomerMapper">
 	<!-- 좌석 출력 -->
-	<select id="selectSeat" resultType="com.picaboo.nor.customer.vo.Seat"
-							parameterType="String">
+	<select id="selectSeat" resultType="com.picaboo.nor.customer.vo.Seat" parameterType="String">
 		SELECT franchisee_no as franchiseeNo,
 			   seat_no as seatNo,
 			   seat_row as seatRow,
@@ -15,12 +14,14 @@
 		FROM seat 
 		WHERE franchisee_no = #{String}
 	</select>
+	<!-- 모든 프렌차이즈 정보를 가져옴 -->
 	<select id="selectFranchiseeNo" resultType="com.picaboo.nor.customer.vo.Franchisee">
 		SELECT 
 				franchisee_no as franchiseeNo,
 				franchisee_name as franchiseeName
-		From franchisee
+		FROM franchisee
 	</select>
+	<!-- 프렌차이즈 상세정보를 가져옴 -->
 	<select id="selectFranchisee" parameterType="String" resultType="com.picaboo.nor.customer.vo.Franchisee">
 		SELECT 
 				franchisee_no as franchiseeNo,
