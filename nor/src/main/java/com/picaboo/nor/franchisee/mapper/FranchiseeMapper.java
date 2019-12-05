@@ -9,7 +9,10 @@ import com.picaboo.nor.franchisee.vo.Seat;
 
 @Mapper
 public interface FranchiseeMapper {
-	
+	// 가맹점 좌석 삭제
+	public int deleteSeat(String franchiseeNo);
+	// 가맹점 좌석정보 조회
+	public List<Seat> selectSeat(String franchiseeNo);
 	// 가맹점 상세정보 조회
 	public Franchisee selectFranchiseeOne(String franchiseeNo);
 	// 로그인한 점주의 가맹점 리스트 조회
@@ -22,4 +25,5 @@ public interface FranchiseeMapper {
 	public String selectFranchiseeSeq();
 	// 마지막 가맹점번호 갱신
 	public int updateFranchiseeSeq(String nextNo);
+	
 }

@@ -14,14 +14,39 @@
   <!-- Custom styles for this template -->
   <link href="css/heroic-features.css" rel="stylesheet">
 	<style>
-   td{
+	td{
       height:30px;
       width:30px;
-   }
-   .box{
-   	  height: 30px;
-      width:30px;
-   }
+  	 }
+	.box {
+		height: 60px;
+		width: 60px;
+		text-align: center;
+		border: 1px solid black;
+		border-radius: 5px;
+		padding-top: 9px;
+		font-size: 28px;
+	}
+	.center {
+		text-align: center;
+		margin-bottom: 10px;
+	}
+	#seat{
+		margin-left: auto;
+		margin-right: auto;
+		border: 0px;	
+	}
+  #row, #cols {
+  	height: 40px;
+	width: 55px;
+	text-align: center;
+  }
+  .setting {
+  	margin: 10px;
+  }
+  #seat div{
+   background-color: #FFFFFF;
+  }
 </style>
 </head>
 
@@ -61,7 +86,7 @@
    </nav>
   </div>
   <!-- Page Content -->
-  <div class="container">
+  <div class="container center jumbotron my-4">
 	<h1>입력사항 수정시 정보가 초기화 되므로 신중한입력 바랍니다.</h1>
    <div>
       <button type="button" class="type" value="pc">pc 추가</button>
@@ -75,12 +100,12 @@
 	      <button type="button" class="type" value="x">x</button> 
       -->
    </div>
-   <div>
-   <input type="text" id="row" class="box">
-   <input type="text" id="cols" class="box">
+   <div class="setting">
+   <input type="text" id="row">
+   <input type="text" id="cols" >
    <button type="button" id="put">좌석 설정</button>
    </div>
-   <table id="seat" border="1">
+   <table id="seat" >
    </table>
   </div>
   <!-- /.container -->
@@ -125,6 +150,8 @@
 				success: function() {
 					console.log("success");
 					console.log("seatList", seatList);
+					alert("입력완료");
+					location.href="/detailFranchisee?franchiseeNo="+franchiseeNo; 
 				},
 			});
 			
@@ -144,6 +171,7 @@
 			         html += "<td class='seat' id='"
 			         html += j+1;
 			         html += "'>";
+			         html += "<div class='box'></div>"
 			         html += "</td>";
 			      }
 			      
@@ -177,7 +205,7 @@
 				if(click == "pc" && $(this).hasClass("pc") == false){
 					// pc 배열에서 꺼내서 테이블에 pc번호 추가
 					count = pc.pop();
-					$(this).html(count);
+					$(this).children().html(count);
 		         
 					// 추가 후 클릭한 <td>의 클래스 변경
 					$(this).addClass(click);
@@ -195,7 +223,7 @@
 				} else if(click == "" && $(this).hasClass("pc") == true){
 					// 선택한 테이블의 pc번호 삭제
 					count = $(this).text();
-					$(this).html(click);
+					$(this).children().html(click);
 					pc.push(count);
 					
 					// 클릭한 좌석번호를 좌석리스트에서 검색하여 인덱스를 저장
@@ -215,7 +243,7 @@
 					if(click == "pc" && $(this).hasClass("pc") == false){
 						// pc 배열에서 꺼내서 테이블에 pc번호 추가
 						count = pc.pop();
-						$(this).html(count);
+						$(this).children().html(count);
 		
 				 		// 추가 후 클릭한 <td> 클래스 변경
 						$(this).addClass(click);
@@ -233,7 +261,7 @@
 					} else if(click == "" && $(this).hasClass("pc") == true){
 						// 선택한 테이블의 pc번호 삭제
 						count = $(this).text();
-						$(this).html(click);
+						$(this).children().html(click);
 						pc.push(count);
 						
 						

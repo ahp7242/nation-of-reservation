@@ -13,7 +13,28 @@
 
   <!-- Custom styles for this template -->
   <link href="css/heroic-features.css" rel="stylesheet">
+  <style>
+	.box {
+		height: 50px;
+		width: 50px;
+		text-align: center;
+		border: 1px solid black;
+		border-radius: 5px;
+	}
+	
+	.center {
+		text-align: center;
+	}
+	
+	#seat {
+		margin-left: auto;
+		margin-right: auto;
+	}
+	#seat div{
+   		background-color: #FFFFFF;
+	}
 
+</style>
 </head>
 
 <body>
@@ -53,41 +74,17 @@
    </div>
   </div>
   <!-- Page Content -->
-	<div class="container">
+	<div class="container jumbotron my-4">
 	
 	  <!-- pc방 상세 페이지 -->
 	  <h1 class="my-4" th:text="${franchisee.franchiseeName}"></h1>
-	  
+	  <h2><small>좌석 정보</small></h2>
 	  <!-- 좌석 정보 테이블 -->
 	  <div class="row">
-		<h2><small>좌석 정보</small></h2>
 	    <div class="col-md-8">
-	      <table class="table table-bordered">
-	      	<tr>
-	      		<td>1</td>
-	      		<td>2</td>
-	      		<td>3</td>
-	      		<td>4</td>
-	      	</tr>
-	      		<tr>
-	      		<td>5</td>
-	      		<td>6</td>
-	      		<td>7</td>
-	      		<td>8</td>
-	      	</tr>
-	      		<tr>
-	      		<td>9</td>
-	      		<td>10</td>
-	      		<td>11</td>
-	      		<td>12</td>
-	      	</tr>
-	      		<tr>
-	      		<td>13</td>
-	      		<td>14</td>
-	      		<td>15</td>
-	      		<td>16</td>
-	      </table>
-	      
+	      <div>
+	      	<table id="seat"></table>
+	      </div>	             
 	    </div>
 		
 		<!-- pc방 정보 -->
@@ -111,16 +108,17 @@
 	  <!-- /.row -->
 	
 	  <!-- 가맹점 관리 버튼 -->
-	  <h3 class="my-4">Related Projects</h3>
+	  <h3 class="my-4">관리 메뉴</h3>
 	
 	  <div class="row">
+		
 			
-	    <div class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${size<1}" class="col-md-3 col-sm-6 mb-4">
 	      <a href="#" th:href="@{/addFranchiseeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 입력</a>
 	    </div>
 	
-	    <div class="col-md-3 col-sm-6 mb-4">
-	      <a href="#"></a>
+		<div th:if="${size>0}" class="col-md-3 col-sm-6 mb-4">
+	      <a href="#" th:href="@{/removeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 삭제</a>
 	    </div>
 	
 	    <div class="col-md-3 col-sm-6 mb-4">
@@ -148,7 +146,70 @@
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script th:inline="javascript">
+	 let seat = /*[[${seat}]]*/
+	 //console.log(seat);
+	 let html = "";
+	 let a = 0;
+	 let b = 0;
+	 let rowMax = 0;
+	 let colsMax = 0;
+	 
+	 $(seat).each(function(index,item){
+		 if(item.seatRow > rowMax){
+			 rowMax = item.seatRow;
+		 }
+		 if(item.seatCols > colsMax){
+			 colsMax = item.seatCols
+		 }
+	 })
+	 //console.log(rowMax)
+	 //console.log(colsMax)
+	 
+	 for(let row=1; row<=rowMax; row++){
+		 html += "<tr id='"+row+"'>"
+		 
+		 for(let cols=1; cols<=colsMax; cols++){
+			 html += "<td id='"+cols+"'>"
+			 html += "<div class='box'></div>";
+			 html += "</td>";
+		 }
+		 
+		 html += "</tr>"
+	 }
+	 $("#seat").html(html);
+	 
+	$(document).ready(function(){
+			$("#seat tr td").each(function(index1,item1){
+				//console.log($(this).closest('tr').attr('id'))
+				let $this = $(this)
+				let trId = $this.closest('tr').attr('id')
+				let tdId = $this.closest('td').attr('id')
+				/* console.log("tr",trId)
+				console.log("td",tdId) */
+				$(seat).each(function(index2,item2){
+					if(trId == item2.seatRow && tdId == item2.seatCols){
+						/* console.log(item2.seatNo) */
+						$this.children().append("pc"+item2.seatNo)
+						console.log(item2)
+						let use = item2.seatUse
+						switch(use){
+							case "Y":
+								$this.children().css("background-color","#B5B2FF");
+								$this.children().append("<br>사용중");
+								break;
+							case "N":
+								$this.children().css("background-color","#A0BAED");
+								$this.children().append("<br>빈자리");
+								break;
+						}
+					}
+					
+				})
+			})
+		})
 
+</script>
 </body>
 
 </html>

@@ -34,7 +34,7 @@
           </li>
           
           <li class="nav-item">
-            <a class="nav-link" href="/addFranchisee">addFranchisee</a>
+            <a class="nav-link" href="/addFranchisee" >addFranchisee</a>
           </li>
           <!-- 로그아웃 -->
           <li class="nav-item">
@@ -55,25 +55,44 @@
   </nav>
    </div>
   <!-- Page Content -->
-  <div class="container">
-		<form action="/addFranchisee" method="post">
-			<div>
-				<label>franchisee_crn</label>
-				<input type="text" name="franchiseeCrn">
+  <div class="container jumbotron my-4">
+  	<h4>가맹점 등록</h4>
+		<form action="/addFranchisee" class="was-validated" method="post" >
+			<div class="form-group">
+				<label for="franchiseeCrn">franchisee_crn:</label> 
+				<input type="text" class="form-control" id="franchiseeCrn" placeholder="Enter franchiseeCrn" name="franchiseeCrn" required>
+				<div class="valid-feedback">Valid.</div>
+				<div class="invalid-feedback">Please fill out this field.</div>
 			</div>
-			<div>
-				<label>franchisee_name</label>
-				<input type="text" name="franchiseeName">
+			
+			<div class="form-group">
+				<label for="franchiseeName">franchisee_name:</label> 
+				<input type="text" class="form-control" id="franchiseeName" placeholder="Enter franchiseeName" name="franchiseeName" required>
+				<div class="valid-feedback">Valid.</div>
+				<div class="invalid-feedback">Please fill out this field.</div>
 			</div>
-			<div>
-				<label>franchisee_phone</label>
-				<input type="text" name="franchiseePhone">
+			
+			<div class="form-group">
+				<label for="franchiseePhone">franchisee_phone:</label> 
+				<input type="text" class="form-control" id="franchiseePhone" placeholder="Enter franchiseePhone" name="franchiseePhone" required>
+				<div class="valid-feedback">Valid.</div>
+				<div class="invalid-feedback">Please fill out this field.</div>
 			</div>
-			<div>
-				<button type="submit">입력</button>
+			
+			<div class="form-group form-check">
+				<label class="form-check-label"> <input
+					class="form-check-input" type="checkbox" name="remember" required>
+					I agree on blabla.
+					<div class="valid-feedback">Valid.</div>
+					<div class="invalid-feedback">Check this checkbox to
+						continue.</div>
+				</label>
 			</div>
+			
+			<button id="addButton" type="submit" class="btn btn-primary">입력</button>
 		</form>
-  </div>
+
+	</div>
   <!-- /.container -->
 
   <!-- Footer -->

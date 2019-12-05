@@ -14,10 +14,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.picaboo.nor.franchisee.service.FranchiseeService;
 import com.picaboo.nor.franchisee.vo.Franchisee;
+import com.picaboo.nor.franchisee.vo.Seat;
 
 @Controller
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
+	// 가맹점 좌석 삭제 추가
+	
+	@GetMapping("/removeSeat")
+    public String removeSeat(@RequestParam(value="franchiseeNo") String franchiseeNo) {
+		franchiseeService.removeSeat(franchiseeNo);
+        return "redirect:/detailFranchisee?franchiseeNo="+franchiseeNo;
+    }
 	
 	// 가맹점 상세 페이지 요청
 	@GetMapping("/detailFranchisee")
@@ -33,9 +41,12 @@ public class FranchiessController {
 		
 		// 가맹점 상세정보 가져와서 넘김
 		Franchisee franchisee = franchiseeService.getFranchiseeOne(franchiseeNo);
+		List<Seat> seat = franchiseeService.getSeat(franchiseeNo);
 		System.out.println("detail franchisee: " + franchisee);
+		System.out.println("detail franchisee: " + seat);
 		model.addAttribute("franchisee", franchisee);
-				
+		model.addAttribute("seat", seat);
+		model.addAttribute("size", seat.size());
 		return "franchisee/detailFranchisee";
 	}
 	

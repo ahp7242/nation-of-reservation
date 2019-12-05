@@ -4,16 +4,33 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- 가맹점 좌석 삭제 -->
+	
+	<delete id="deleteSeat" parameterType="com.picaboo.nor.franchisee.vo.Franchisee">
+        DELETE FROM seat
+        WHERE franchisee_no = #{franchiseeNo}
+	</delete>
+
+	<!-- 가맹점 좌석정보 조회 -->
+	<select id="selectSeat" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Seat">
+		SELECT 
+			seat_no as seatNo,
+			seat_row as seatRow,
+			seat_cols as seatCols,
+			seat_use as	seatUse	
+		FROM seat
+		WHERE franchisee_no = #{franchiseeNo}
+	</select>
 	
 	<!-- 가맹점 상세정보 조회 -->
 	<select id="selectFranchiseeOne" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Franchisee">
 		SELECT 
-			franchisee_no AS franchiseeNo,
-			franchisee_crn AS franchiseeCrn,
-			franchisee_name AS franchiseeName,
-			franchisee_phone AS franchiseePhone,
-			franchisee_pic AS franchiseePic,
-			owner_no AS ownerNo
+			franchisee_no as franchiseeNo,
+			franchisee_crn as franchiseeCrn,
+			franchisee_name as franchiseeName,
+			franchisee_phone as franchiseePhone,
+			franchisee_pic as franchiseePic,
+			owner_no as ownerNo
 		FROM franchisee
 		WHERE franchisee_no = #{franchiseeNo}
 	</select>
@@ -21,9 +38,9 @@
 	<!-- 로그인한 점주의 가맹점 리스트 조회 -->
 	<select id="selectFranchiseeList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Franchisee">
 		SELECT 
-			franchisee_no AS franchiseeNo,
-			franchisee_name AS franchiseeName,
-			franchisee_pic AS franchiseePic
+			franchisee_no as franchiseeNo,
+			franchisee_name as franchiseeName,
+			franchisee_pic as franchiseePic
 		FROM franchisee
 		WHERE owner_no = #{owner_no}
 	</select>

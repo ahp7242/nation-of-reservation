@@ -16,6 +16,28 @@ import com.picaboo.nor.franchisee.vo.Seat;
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
 	
+	// 가맹점 좌석 삭제
+	@Override
+	public int removeSeat(String franchiseeNo) {
+		int rows = 0;
+		rows += franchiseeMapper.deleteSeat(franchiseeNo);
+		System.out.println("rows: " + rows);
+
+		if(rows >0) {
+			System.out.println("가맹점 좌석  "+rows+"개 삭제 성공");
+		} else {
+			System.out.println("가맹점 좌석 삭제 실패");
+		}
+		return rows;
+	}
+	
+	// 가맹점 좌석정보 조회
+	@Override
+	public List<Seat> getSeat(String franchiseeNo) {
+		//System.out.println("가맹정 좌석정보 조회"+ franchiseeNo);
+		return franchiseeMapper.selectSeat(franchiseeNo);
+	}
+	
 	// 가맹점 상세정보 조회
 	@Override
 	public Franchisee getFranchiseeOne(String franchiseeNo) {
