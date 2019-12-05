@@ -9,6 +9,6 @@ public interface CustomerService {
 	public List<Seat> getSeat(String franchiseeNo);
 	//프렌차이즈 번호 목록을 가져오는 서비스
 	public List<Franchisee> getFranchiseeNo();
-	
+	//프렌차이즈 상세정보를 가져오는 서비스
 	public Franchisee getFranchisee(String franchiseeNo);
 }

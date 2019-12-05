@@ -20,35 +20,31 @@
 
 	<div class="container">
 		<form action="/modifyMembership" method="post">
-			<table>
-				<tr hidden="hidden">
-					<td><input type="text" name="customerNo" th:value="${membership.customerNo}"></td>
+			<table class="table table-boardered">
+				<tr>
+					<th>아이디</th>
+					<td><input type="text" class="form-control" th:placeholder="${membership.customerId}"></td>
 				</tr>
 				<tr>
-					<td>ID : </td>
-					<td><input type="text" name="customerId" th:value="${membership.customerId}"  readonly="readonly"></td>
+					<th>이름</th>
+					<td><input type="text" class="form-control" th:placeholder="${membership.customerName}"></td>
 				</tr>
 				<tr>
-					<td>NAME : </td>
-					<td><input type="text" name="customerName" th:value="${membership.customerName}"></td>
+					<th>생일</th>
+					<td><input type="date" class="form-control" th:value="${membership.customerBirth}" readonly="readonly"></td>
 				</tr>
 				<tr>
-					<td>BIRTH : </td>
-					<td><input type="date" name="customerBirth" th:value="${membership.customerBirth}" readonly="readonly"></td>
+					<th>이메일</th>
+					<td><input type="email" class="form-control" th:placeholder="${membership.customerEmail}"></td>
 				</tr>
 				<tr>
-					<td>E-MAIL : </td>
-					<td><input type="text" name="customerEmail" th:value="${membership.customerEmail}"></td>
-				</tr>
-				<tr>
-					<td>PHONE : </td>
-					<td><input type="text" name="customerPhone" th:value="${membership.customerPhone}"></td>
+					<th>번호</th>
+					<td><input type="text" class="form-control" th:placeholder="${membership.customerPhone}"></td>
 				</tr>
 			</table>
-			<button type="submit">수정</button>
+			<button type="submit" class="btn btn-primary">수정</button>
 		</form>
 	</div>
-
 	<div th:include="/part/customerNav::copyright"></div>
 </body>
 </html>

@@ -44,7 +44,7 @@
 				customer_name as customerName,
 				customer_type as customerType
 		FROM customer
-		where customer_id = #{customerId} AND customer_pw = #{customerPw} 
+		WHERE customer_id = #{customerId} AND customer_pw = #{customerPw} 
 	</select>
 	<!-- 고객의 상세정보를 불러오는 매퍼 -->
 	<select id="selectMembershipOne" parameterType="String" resultType="com.picaboo.nor.membership.vo.Membership">
@@ -58,7 +58,7 @@
 				customer_phone as customerPhone,
 				customer_type as customerType
 		FROM customer
-		where customer_no = #{String}
+		WHERE customer_no = #{String}
 	</select>
 	<!-- 고객의 상세정보를 수정하는 매퍼 -->
 	<update id="updateMembership" parameterType="com.picaboo.nor.membership.vo.Membership">
@@ -84,12 +84,12 @@
 	</insert>
 	<!-- 회원가입시 고객 아이디 중복확인하는 매퍼 -->
 	<select id="selectOverlapCustomerId" parameterType="String" resultType="int">
-		select COUNT(customer_id)
-		from ( select customer_id
+		SELECT COUNT(customer_id)
+		FROM ( select customer_id
 			   from customer
 			   union all
 			   select customer_id
 			   from del_customer) as a
-		where a.customer_id = #{customerId}
+		WHERE a.customer_id = #{customerId}
 	</select>
 </mapper>

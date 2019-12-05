@@ -18,11 +18,16 @@ public class MembershipController {
 	@GetMapping("/signupType")
 	public String singupType(HttpSession session) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
+		
+		// 세션에서 memberNo값 검사
 		if (session.getAttribute("memberNo") != null) {
 			String type = (String)session.getAttribute("memberType");
 			//System.out.println("membershipcontroller type : " + type);
+			
+			// 세션의 memberType값을 검사하여 각각의 타입으로 분기
 			switch(type){
-				case "C":
+				case "N":
+ 				case "C":
 					//일반 고객페이지로 이동
 					return "redirect:/customerIndex";
 				case "O":
@@ -37,10 +42,15 @@ public class MembershipController {
 	@GetMapping("/signup")
 	public String singup(HttpSession session, Model model,@RequestParam("customerType")String customerType) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
+		
+		// 세션의 memberNo값 검사
 		if (session.getAttribute("memberNo") != null) {
 			String type = (String)session.getAttribute("memberType");
 			//System.out.println("membershipcontroller type : " + type);
+			
+			// 세션의 memberType값을 검사하여 각각의 타입으로 분기
 			switch(type){
+				case "N":
 				case "C":
 					//일반 고객페이지로 이동
 					return "redirect:/customerIndex";
@@ -66,10 +76,15 @@ public class MembershipController {
 	@GetMapping("/login")
 	public String login(HttpSession session) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
+		
+		// 세션의 memberNo값 검사
 		if (session.getAttribute("memberNo") != null) {
 			String type = (String)session.getAttribute("memberType");
 			//System.out.println("membershipcontroller type : " + type);
+			
+			// 세션의 memberType값을 검사하여 각각의 타입으로 분기
 			switch(type){
+				case "N":
 				case "C":
 					//일반 고객페이지로 이동
 					return "redirect:/customerIndex";
@@ -83,20 +98,28 @@ public class MembershipController {
 	//로그인 post요청(고객 이름, 타입, 번호, 가맹점 번호 세션 저장)
 	@PostMapping("/login")
 	public String login(HttpSession session, Login login, Model model) {
+		// 로그인시 입력된 아이디와 비밀번호로 등록된 정보를 호출하여 Membership타입에 저장
 		Membership member = membershipService.loginMembership(login);
+		
+		// 로그인후 반환된 값이 null이 아닐경우
 		if (member != null) {
 			//System.out.println("customer no:"+member.getCustomerNo());
 			String type = member.getCustomerNo().substring(0,1);
 			//System.out.println("type"+type);
+			
+			//member에 저장된 값을 세션에 저장
 			session.setAttribute("memberName", member.getCustomerName());
 			session.setAttribute("memberType", member.getCustomerType());
 			session.setAttribute("memberNo", member.getCustomerNo());
+			
+			// 세션의 memberType값을 검사하여 각각의 타입으로 분기
 			switch (type) {
-			case "C":
-				System.out.println("고객 로그인");
-				return "redirect:/customerIndex";
-			case "O":
-				return "redirect:/franchiseeIndex";
+				case "N":
+				case "C":
+					System.out.println("고객 로그인");
+					return "redirect:/customerIndex";
+				case "O":
+					return "redirect:/franchiseeIndex";
 			}
 		}
 		return "redirect:/login";
@@ -105,6 +128,8 @@ public class MembershipController {
 	//로그아웃 get요청
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
+		
+		// 세션 초기화
 		session.invalidate();
 		return "redirect:/";
 	}
@@ -113,11 +138,23 @@ public class MembershipController {
 	@GetMapping("/profile")
 	public String profile(HttpSession session, Model model) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
+		
+		// 세션에서 memberNo값 검사
 		if (session.getAttribute("memberNo") == null) {
 			return "redirect:/";
 		}
+		String type = (String)session.getAttribute("memberType");
+		//System.out.println(type);
+		
+		//로그인한 고객의 타입이 검사
+		if(type == "N") {
+			//System.out.println("Naver로그인");
+			return "redirect:/customerIndex";
+		}
 		String customerNo = (String)session.getAttribute("memberNo");
 		//System.out.println("profile customerNo"+customerNo);
+		
+		// 로그인한 회원의 상세정보를 Membership타입에 저장한다.
 		Membership membership = membershipService.detailMembership(customerNo);
 		model.addAttribute("membership", membership);
 		return "membership/profile";
@@ -127,11 +164,15 @@ public class MembershipController {
 	@GetMapping("/modifyMembership")
 	public String modifyMembership(HttpSession session, Model model) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
+		
+		//세션에서 memberNo값 검사
 		if (session.getAttribute("memberNo") == null) {
 			return "redirect:/";
 		}
 		String customerNo = (String)session.getAttribute("memberNo");
 		//System.out.println("modify customerNo:"+customerNo);
+		
+		// 로그인한 회원의 상세정보를 Membership타입에 저장한다.
 		Membership membership = membershipService.detailMembership(customerNo);
 		//System.out.println("modify membership:"+membership);
 		model.addAttribute("membership", membership);
@@ -141,7 +182,7 @@ public class MembershipController {
 	//고객 상세정보 수정후 post요청
 	@PostMapping("/modifyMembership")
 	public String modifyMembership(Membership membership) {
-		System.out.println("수정후 " + membership);
+		//System.out.println("수정후 " + membership);
 		membershipService.modifyMembership(membership);
 		return "redirect:/profile";
 	}
@@ -150,7 +191,7 @@ public class MembershipController {
 	@GetMapping("/removeMembership")
 	public String removeMembership(HttpSession session, @RequestParam("customerId")String customerId) {
 		
-		System.out.println("remove : " + customerId);
+		//System.out.println("remove : " + customerId);
 		Membership membership = new Membership();
 		membership.setCustomerId(customerId);
 		membership.setCustomerNo((String)session.getAttribute("memberNo"));
@@ -159,4 +200,12 @@ public class MembershipController {
 		session.invalidate();
 		return "redirect:/";
 	}
+	
+	//네이버로그인 콜백 페이지 요청
+	@GetMapping("/callback")
+	public String callback() {
+		return "membership/callback";
+	}
+	
+	
 }
