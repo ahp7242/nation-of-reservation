@@ -19,8 +19,25 @@ import com.picaboo.nor.franchisee.vo.Seat;
 @Controller
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
-	// 가맹점 좌석 삭제 추가
 	
+	// 가맹점 정보 입력 페이지 요청
+	@GetMapping("/addFranchiseeInfo")
+	public String addFranchiseeInfo(HttpSession session, Model model, @RequestParam(value="franchiseeNo") String franchiseeNo) {
+		System.out.println("addFranchiseeInfo Get 요청");
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		System.out.println("session memberNo: " + ownerNo);
+		// 가맹점 번호 넘김
+		model.addAttribute("franchiseeNo", franchiseeNo);
+		
+		return "franchisee/addFranchiseeInfo";
+	}
+	
+	// 가맹점 좌석 삭제 요청
 	@GetMapping("/removeSeat")
     public String removeSeat(@RequestParam(value="franchiseeNo") String franchiseeNo) {
 		franchiseeService.removeSeat(franchiseeNo);
