@@ -28,8 +28,43 @@
 	margin-left: auto;
 	margin-right: auto;
 }
-#seat div{
+
+#seat div {
 	background-color: #EAEAEA;
+}
+
+#modal {
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	right:1px;
+	left: 1px;
+}
+
+#modal button {
+	display: inline-block;
+	width: 100px;
+	margin-left: calc(100% - 100px - 10px);
+}
+
+#modal .modal_content {
+	width: 300px;
+	margin: 100px auto;
+	padding: 20px 10px;
+	background: #fff;
+	border: 2px solid #666;
+}
+
+#modal .modal_layer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: -1;
 }
 </style>
 </head>
@@ -39,12 +74,26 @@
 		<h1>CustomerSeat</h1>
 		<div th:text="${franchisee.franchiseeName}"></div>
 		<div>pc방 이미지<!-- <img class='card-img-top' src='http://placehold.it/500x325' alt=''> --></div>
+		<div id="modal">
+			<div class="modal_content">
+				<h2>예약</h2>
+				선택된 좌석
+				<ul id="RList">
+				</ul>
+				<button type="button" id="modal_close_btn">예약 완료</button>
+			</div>
+			<div class="modal_layer"></div>
+		</div>
 		<table id="seat"></table>
 	</div>
+	
+    <button type="button" id="modal_opne_btn">모달 창 열기</button>
+
 	<div th:include="/part/customerNav::copyright"></div>
 </body>
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script th:inline="javascript">
  let seat = /*[[${seat}]]*/
@@ -89,25 +138,78 @@ $(document).ready(function(){
 			/* console.log("tr",trId)
 			console.log("td",tdId) */
 			$(seat).each(function(index2,item2){
-				if(trId == item2.seatRow && tdId == item2.seatCols){
+				if(trId == item2.seatRow && tdId == item2.seatCols) {
 					/* console.log(item2.seatNo) */
 					$this.children().append("pc"+item2.seatNo)
-					console.log(item2)
+					//console.log(item2)
 					let use = item2.seatUse
 					switch(use){
 						case "Y":
 							$this.children().css("background-color","#B5B2FF");
 							$this.children().append("<br>사용중");
+							$this.children().attr("id","Y");
 							break;
 						case "N":
 							$this.children().css("background-color","#A0BAED");
 							$this.children().append("<br>빈자리");
+							$this.children().attr("id","N");
 							break;
+						case "R":
+							$this.children().css("background-color","#A566FF");
+							$this.children().append("<br>예약석");
+							$this.children().attr("id","R");
 					}
 				}
 				
 			})
 		})
+		let text = [];
+		$("#seat div").each(function(index,item){
+			
+			$(this).click(function(){
+				let divId = $(this).closest('div').attr("id")
+				let divtag = $(this).closest('div').text()
+				let seatNo = "";
+				seatNo = divtag.substring(2)
+				seatNo = seatNo.split('빈자리')
+				//console.log(divId[0])
+				if(divId == "N"){
+					//console.log(seatNo[0]);
+					//console.log(divId);
+					$(this).attr("id","TR")
+					$(this).css("background-color", "#A566FF")
+					//console.log(seatNo[0])
+					text.push(seatNo[0])
+					//console.log(text)
+					
+				}
+				if(divId == "TR"){
+					
+					//console.log(seatNo[0]);
+					//console.log(divId);
+					$(this).attr("id","N")
+					$(this).css("background-color", "#A0BAED")
+					text.pop(seatNo[0]);
+					//console.log(text)
+				}
+			})
+		})
+		
+		$("#modal_opne_btn").click(function(){
+			$("#RList").empty()
+			text.sort()
+			//console.log(text)
+			$(text).each(function(index,item){
+				$("#RList").append("<li id='"+item+"'>" + item + "번 좌석</li>")
+			})
+			
+			$("#modal").attr("style", "display:block");
+		});
+						   
+		$("#modal_close_btn").click(function(){
+			console.log("예약하기")
+			$("#modal").attr("style", "display:none");
+		});
 	})
 
 </script>
