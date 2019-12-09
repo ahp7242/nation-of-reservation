@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Franchisee Index</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/heroic-features.css" rel="stylesheet">
+  <style>
+   .box {
+      height: 50px;
+      width: 50px;
+      text-align: center;
+      border: 1px solid black;
+      border-radius: 5px;
+   }
+   
+   .center {
+      text-align: center;
+   }
+
+   ::-webkit-scrollbar{width: 16px;}
+      ::-webkit-scrollbar-track {background-color:#4C4C4C;}
+      ::-webkit-scrollbar-thumb {background-color:#6799FF;border-radius: 10px;}
+      ::-webkit-scrollbar-thumb:hover {background: #555;}
+      ::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
+      width:16px;height:16px;background:#4C4C4C;} 
+
+</style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+  <div th:fragment="nav">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/franchiseeIndex">PI-CA-BOO</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+        
+           <li class="nav-item">
+            <label class="nav-link" th:text="${memberName}"></label>
+          </li>
+       
+          <!-- 로그아웃 -->
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#">modify</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+   </div>
+  
+  <!-- /.container -->
+  <div class="container-fluid jumbotron my-4">
+   <div th:fragment="event">
+       <!-- 가맹점 목록 -->
+       <header class="jumbotron my-4">
+       <h3>FAQ List</h3>
+       <a th:if="${map.currentPage > 1}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage-1},searchWord=${map.searchWord})}">이전</a>
+      <a th:if="${map.currentPage < map.lastPage}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage+1},searchWord=${map.searchWord})}">다음</a>
+   
+       <form action="/FAQFranchisee" method="get">
+      <label for="searchWord">검색어(제목) : </label>
+      <input name="searchWord" type="text">
+      <button type="submit">검색</button>
+      </form>
+   
+       <div class="row text-center">
+         <div class="col-lg-3 col-md-6 mb-4" th:each="str:${map.list}">
+           <div class="card h-100">
+             <img class="card-img-top" src="" alt="">
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.faqNo}">faqNo</h4>
+             </div>
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.faqTitle}">faqTitle</h4>
+             </div>
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.faqContent}">faqContent</h4>
+             </div>
+           </div>
+         </div>
+       </div>
+        
+       </header>
+   </div>
+  </div>
+   
+   <!-- Footer -->
+   <div th:fragment="copyright">
+      <footer class="py-5 bg-dark">
+       <div class="container">
+         <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+        </div>
+        <!-- /.container -->
+       </footer>
+   </div>
+
+
+</body>
+
+</html>

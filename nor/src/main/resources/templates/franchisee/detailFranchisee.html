@@ -41,7 +41,7 @@
 		::-webkit-scrollbar-thumb:hover {background: #555;}
 		::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
 		width:16px;height:16px;background:#4C4C4C;} 
-
+	
 </style>
 </head>
 
@@ -67,9 +67,6 @@
             <a class="nav-link" href="/logout">logout</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/#">modify</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
           </li>
           <li class="nav-item">
@@ -79,14 +76,12 @@
       </div>
     </div>
   </nav>
-   </div>
   </div>
   <!-- Page Content -->
-	<div class="container-fluid jumbotron my-4">
+  <div class="container-fluid jumbotron my-4">
 	
 	  <!-- pc방 상세 페이지 -->
 	  <h1 class="my-4" th:text="${franchisee.franchiseeName}"></h1>
-	  
 	  		
 	  <!-- pc방 정보 -->
 	  <div class="col-md-4">
@@ -95,14 +90,17 @@
 		     <p th:text="*{franchiseeCrn}">
 		     <p th:text="*{franchiseePhone}">
    		</div>
+   		
 	    <h3 class="my-3">PC방 사양</h3>
+	    <div th:object="${franchiseeInfo}">
+	      <ul>
+	        <li th:text="*{franchiseeSpec?.cpu}">cpu</li>
+	        <li th:text="*{franchiseeSpec?.vga}">vga</li>
+	        <li th:text="*{franchiseeSpec?.ram}">ram</li>
+	        <li>짜파게티 보유</li>
+	      </ul>
+	    </div>
 	    
-	    <ul>
-	      <li>9700</li>
-	      <li>2080</li>
-	      <li>16G</li>
-	      <li>짜파게티 보유</li>
-	    </ul>
 	  </div>
 	  
 	  <h2><small>좌석 정보</small></h2>
@@ -112,12 +110,23 @@
 	    <div class="col-md-8">
 	      <div style="overflow:auto">
 	      	<table id="seat"></table>
-	    </div>	             
-	  </div>
+	    	</div>	             
+	 	</div>
 	
 	  </div>
 	  <!-- /.row -->
-	
+		
+	  	  <!-- pc방 사진 -->
+	  <div>
+      <h3 class="my-3">PC방 사진</h3>
+      <div class="row">
+      	<div th:each="pic : ${franchiseeInfo.franchisePicList}">
+	        <div>
+	          <img th:src="${franchiseeInfo.uploadPath}+ '/' +${pic.fileName}" th:alt-title="${pic.originName}" width="200" height="200">
+	        </div>
+    	</div>
+      </div>
+	    
 	  <!-- 가맹점 관리 버튼 -->
 	  <h3 class="my-4">관리 메뉴</h3>
 	
@@ -144,6 +153,7 @@
 	  <!-- /.row -->
 	
 	</div>
+  </div>
   <!-- /.container -->
   <!-- Footer -->
   <div th:fragment="copyright">
