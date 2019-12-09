@@ -1,12 +1,11 @@
 package com.picaboo.nor.membership.restcontroller;
 
+import java.util.*;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.picaboo.nor.membership.service.MembershipService;
 
 @RestController
@@ -38,10 +37,10 @@ public class MembershipRestController {
 		session.setAttribute("memberType", "N");
 		
 		/*
-		 * System.out.println("이메일이메일이메일 :"+session.getAttribute("memberNo"));
+		 * System.out.println("이메일 :"+session.getAttribute("memberNo"));
 		 * System.out.println("나이 :"+age); System.out.println("성별 :"+gender);
-		 * System.out.println("생ㅇㄹ :"+birthday); System.out.println("name:" + name);
-		 * System.out.println("typd" + session.getAttribute("memberType"));
+		 * System.out.println("생일 :"+birthday); System.out.println("name:" + name);
+		 * System.out.println("타입" + session.getAttribute("memberType"));
 		 */
 	}
 }
