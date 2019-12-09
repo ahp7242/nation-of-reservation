@@ -6,7 +6,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Franchisee Index</title>
+  <title>Add Franchisee Info</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -56,37 +56,29 @@
    </div>
   <!-- Page Content -->
   <div class="container jumbotron my-4">
-  	<h4>가맹점 정보 입력</h4>
-		<form action="/addFranchisee" class="was-validated" method="post" >
+  	<h4>가맹점 상세 정보 입력</h4>
+		<form action="/addFranchiseeInfo" method="post" enctype="multipart/form-data">
+			<div>
+				<input type="hidden" th:value="${franchiseeNo}" name="franchiseeNo">
+			</div>
 			<div class="form-group">
-				<label for="franchiseeCrn">franchisee_crn:</label> 
-				<input type="text" class="form-control" id="franchiseeCrn" placeholder="Enter franchiseeCrn" name="franchiseeCrn" required>
-				<div class="valid-feedback">Valid.</div>
-				<div class="invalid-feedback">Please fill out this field.</div>
+				<label for="cpu">CPU:</label> 
+				<input type="text" class="form-control" id="cpu" placeholder="Enter CPU" name="cpu" required>
 			</div>
 			
 			<div class="form-group">
-				<label for="franchiseeName">franchisee_name:</label> 
-				<input type="text" class="form-control" id="franchiseeName" placeholder="Enter franchiseeName" name="franchiseeName" required>
-				<div class="valid-feedback">Valid.</div>
-				<div class="invalid-feedback">Please fill out this field.</div>
+				<label for="vga">VGA:</label> 
+				<input type="text" class="form-control" id="vga" placeholder="Enter VGA" name="vga" required>
 			</div>
 			
 			<div class="form-group">
-				<label for="franchiseePhone">franchisee_phone:</label> 
-				<input type="text" class="form-control" id="franchiseePhone" placeholder="Enter franchiseePhone" name="franchiseePhone" required>
-				<div class="valid-feedback">Valid.</div>
-				<div class="invalid-feedback">Please fill out this field.</div>
+				<label for="ram">RAM:</label> 
+				<input type="text" class="form-control" id="ram" placeholder="Enter RAM" name="ram" required>
 			</div>
-			
-			<div class="form-group form-check">
-				<label class="form-check-label"> <input
-					class="form-check-input" type="checkbox" name="remember" required>
-					I agree on blabla.
-					<div class="valid-feedback">Valid.</div>
-					<div class="invalid-feedback">Check this checkbox to
-						continue.</div>
-				</label>
+	
+			<div class="form-group">
+				<label for="franchiseePic">franchiseePic:</label> 
+				<input multiple="multiple" type="file" class="form-control" id="franchiseePic" placeholder="Enter Pictures" name="franchiseePic" >
 			</div>
 			
 			<button id="addButton" type="submit" class="btn btn-primary">입력</button>

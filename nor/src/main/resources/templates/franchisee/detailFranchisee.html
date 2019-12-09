@@ -29,10 +29,18 @@
 	#seat {
 		margin-left: auto;
 		margin-right: auto;
+		border: "0";
 	}
 	#seat div{
    		background-color: #FFFFFF;
 	}
+	
+	::-webkit-scrollbar{width: 16px;}
+		::-webkit-scrollbar-track {background-color:#4C4C4C;}
+		::-webkit-scrollbar-thumb {background-color:#6799FF;border-radius: 10px;}
+		::-webkit-scrollbar-thumb:hover {background: #555;}
+		::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
+		width:16px;height:16px;background:#4C4C4C;} 
 
 </style>
 </head>
@@ -74,35 +82,38 @@
    </div>
   </div>
   <!-- Page Content -->
-	<div class="container jumbotron my-4">
+	<div class="container-fluid jumbotron my-4">
 	
 	  <!-- pc방 상세 페이지 -->
 	  <h1 class="my-4" th:text="${franchisee.franchiseeName}"></h1>
+	  
+	  		
+	  <!-- pc방 정보 -->
+	  <div class="col-md-4">
+	    <h3 class="my-3">PC방 정보</h3>
+	    <div th:object="${franchisee}">
+		     <p th:text="*{franchiseeCrn}">
+		     <p th:text="*{franchiseePhone}">
+   		</div>
+	    <h3 class="my-3">PC방 사양</h3>
+	    
+	    <ul>
+	      <li>9700</li>
+	      <li>2080</li>
+	      <li>16G</li>
+	      <li>짜파게티 보유</li>
+	    </ul>
+	  </div>
+	  
 	  <h2><small>좌석 정보</small></h2>
 	  <!-- 좌석 정보 테이블 -->
+	
 	  <div class="row">
 	    <div class="col-md-8">
-	      <div>
+	      <div style="overflow:auto">
 	      	<table id="seat"></table>
-	      </div>	             
-	    </div>
-		
-		<!-- pc방 정보 -->
-	    <div class="col-md-4">
-	      <h3 class="my-3">PC방 정보</h3>
-	      <div th:object="${franchisee}">
-			      <p th:text="*{franchiseeCrn}">
-			      <p th:text="*{franchiseePhone}">
-   		  </div>
-	      <h3 class="my-3">PC방 사양</h3>
-	          
-	      <ul>
-	        <li>9700</li>
-	        <li>2080</li>
-	        <li>16G</li>
-	        <li>짜파게티 보유</li>
-	      </ul>
-	    </div>
+	    </div>	             
+	  </div>
 	
 	  </div>
 	  <!-- /.row -->
@@ -122,11 +133,11 @@
 	    </div>
 	
 	    <div class="col-md-3 col-sm-6 mb-4">
-	      <a href="#"></a>
+	      <a href="#" th:href="@{/addFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 입력</a>
 	    </div>
 	
 	    <div class="col-md-3 col-sm-6 mb-4">
-	      <a href="#"></a>
+	      <a href="#" th:href="@{/removeFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 삭제</a>
 	    </div>
 	
 	  </div>

@@ -47,6 +47,13 @@
   #seat div{
    background-color: #FFFFFF;
   }
+  	::-webkit-scrollbar{width: 16px;}
+	::-webkit-scrollbar-track {background-color:#4C4C4C;}
+	::-webkit-scrollbar-thumb {background-color:#6799FF;border-radius: 10px;}
+	::-webkit-scrollbar-thumb:hover {background: #555;}
+	::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
+	width:16px;height:16px;background:#4C4C4C;
+	} 
 </style>
 </head>
 
@@ -86,7 +93,7 @@
    </nav>
   </div>
   <!-- Page Content -->
-  <div class="container center jumbotron my-4">
+  <div class="container-fluid center jumbotron my-4">
 	<h1>입력사항 수정시 정보가 초기화 되므로 신중한입력 바랍니다.</h1>
    <div>
       <button type="button" class="type" value="pc">pc 추가</button>
@@ -105,8 +112,13 @@
    <input type="text" id="cols" >
    <button type="button" id="put">좌석 설정</button>
    </div>
-   <table id="seat" >
-   </table>
+   <div class="row">
+	  <div class="col-md-8">
+	    <div style="overflow:auto">
+	       <table id="seat"></table>
+	    </div>	             
+	  </div>
+   </div>
   </div>
   <!-- /.container -->
 
@@ -317,6 +329,7 @@
 			console.log(row);
 			console.log(cols);
 			pc = new Array();
+			seatList = new Array();
 			for(let i=len; i>0; i--) {
 				pc.push(i);
 			}
