@@ -4,8 +4,42 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- 가맹점 pc사양 입력 -->
+	<insert id="insertFranchiseeInfo">
+		INSERT INTO franchisee_spec(
+			franchisee_no,
+			cpu,
+			vga,
+			ram
+		) VALUES (
+			#{franchiseeNo},
+			#{cpu},
+			#{vga},
+			#{ram}
+		)
+	</insert>
+
+	<!-- 가맹점 사진 입력 -->
+	<insert id="insertFranchiseePic">
+		INSERT INTO franchisee_pic (
+			franchisee_no,
+			file_name,
+			extension,
+			content_type,
+			size,
+			origin_name
+		) VALUES(
+			#{franchiseeNo},
+			#{fileName},
+			#{extension},
+			#{contentType},
+			#{size},
+			#{originName}
+		)
+		
+	</insert>
+
 	<!-- 가맹점 좌석 삭제 -->
-	
 	<delete id="deleteSeat" parameterType="com.picaboo.nor.franchisee.vo.Franchisee">
         DELETE FROM seat
         WHERE franchisee_no = #{franchiseeNo}

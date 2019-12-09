@@ -15,13 +15,13 @@ import lombok.Data;
 
 
 @Data
-public class franchisePic {	
+public class FranchiseePic {	
 	private String franchiseeNo;
-	private String picNo;
+	private int picNo;
 	private String fileName;
 	private String extension;
 	private String contentType;
-	private String size;
+	private long size;
 	private String originName;
 
 }

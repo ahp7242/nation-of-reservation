@@ -9,7 +9,7 @@ import lombok.Data;
  */
 
 @Data
-public class franchiseeInfo {
+public class FranchiseeSpec {
 	private String franchiseeNo;
 	private String cpu;
 	private String vga;

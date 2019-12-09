@@ -14,11 +14,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.picaboo.nor.franchisee.service.FranchiseeService;
 import com.picaboo.nor.franchisee.vo.Franchisee;
+import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 @Controller
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
+	
+	@PostMapping("/addFranchiseeInfo")
+	public String addFranchiseeInfo(HttpSession session, FranchiseeInfoForm franchiseeInfoForm) {
+		System.out.println("addFranchiseeInfo POST 요청");
+		
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+		return "redirect:/";
+		}
+		
+		System.out.println("Controller franchiseeInfoForm: " + franchiseeInfoForm);
+		
+		int rows = franchiseeService.addFranchiseeInfo(franchiseeInfoForm);
+		
+		System.out.println("success rows : "+ rows);
+		
+		return "redirect:/detailFranchisee?franchiseeNo="+franchiseeInfoForm.getFranchiseeNo();
+	}
+
 	
 	// 가맹점 정보 입력 페이지 요청
 	@GetMapping("/addFranchiseeInfo")
