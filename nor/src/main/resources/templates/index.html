@@ -10,19 +10,35 @@
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <!-- Custom styles for this template -->
 <link href="css/heroic-features.css" rel="stylesheet">
+
 </head>
 <body>
 	<div th:include="/part/templet::nav"></div>
 	<div class="container">
+		<br>
 		<!-- Jumbotron Header(이벤트 배너) -->
-		<div th:fragment="event">
-			<header class="jumbotron my-4">
-				<h1 class="display-3">EVENT!</h1>
-				<p class="lead">PC방 대회정보</p>
-				<a href="#" class="btn btn-primary btn-lg">나도 참가 한다!!!</a>
-			</header>
+		<div class="slideshow-container">
+			<div class="mySlides">
+				<div class="numbertext">1 / 2</div>
+				<img src="/loginimage/google.png" style="width:100%" >
+			</div>
+
+			<div class="mySlides">
+				<div class="numbertext">2 / 2</div>
+				<img src="/loginimage/naver.png" style="width: 100%">
+			</div>
+			<a class="prev" onclick="plusSlides(-1)">&#10094;</a> 
+			<a class="next" onclick="plusSlides(1)">&#10095;</a>
+
 		</div>
+		<br>
+		<div style="text-align: center">
+			<span class="dot" onclick="currentSlide(1)"></span> 
+			<span class="dot" onclick="currentSlide(2)"></span>
+		</div>
+
 		<!-- Page Features(메인 베너) -->
+	
 		<div class="row text-center" id="main"></div>
 	</div>
 	<div th:include="/part/templet::copyright"></div>
@@ -30,6 +46,39 @@
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+/*이벤트 배너 스크립트 */
+let slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  let i;
+  let slides = $(".mySlides");
+  let dots = $(".dot");
+  if (n > slides.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
+  }
+  
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }  
+  slides[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " active";
+
+}
+</script>
+
 <script>
 	$.ajax({
 		url:"/getFranchiseeList",

@@ -4,29 +4,82 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.picaboo.nor.customer.mapper.CustomerMapper">
+	
 	<!-- 좌석 출력 -->
 	<select id="selectSeat" resultType="com.picaboo.nor.customer.vo.Seat" parameterType="String">
-		SELECT franchisee_no as franchiseeNo,
-			   seat_no as seatNo,
-			   seat_row as seatRow,
-			   seat_cols as seatCols,
-			   seat_use as seatUse
-		FROM seat 
-		WHERE franchisee_no = #{String}
+		<![CDATA[
+			SELECT franchisee_no as franchiseeNo,
+				   seat_no as seatNo,
+				   seat_row as seatRow,
+				   seat_cols as seatCols,
+				   seat_use as seatUse
+			FROM seat 
+			WHERE franchisee_no = #{String}
+		]]>
 	</select>
 	<!-- 모든 프렌차이즈 정보를 가져옴 -->
 	<select id="selectFranchiseeNo" resultType="com.picaboo.nor.customer.vo.Franchisee">
-		SELECT 
-				franchisee_no as franchiseeNo,
-				franchisee_name as franchiseeName
-		FROM franchisee
+		<![CDATA[
+			SELECT 
+					franchisee_no as franchiseeNo,
+					franchisee_name as franchiseeName
+			FROM franchisee
+		]]>
 	</select>
 	<!-- 프렌차이즈 상세정보를 가져옴 -->
 	<select id="selectFranchisee" parameterType="String" resultType="com.picaboo.nor.customer.vo.Franchisee">
-		SELECT 
-				franchisee_no as franchiseeNo,
-				franchisee_name as franchiseeName
-		FROM franchisee
-		WHERE franchisee_no = #{franchiseeNo}
+		<![CDATA[
+			SELECT 
+					franchisee_no as franchiseeNo,
+					franchisee_name as franchiseeName
+			FROM franchisee
+			WHERE franchisee_no = #{franchiseeNo}
+		]]>
 	</select>
+	
+	<!-- 좌석 예약 -->
+	<insert id="insertReservation" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
+		<![CDATA[
+			INSERT INTO seat_reservation (
+				franchisee_no,
+				seat_no,
+				customer_name,
+				customer_no,
+				reservation_date,
+				reservation_time
+			) VALUES (
+				#{franchiseeNo},
+				#{seatNo},
+				#{customerName},
+				#{customerNo},
+				#{reservationDate},
+				#{reservationTime}
+			)
+		]]>
+	</insert>
+	
+	<update id="updateSeatType" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
+		<![CDATA[
+			UPDATE seat 
+			SET seat_use = #{type}
+			WHERE franchisee_no = #{franchiseeNo} AND seat_no = #{seatNo}
+		]]>
+	</update>
+	
+	<select id="selectSeatReservation" parameterType="String"
+									   resultType="com.picaboo.nor.customer.vo.SeatReservation">
+		<![CDATA[
+			SELECT franchisee_no as franchiseeNo,
+				   seat_no as seatNo
+			FROM seat_reservation
+			WHERE reservation_date <= CURDATE() AND reservation_time < date_add(CURTIME(),INTERVAL 10 minute) AND franchisee_no = #{franchiseeNo}
+		]]>
+	</select>
+	
+	<delete id="deleteSeatReservation" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
+		<![CDATA[
+			DELETE FROM seat_reservation
+			WHERE franchisee_no = #{franchiseeNo} AND seat_no = #{seatNo}
+		]]>
+	</delete>
 </mapper>

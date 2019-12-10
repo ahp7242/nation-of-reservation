@@ -11,4 +11,6 @@ public interface CustomerService {
 	public List<Franchisee> getFranchiseeNo();
 	//프렌차이즈 상세정보를 가져오는 서비스
 	public Franchisee getFranchisee(String franchiseeNo);
+	//좌석 예약을 하는 서비스
+	public void addReservation(SeatReservation seatReservation);
 }

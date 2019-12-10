@@ -22,6 +22,10 @@ public class CustomerController {
 		if (session.getAttribute("memberNo") == null) {
 			return "redirect:/";
 		}
+		String memberNo = (String) session.getAttribute("memberNo");
+		System.out.println(memberNo);
+		model.addAttribute("memberNo", memberNo);
+		
 		//세션에 저장된 memberName값을 가져와 모델에 저장함
 		model.addAttribute("memberName",session.getAttribute("memberName"));
 		//Franchisee타입에 parameter값으로 넘어온 franchiseeNo값에 일치하는 프렌차이즈정보를 저장함
