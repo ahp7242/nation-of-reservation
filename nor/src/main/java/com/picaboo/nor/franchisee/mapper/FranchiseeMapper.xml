@@ -4,8 +4,59 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- FAQ 카운트 출력 -->
+	<select id="selectFranchiseeFAQCount" resultType="int" parameterType="string">
+		SELECT COUNT(*)
+		FROM franchisee_faq
+		<where>
+			<if test="searchWord != null">
+				faq_title like CONCAT('%', #{searchWord}, '%')
+			</if>
+		</where>
+	</select>
+	
+	<!-- FAQ 리스트 출력 -->
+	<select id="selectFranchiseeFAQ"
+			resultType="com.picaboo.nor.franchisee.vo.FranchiseeFAQ"
+			parameterType="com.picaboo.nor.franchisee.vo.FranchiseeFAQPage">
+		SELECT 
+			faq_no as faqNo,
+			faq_title as faqTitle,
+			faq_content as faqContent
+		FROM franchisee_faq
+		<where>
+			<if test="searchWord != null">
+				faq_title like CONCAT('%', #{searchWord}, '%')
+			</if>
+		</where>
+		LIMIT #{beginRow}, #{rowPerPage}
+	</select>
+	
+	<!-- 가맹점 사진 조회 -->
+	<!-- 저장된 파일 이름, 확장명, 원래 파일 이름, 가맹점 번호 조회 -->
+	<select id="selectFranchiseePic" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
+		SELECT 
+			franchisee_no as franchiseeNo,
+			file_name as fileName,
+			extension as extension,
+			origin_name as originName
+		FROM franchisee_pic
+		WHERE franchisee_no = #{franchiseeNo}
+	</select>
+	
+	<!-- 가맹점 pc사양 조회 -->
+	<select id="selelctFranchiseeSpec" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseeSpec">
+		SELECT 
+			franchisee_no as franchiseeNo,
+			cpu as cpu,
+			vga as vga,
+			ram as ram
+		FROM franchisee_spec
+		WHERE franchisee_no = #{franchiseeNo}
+	</select>
+
 	<!-- 가맹점 pc사양 입력 -->
-	<insert id="insertFranchiseeInfo">
+	<insert id="insertFranchiseeSpec" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeSpec">
 		INSERT INTO franchisee_spec(
 			franchisee_no,
 			cpu,
@@ -20,7 +71,7 @@
 	</insert>
 
 	<!-- 가맹점 사진 입력 -->
-	<insert id="insertFranchiseePic">
+	<insert id="insertFranchiseePic" parameterType="com.picaboo.nor.franchisee.vo.FranchiseePic">
 		INSERT INTO franchisee_pic (
 			franchisee_no,
 			file_name,

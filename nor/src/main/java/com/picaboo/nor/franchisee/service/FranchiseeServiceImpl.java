@@ -1,6 +1,8 @@
 package com.picaboo.nor.franchisee.service;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -12,15 +14,67 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.picaboo.nor.franchisee.mapper.FranchiseeMapper;
 import com.picaboo.nor.franchisee.vo.Franchisee;
-import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
+import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
+import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 @Service
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	
+	@Override
+	public Map<String, Object> getFranchiseeFAQ(int currentPage, int rowPerPage, String searchWord) {
+		
+		// 페이징 코드, 검색어 입력
+		// Mapper로 페이징 정보를 넘기기 위해 VO에 값 저장
+		FranchiseeFAQPage franchiseeFAQPage = new FranchiseeFAQPage();
+		franchiseeFAQPage.setRowPerPage(rowPerPage);
+		franchiseeFAQPage.setBeginRow((currentPage-1)*rowPerPage);
+		franchiseeFAQPage.setSearchWord(searchWord);
+		List<FranchiseeFAQ> list = franchiseeMapper.selectFranchiseeFAQ(franchiseeFAQPage);
+		System.out.println("serviceImpl List: "+list);
+		System.out.println("IMPL 검색: "+searchWord);
+		
+		// 페이징 버튼을 위한 마지막 페이지 계산
+		int totalRowCount = franchiseeMapper.selectFranchiseeFAQCount(searchWord);
+		int lastPage = totalRowCount / rowPerPage;
+		
+		// 검색과, 페이징한 리스트와 현재 페이지 정보를 맵에 저장하여 리턴
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		map.put("currentPage", currentPage);
+		map.put("totalRowCount", totalRowCount);
+		map.put("lastPage", lastPage);
+		map.put("searchWord", searchWord);
+		return map;
+	}
+	
+	@Override
+	public Map<String, Object> getFranchiseeInfo(String franchiseeNo) {
+		// FranchiseePic + franchiseeSpec => Map으로 franchiseeInfo 리턴 
+		Map<String, Object> franchiseeInfo = new HashMap<String, Object>();
+		
+		// 가맹점 pc사양
+		FranchiseeSpec franchiseeSpec = franchiseeMapper.selelctFranchiseeSpec(franchiseeNo);
+		
+		System.out.println("franchiseeSpec: " + franchiseeSpec);
+		franchiseeInfo.put("franchiseeSpec", franchiseeSpec);
+		
+		// 가맹점 사진
+		List<FranchiseePic> franchisePicList = franchiseeMapper.selectFranchiseePic(franchiseeNo);
+		System.out.println("franchisePicList: " + franchisePicList);
+		// 저장 경로
+		String uploadPath = "/upload";
+		
+		franchiseeInfo.put("franchisePicList", franchisePicList);
+		franchiseeInfo.put("uploadPath", uploadPath);
+		
+		return franchiseeInfo;
+	}
 	
 	@Override
 	public int addFranchiseeInfo(FranchiseeInfoForm FranchiseeInfoForm) {
@@ -53,12 +107,14 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		System.out.println("getVga: " + franchiseeSpec.getVga());
 		System.out.println("getRam: " + franchiseeSpec.getRam());
 		
-		rows += franchiseeMapper.insertFranchiseeInfo(franchiseeSpec);
+		rows += franchiseeMapper.insertFranchiseeSpec(franchiseeSpec);
 		
 		// 2. FranchiseePic
 		
 		// 파일 리스트 가져옴
 		List<MultipartFile> picList = FranchiseeInfoForm.getFranchiseePicList();
+		// 파일로 저장할 사진 리스트
+		List<FranchiseePic> fileList = new ArrayList<FranchiseePic>();
 		
 		// 사진 리스트에서 하나씩 정보를 추출하여 db에 저장
 		for(MultipartFile mf : picList) {
@@ -66,6 +122,10 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			String name = mf.getName();
 			String originName = mf.getOriginalFilename();
 			long size = mf.getSize();
+			
+			if(contentType != "image/jpeg" || contentType != "image/png" || contentType != "image/gif" || contentType != "image/svg+xml") {
+				return -1;
+			}
 			
 			// 파일 확장자명
 			String extension = originName.substring(originName.lastIndexOf(".")+1);
@@ -87,30 +147,35 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			franchiseePic.setFileName(saveFileName);
 			franchiseePic.setOriginName(originName);
 			franchiseePic.setSize(size);
+			// 파일로 저장할 사진 목록에 추가
+			fileList.add(franchiseePic);
 			rows += franchiseeMapper.insertFranchiseePic(franchiseePic);
 		}
-		
+		// 파일로 저장할 목록 인덱스
+		int FileListIndex = 0;
 		// 파일로 저장, SQL예외가 발생하면 파일이 저장되지 않아야 하므로 맨 마지막에 실행
 		for(MultipartFile mf : picList) {
 			
-			// 파일 원래 이름
-			String originName = mf.getOriginalFilename();
-			// 파일 확장자명
-			String extension = originName.substring(originName.lastIndexOf(".")+1);
-			// 저장될 파일이름
-			String saveFileName = UUID.randomUUID().toString().replace("-", "")+"."+extension;
+			// saveFileName을 가져오기 위한 객체
+			FranchiseePic franchiseePic = fileList.get(FileListIndex);
+			
+			// 저장될 파일 이름
+			String fileName = franchiseePic.getFileName();
 			
 			// 저장 경로
 			String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
 			
 			try {
-				mf.transferTo(new File(uploadPath+"\\"+saveFileName));		
+				mf.transferTo(new File(uploadPath+"\\"+fileName));		
 			} catch (Exception e) {
 				e.printStackTrace();
 				// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
 				// 아직 예외처리를 따로 만들지 않고 일단 런타임 예외를 발생시켰다.
 				throw new RuntimeException();
 			}
+			
+			// 인덱스 증가
+			FileListIndex++;
 		}
 		
 		return rows;

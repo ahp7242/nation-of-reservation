@@ -5,14 +5,24 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.picaboo.nor.franchisee.vo.Franchisee;
-import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
+import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
+import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 @Mapper
 public interface FranchiseeMapper {
+	// FAQ 리스트 카운트 출력
+	public int selectFranchiseeFAQCount(String searchWord);
+	// FAQ 리스트 출력
+	public List<FranchiseeFAQ> selectFranchiseeFAQ(FranchiseeFAQPage franchiseeFAQpage);
+	// 가맹점 사진 조회, 저장된 파일 이름, 확장명, 원래 파일 이름, 가맹점 번호 조회
+	public List<FranchiseePic> selectFranchiseePic(String franchiseeNo);
+	// 가맹점 pc사양 조회
+	public FranchiseeSpec selelctFranchiseeSpec(String franchiseeNo);
 	// 가맹점 pc사양 입력
-	public int insertFranchiseeInfo(FranchiseeSpec franchiseeSpec);
+	public int insertFranchiseeSpec(FranchiseeSpec franchiseeSpec);
 	// 가맹점 사진 입력
 	public int insertFranchiseePic(FranchiseePic franchiseePic);
 	// 가맹점 좌석 삭제

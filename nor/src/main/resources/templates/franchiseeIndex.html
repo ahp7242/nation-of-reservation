@@ -31,10 +31,7 @@
         
           <!-- 멤버 이름 표시 -->
       	  <li class="nav-item">
-            <span class="nav-link disabled text-light" th:text="${session.memberName}"></span>
-          </li>
-          <li class="nav-item">
-            <span class="nav-link disabled text-light">님 환영합니다</span>
+            <span class="nav-link disabled text-light" th:inline="text">[[${session.memberName}]]님 환영합니다!</span>
           </li>
           <!-- 로그아웃 -->
           <li class="nav-item">
@@ -93,19 +90,20 @@
 	          </div>
 	        </div>
 	      </div>
-	
-		<div class="col-lg-3 col-md-6 mb-4">
-		        <div class="card h-100">
-		          <img class="card-img-top" src="/franchiseeImage/indexPic2.png" alt="">
-		          <div class="card-body">
-		            <h4 class="card-title"></h4>
-		            <p class="card-text"></p>
-		          </div>
-		          <div class="card-footer">
-		            <a href="#" class="btn btn-primary"></a>
-		          </div>
-		        </div>
-		      </div>
+	      
+		  <!-- FAQ 버튼 -->
+	      <div class="col-lg-3 col-md-6 mb-4">
+	        <div class="card h-100">
+	          <img class="card-img-top" src="/franchiseeImage/indexPic2.png" alt="">
+	          <div class="card-body">
+	            <h4 class="card-title">FAQFranchisee</h4>
+	            <p class="card-text">FAQFranchisee</p>
+	          </div>
+	          <div class="card-footer">
+	            <a href="/FAQFranchisee" class="btn btn-primary">FAQFranchisee</a>
+	          </div>
+	        </div>
+	      </div>
 	
 	      <div class="col-lg-3 col-md-6 mb-4">
 	        <div class="card h-100">
@@ -132,6 +130,7 @@
 	          </div>
 	        </div>
 	      </div>
+	      
 	    </div>
 	 </div>
     <!-- /.row -->

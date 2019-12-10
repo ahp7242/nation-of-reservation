@@ -2,6 +2,7 @@ package com.picaboo.nor.franchisee.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,6 +22,27 @@ import com.picaboo.nor.franchisee.vo.Seat;
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
 	
+	// FAQ 리스트 페이지
+	@GetMapping("/FAQFranchisee")
+	public String getFranchiseeFAQList(HttpSession session,Model model, 
+								@RequestParam(value="currentPage", defaultValue="1") int currentPage,
+								@RequestParam(value="searchWord", required = false) String searchWord){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		System.out.println("currentPage : " + currentPage);
+		System.out.println("searchWord : " + searchWord);
+		int rowPerPage = 12;
+		Map<String, Object> map = franchiseeService.getFranchiseeFAQ(currentPage, rowPerPage, searchWord);
+		model.addAttribute("map", map);
+		//System.out.println("map : " + map);
+		return "franchisee/FAQFranchisee";
+	}
+
+	
+	// 가맹점 정보 입력
 	@PostMapping("/addFranchiseeInfo")
 	public String addFranchiseeInfo(HttpSession session, FranchiseeInfoForm franchiseeInfoForm) {
 		System.out.println("addFranchiseeInfo POST 요청");
@@ -35,7 +57,10 @@ public class FranchiessController {
 		
 		int rows = franchiseeService.addFranchiseeInfo(franchiseeInfoForm);
 		
-		System.out.println("success rows : "+ rows);
+		if(rows < 0) 
+			System.out.println("파일 형식 오류");
+		else
+			System.out.println("success rows : "+ rows);
 		
 		return "redirect:/detailFranchisee?franchiseeNo="+franchiseeInfoForm.getFranchiseeNo();
 	}
@@ -77,14 +102,20 @@ public class FranchiessController {
 		}
 		System.out.println("session memberNo: " + ownerNo);
 		
-		// 가맹점 상세정보 가져와서 넘김
+		// 가맹점 좌석정보 가져와서 넘김
 		Franchisee franchisee = franchiseeService.getFranchiseeOne(franchiseeNo);
 		List<Seat> seat = franchiseeService.getSeat(franchiseeNo);
 		System.out.println("detail franchisee: " + franchisee);
-		System.out.println("detail franchisee: " + seat);
+		System.out.println("detail seat: " + seat);
 		model.addAttribute("franchisee", franchisee);
 		model.addAttribute("seat", seat);
 		model.addAttribute("size", seat.size());
+		
+		// 가맹점 사진, pc사양 가져와서 model로 넘김
+		Map<String, Object> franchiseeInfo = franchiseeService.getFranchiseeInfo(franchiseeNo);
+		model.addAttribute("franchiseeInfo", franchiseeInfo);
+		System.out.println("franchiseeInfo:" + franchiseeInfo);
+		
 		return "franchisee/detailFranchisee";
 	}
 	
