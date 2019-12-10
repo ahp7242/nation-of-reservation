@@ -22,9 +22,30 @@ import com.picaboo.nor.franchisee.vo.Seat;
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
 	
+	// 가맹점 정보 수정 페이지 요청
+	@GetMapping("/modifyFranchiseeInfo")
+	public String modifyFranchiseeInfo(HttpSession session, Model model, @RequestParam(value="franchiseeNo") String franchiseeNo) {
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		System.out.println("session memberNo: " + ownerNo);
+		// 가맹점 번호 넘김
+		model.addAttribute("franchiseeNo", franchiseeNo);
+		// Spec 목록 넘김
+		Map<String, Object> spec = franchiseeService.getSpec();
+		model.addAttribute("spec", spec);
+		// 현재  가맹점 정보 사진, pc사양 가져와서 model로 넘김
+		Map<String, Object> franchiseeInfo = franchiseeService.getFranchiseeInfo(franchiseeNo);
+		System.out.println("franchiseeInfo:" + franchiseeInfo);
+		model.addAttribute("franchiseeInfo", franchiseeInfo);
+		return "franchisee/modifyFranchiseeInfo";
+	}
+	
 	// FAQ 리스트 페이지
 	@GetMapping("/FAQFranchisee")
-	public String getFranchiseeFAQList(HttpSession session,Model model, 
+	public String getFranchiseeFAQList(HttpSession session, Model model, 
 								@RequestParam(value="currentPage", defaultValue="1") int currentPage,
 								@RequestParam(value="searchWord", required = false) String searchWord){
 		// 세션 검사
@@ -79,6 +100,9 @@ public class FranchiessController {
 		System.out.println("session memberNo: " + ownerNo);
 		// 가맹점 번호 넘김
 		model.addAttribute("franchiseeNo", franchiseeNo);
+		// Spec 목록 넘김
+		Map<String, Object> spec = franchiseeService.getSpec();
+		model.addAttribute("spec", spec);
 		
 		return "franchisee/addFranchiseeInfo";
 	}
@@ -109,12 +133,15 @@ public class FranchiessController {
 		System.out.println("detail seat: " + seat);
 		model.addAttribute("franchisee", franchisee);
 		model.addAttribute("seat", seat);
-		model.addAttribute("size", seat.size());
+		model.addAttribute("seatSize", seat.size());
 		
-		// 가맹점 사진, pc사양 가져와서 model로 넘김
+		// 가맹점 정보 사진, pc사양 가져와서 model로 넘김
 		Map<String, Object> franchiseeInfo = franchiseeService.getFranchiseeInfo(franchiseeNo);
-		model.addAttribute("franchiseeInfo", franchiseeInfo);
 		System.out.println("franchiseeInfo:" + franchiseeInfo);
+		System.out.println("infoSize: " + franchiseeInfo.size());
+		model.addAttribute("franchiseeInfo", franchiseeInfo);
+		model.addAttribute("infoSize", franchiseeInfo.size());
+		
 		
 		return "franchisee/detailFranchisee";
 	}

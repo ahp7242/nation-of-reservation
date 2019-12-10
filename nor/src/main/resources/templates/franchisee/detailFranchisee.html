@@ -133,20 +133,20 @@
 	  <div class="row">
 		
 			
-	    <div th:if="${size<1}" class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${seatSize<1}" class="col-md-3 col-sm-6 mb-4">
 	      <a href="#" th:href="@{/addFranchiseeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 입력</a>
 	    </div>
 	
-		<div th:if="${size>0}" class="col-md-3 col-sm-6 mb-4">
+		<div th:if="${seatSize>0}" class="col-md-3 col-sm-6 mb-4">
 	      <a href="#" th:href="@{/removeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 삭제</a>
 	    </div>
 	
-	    <div class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${infoSize<1}" class="col-md-3 col-sm-6 mb-4">
 	      <a href="#" th:href="@{/addFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 입력</a>
 	    </div>
 	
-	    <div class="col-md-3 col-sm-6 mb-4">
-	      <a href="#" th:href="@{/removeFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 삭제</a>
+	    <div th:if="${infoSize>0}" class="col-md-3 col-sm-6 mb-4">
+	      <a href="#" th:href="@{/modifyFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 수정</a>
 	    </div>
 	
 	  </div>
@@ -215,6 +215,10 @@
 						console.log(item2)
 						let use = item2.seatUse
 						switch(use){
+							case "R":
+								$this.children().css("background-color","#A566FF");
+								$this.children().append("<br>예약석");
+								break;
 							case "Y":
 								$this.children().css("background-color","#B5B2FF");
 								$this.children().append("<br>사용중");

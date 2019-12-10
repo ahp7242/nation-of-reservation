@@ -3,93 +3,111 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.picaboo.nor.membership.mapper.MembershipMapper">
-	<!-- 회원가입매퍼 -->
-	<insert id="insertMembership" parameterType="com.picaboo.nor.membership.vo.Membership">
-		INSERT INTO customer(
-			customer_no,
-			customer_id,
-			customer_pw,
-			customer_name,
-			customer_birth,
-			customer_gender,
-			customer_email,
-			customer_phone,
-			customer_type
-		) VALUES (
-			#{customerNo},
-			#{customerId},
-			#{customerPw},
-			#{customerName},
-			#{customerBirth},
-			#{customerGender},
-			#{customerEmail},
-			#{customerPhone},
-			#{customerType}
-		)
-	</insert>
-	<!-- 회원번호의 마지막값을 불러오는 매퍼 -->
-	<select id="selectCustomerSeq" resultType="String">
-		SELECT customer_no
-		FROM customer_seq
-	</select>
-	<!-- 회원번호의 마지막값 업테이트하는 매퍼 -->
-	<update id="updateCustomerSeq" parameterType="String">
-		UPDATE customer_seq 
-		SET customer_no = #{customer_no}
-	</update>
-	<!-- 로그인시 정보의 유무를 확인하는 매퍼 -->
-	<select id="login" parameterType="com.picaboo.nor.membership.vo.Login" resultType="com.picaboo.nor.membership.vo.Membership">
-		SELECT  customer_no as customerNo,
-				customer_id as customerId,
-				customer_name as customerName,
-				customer_type as customerType
-		FROM customer
-		WHERE customer_id = #{customerId} AND customer_pw = #{customerPw} 
-	</select>
-	<!-- 고객의 상세정보를 불러오는 매퍼 -->
-	<select id="selectMembershipOne" parameterType="String" resultType="com.picaboo.nor.membership.vo.Membership">
-		SELECT  customer_no as customerNo,
-				customer_id as customerId,
-				customer_pw as customerPw,
-				customer_name as customerName,
-				customer_birth as customerBirth,
-				customer_gender as customerGender,
-				customer_email as customerEmail,
-				customer_phone as customerPhone,
-				customer_type as customerType
-		FROM customer
-		WHERE customer_no = #{String}
-	</select>
-	<!-- 고객의 상세정보를 수정하는 매퍼 -->
-	<update id="updateMembership" parameterType="com.picaboo.nor.membership.vo.Membership">
-		UPDATE customer SET 
-			customer_name = #{customerName},
-			customer_email = #{customerEmail},
-			customer_phone = #{customerPhone}
-		WHERE 
-			customer_no = #{customerNo}
-	</update>
-	<!-- 고객의 회원탈퇴시 정보를 삭제하는 매퍼 -->
-	<delete id="deleteMembership" parameterType="String">
-		DELETE FROM customer
-		WHERE customer_no = #{customerNo}
-	</delete>
-	<!-- 고객의 회원탈퇴시 id값을 저장하느 매퍼 -->
-	<insert id="insertDelMembership" parameterType="String">
-		INSERT INTO del_customer (
-			customer_id
-		) VALUES (
-			#{customerNo}
-		)
-	</insert>
-	<!-- 회원가입시 고객 아이디 중복확인하는 매퍼 -->
-	<select id="selectOverlapCustomerId" parameterType="String" resultType="int">
-		SELECT COUNT(customer_id)
-		FROM ( select customer_id
-			   from customer
-			   union all
-			   select customer_id
-			   from del_customer) as a
-		WHERE a.customer_id = #{customerId}
-	</select>
+   <!-- 회원가입매퍼 -->
+   <insert id="insertMembership" parameterType="com.picaboo.nor.membership.vo.Membership">
+   <![CDATA[
+      INSERT INTO customer(
+         customer_no,
+         customer_id,
+         customer_pw,
+         customer_name,
+         customer_birth,
+         customer_gender,
+         customer_email,
+         customer_phone,
+         customer_type
+      ) VALUES (
+         #{customerNo},
+         #{customerId},
+         #{customerPw},
+         #{customerName},
+         #{customerBirth},
+         #{customerGender},
+         #{customerEmail},
+         #{customerPhone},
+         #{customerType}
+      )
+   ]]>
+   </insert>
+   <!-- 회원번호의 마지막값을 불러오는 매퍼 -->
+   <select id="selectCustomerSeq" resultType="String">
+   <![CDATA[
+      SELECT seq_no
+      FROM customer_seq
+   ]]>
+   </select>
+   <!-- 회원번호의 마지막값 업테이트하는 매퍼 -->
+   <update id="updateCustomerSeq" parameterType="String">
+   <![CDATA[
+      UPDATE customer_seq 
+      SET seq_no = #{customer_no}
+   ]]>
+   </update>
+   <!-- 로그인시 정보의 유무를 확인하는 매퍼 -->
+   <select id="login" parameterType="com.picaboo.nor.membership.vo.Login" resultType="com.picaboo.nor.membership.vo.Membership">
+   <![CDATA[
+      SELECT  customer_no as customerNo,
+            customer_id as customerId,
+            customer_name as customerName,
+            customer_type as customerType
+      FROM customer
+      WHERE customer_id = #{customerId} AND customer_pw = #{customerPw} 
+   ]]>
+   </select>
+   <!-- 고객의 상세정보를 불러오는 매퍼 -->
+   <select id="selectMembershipOne" parameterType="String" resultType="com.picaboo.nor.membership.vo.Membership">
+   <![CDATA[
+      SELECT  customer_no as customerNo,
+            customer_id as customerId,
+            customer_pw as customerPw,
+            customer_name as customerName,
+            customer_birth as customerBirth,
+            customer_gender as customerGender,
+            customer_email as customerEmail,
+            customer_phone as customerPhone,
+            customer_type as customerType
+      FROM customer
+      WHERE customer_no = #{String}
+   ]]>
+   </select>
+   <!-- 고객의 상세정보를 수정하는 매퍼 -->
+   <update id="updateMembership" parameterType="com.picaboo.nor.membership.vo.Membership">
+   <![CDATA[
+      UPDATE customer SET 
+         customer_name = #{customerName},
+         customer_email = #{customerEmail},
+         customer_phone = #{customerPhone}
+      WHERE 
+         customer_no = #{customerNo}
+   ]]>
+   </update>
+   <!-- 고객의 회원탈퇴시 정보를 삭제하는 매퍼 -->
+   <delete id="deleteMembership" parameterType="String">
+   <![CDATA[
+      DELETE FROM customer
+      WHERE customer_no = #{customerNo}
+   ]]>
+   </delete>
+   <!-- 고객의 회원탈퇴시 id값을 저장하느 매퍼 -->
+   <insert id="insertDelMembership" parameterType="String">
+   <![CDATA[
+      INSERT INTO del_customer (
+         customer_id
+      ) VALUES (
+         #{customerNo}
+      )
+   ]]>
+   </insert>
+   <!-- 회원가입시 고객 아이디 중복확인하는 매퍼 -->
+   <select id="selectOverlapCustomerId" parameterType="String" resultType="int">
+   <![CDATA[
+      SELECT COUNT(customer_id)
+      FROM ( select customer_id
+            from customer
+            union all
+            select customer_id
+            from del_customer) as a
+      WHERE a.customer_id = #{customerId}
+   ]]>
+   </select>
 </mapper>

@@ -14,17 +14,27 @@
 
   <!-- Custom styles for this template -->
   <link href="css/heroic-features.css" rel="stylesheet">
-  <style>
-   .box {
-      height: 50px;
-      width: 50px;
-      text-align: center;
-      border: 1px solid black;
-      border-radius: 5px;
+<style>
+   .base {
+    padding: 5px;
+    border: 1px;
    }
    
-   .center {
-      text-align: center;
+   .preface {
+       padding-bottom: px;
+       background-color: #ff80aa;
+       border-bottom: 1px solid #d1d1d1;
+   }
+   
+   .content {
+       transition: max-height 0.2s ease-in-out;
+       background-color: #ffdb4d;
+       overflow: hidden;
+       max-height: 0;
+   }
+   
+   .expanded {
+       max-height: 2000px;
    }
 
    ::-webkit-scrollbar{width: 16px;}
@@ -80,32 +90,25 @@
        <header class="jumbotron my-4">
        <h3>FAQ List</h3>
        <a th:if="${map.currentPage > 1}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage-1},searchWord=${map.searchWord})}">이전</a>
-      <a th:if="${map.currentPage < map.lastPage}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage+1},searchWord=${map.searchWord})}">다음</a>
+       <a th:if="${map.currentPage < map.lastPage}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage+1},searchWord=${map.searchWord})}">다음</a>
    
-       <form action="/FAQFranchisee" method="get">
+      <form action="/FAQFranchisee" method="get">
       <label for="searchWord">검색어(제목) : </label>
       <input name="searchWord" type="text">
       <button type="submit">검색</button>
       </form>
-   
-       <div class="row text-center">
-         <div class="col-lg-3 col-md-6 mb-4" th:each="str:${map.list}">
-           <div class="card h-100">
-             <img class="card-img-top" src="" alt="">
-             <div class="card-body">
-               <h4 class="card-title" th:text="${str.faqNo}">faqNo</h4>
-             </div>
-             <div class="card-body">
-               <h4 class="card-title" th:text="${str.faqTitle}">faqTitle</h4>
-             </div>
-             <div class="card-body">
-               <h4 class="card-title" th:text="${str.faqContent}">faqContent</h4>
-             </div>
-           </div>
-         </div>
-       </div>
-        
-       </header>
+         <div class="col-lg-6 col-md-6 mb-12" th:each="str:${map.list}">
+      <div class="base">
+          <div class="preface">
+            <h5 th:text="${str.faqNo} + . + ' ' + ${str.faqTitle}"></h5>
+          </div>
+          <div class="content">
+              <h5 th:text="${str.faqContent}"></h5>
+          </div>
+      </div>
+      </div>
+      
+      </header>
    </div>
   </div>
    
@@ -119,7 +122,21 @@
        </footer>
    </div>
 
+  <!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script>
+   (function transitionsDemo() {
+       var isExpanded = false;
+       
+       $(".preface").click(function(){
+           var el = $(this).parent().find(".content");
+           el.toggleClass("expanded");
+       });
+       
+   })();
+   </script>
 
 </body>
-
 </html>

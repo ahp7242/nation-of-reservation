@@ -8,7 +8,9 @@ import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 public interface FranchiseeService {
-	// FAQ 리스트 출력
+	// pc 사양 리스트 조회
+	public Map<String, Object> getSpec();
+	// FAQ 리스트 조회
 	public Map<String, Object> getFranchiseeFAQ(int currentPage, int rowPerPage, String searchWord);
 	// 가맹점 정보 조회
 	public Map<String, Object> getFranchiseeInfo(String franchiseeNo);

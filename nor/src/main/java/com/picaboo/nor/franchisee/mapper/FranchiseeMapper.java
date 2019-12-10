@@ -10,10 +10,13 @@ import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.Spec;
 
 @Mapper
 public interface FranchiseeMapper {
-	// FAQ 리스트 카운트 출력
+	// pc 사양 조회
+	public List<Spec> selectSpec(String specType);
+	// FAQ 리스트 카운트 조회
 	public int selectFranchiseeFAQCount(String searchWord);
 	// FAQ 리스트 출력
 	public List<FranchiseeFAQ> selectFranchiseeFAQ(FranchiseeFAQPage franchiseeFAQpage);

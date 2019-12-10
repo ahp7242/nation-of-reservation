@@ -20,12 +20,31 @@ import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.Spec;
 
 @Service
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
 	
+	// pc 사양 조회
+	@Override
+	public Map<String, Object> getSpec() {
+		List<Spec> cpu = franchiseeMapper.selectSpec("C");
+		List<Spec> vga = franchiseeMapper.selectSpec("V");
+		List<Spec> ram = franchiseeMapper.selectSpec("R");
+		
+		Map<String, Object> spec = new HashMap<String, Object>();
+		spec.put("cpu", cpu);
+		spec.put("vga", vga);
+		spec.put("ram", ram);
+		
+		System.out.println("Service spec: " + spec);
+		
+		return spec;
+	}
+	
+	// FAQ 리스트 조회
 	@Override
 	public Map<String, Object> getFranchiseeFAQ(int currentPage, int rowPerPage, String searchWord) {
 		
@@ -53,6 +72,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		return map;
 	}
 	
+	// 가맹점 pc사양, 사진 조회
 	@Override
 	public Map<String, Object> getFranchiseeInfo(String franchiseeNo) {
 		// FranchiseePic + franchiseeSpec => Map으로 franchiseeInfo 리턴 
@@ -122,22 +142,22 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			String name = mf.getName();
 			String originName = mf.getOriginalFilename();
 			long size = mf.getSize();
-			
-			if(contentType != "image/jpeg" || contentType != "image/png" || contentType != "image/gif" || contentType != "image/svg+xml") {
-				return -1;
-			}
-			
 			// 파일 확장자명
 			String extension = originName.substring(originName.lastIndexOf(".")+1);
 			// 랜덤한 UUID에 -를 빼고 원래 파일이름의 확장자만 더해서 저장할 파일이름을 생성
 			String saveFileName = UUID.randomUUID().toString().replace("-", "")+"."+extension;
-			
+						
 			System.out.println("addFranchiseeInfo contentType: " + contentType);
 			System.out.println("addFranchiseeInfo name: " + name);
 			System.out.println("addFranchiseeInfo originName: " + originName);
 			System.out.println("addFranchiseeInfo size: " + size);
 			System.out.println("addFranchiseeInfo extension: " + extension);
 			System.out.println("addFranchiseeInfo saveFileName: " + saveFileName);
+			
+			if(!contentType.equals("image/jpeg") && !contentType.equals("image/png") && 
+					!contentType.equals("image/gif") && !contentType.equals("image/svg+xml") ) {
+				return -1;
+			}
 			
 			// franchiseePic으로  db에 저장
 			FranchiseePic franchiseePic = new FranchiseePic();
