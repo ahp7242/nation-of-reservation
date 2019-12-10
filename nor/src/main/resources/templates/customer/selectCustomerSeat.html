@@ -22,6 +22,7 @@
 }
 
 .center {
+	width:100%;
 	text-align: center;
 }
 
@@ -35,6 +36,7 @@
 }
 
 #modal {
+	top:90px;
 	display: none;
 	position: absolute;
 	width: 100%;
@@ -51,10 +53,12 @@
 }
 
 #modal .modal_content {
-	width: 300px;
+	height:430px;
+	width: 340px;
 	margin: 100px auto;
 	padding: 20px 10px;
 	background: #fff;
+	border-radius: 10px;
 	border: 2px solid #666;
 }
 
@@ -68,37 +72,114 @@
 	z-index: -1;
 }
 
-#List {
-	margin-left: auto;
-	margin-right: auto;
+.List {
+	margin-left: 5px;
+	margin-right: 30px;
+	width:100%;
 	height:150px;
+	
+}
+
+.close{
+	font-size: 15px;
+}
+
+ul{
+   list-style:none;
+}
+
+.menu {
+	float:right;
+	height:150px;
+	width:65%;
+	text-align: center;
 	overflow:auto;
 }
+
+.seat {
+	float:left;
+	height:150px;
+	width:35%;
+	text-align: center;
+	overflow:auto;
+}
+
 </style>
 </head>
 <body>
 	<div th:include="/part/customerNav::nav"></div>
 	<div class="container center">
 		<h1>CustomerSeat</h1>
-		<div th:text="${franchisee.franchiseeName}"></div>
-		<div>
-			pc방 이미지
-			<!-- <img class='card-img-top' src='http://placehold.it/500x325' alt=''> -->
+		<div style="height:50px" th:text="${franchisee.franchiseeName}"></div>
+		<div style="height:150px">
+			스펙 및 이미지<br>
+			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
+			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
+			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
+			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
 		</div>
 		<div id="modal">
 			<div class="modal_content ">
+				<a href="" class="close">❌</a><br>
 				<h2>예약</h2>
 				<input type='date' id='date'><br> 
 				<input type="time" id='time'><br>
-				선택된 좌석
-				<div id="List">
-					<ul id="RList">
-					</ul>
+				<hr>
+				<div class="List">
+					<div class="seat">
+						<table class="center">
+							<thead>
+								<tr>
+									<td> 좌석 </td>
+								</tr>
+							<thead>
+							<tbody>
+								<tr>
+									<td id="RList">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="menu">
+						<table class="center">
+							<tr>
+								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
+								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
+								<td>
+									<img src="/loginimage/짜파게티.jpg" width="60" height="50" class="bt_up" />
+								</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
+								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
+								<td>
+									<img src="/loginimage/너구리.jpg" width="60" height="50" class="bt_up" />
+								</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
+								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
+								<td>
+									<img src="/loginimage/신라면.jpg" width="60" height="50" class="bt_up" />
+								</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
+								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
+								<td>
+									<img src="/loginimage/참깨라면.jpg" width="60" height="50" class="bt_up" />
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
+				<hr>
 				<button type="button" id="modal_close_btn" class="btn btn-primary">예약 완료</button>
 			</div>
 			<div class="modal_layer"></div>
 		</div>
+		좌석표<br>
 		<table id="seat"></table>
 		<button type="button" id="modal_opne_btn" class="btn btn-primary">예약확인</button>
 	</div>
@@ -143,7 +224,7 @@ for(let row=1; row<=rowMax+1; row++){
 	html += "</tr>"
 }
 $("#seat").html(html);
- 
+
 $(document).ready(function(){
 	document.getElementById('date').value = new Date().toISOString().substring(0, 10);;
 	
@@ -234,10 +315,18 @@ $(document).ready(function(){
 		seatNoList.sort(function (a, b) { return a-b; })
 		//console.log(seatNoList)
 		$(seatNoList).each(function(index,item){
-			$("#RList").append("<li id='"+item+"'>" + item + "번 좌석</li>")
+			$("#RList").append("<div id='"+item+"'>" + item + "번 좌석</div>")
 		})
 		
-		$("#modal").attr("style", "display:block");
+		$("#LList").empty()
+		//console.log(seatNoList); 
+		seatNoList.sort(function (a, b) { return a-b; })
+		//console.log(seatNoList)
+		$(seatNoList).each(function(index,item){
+			$("#LList").append("<div id='"+item+"'>" + item + "번 좌석</div>")
+		})
+		
+		$("#modal").fadeToggle( 'linear' )
 	});
 					   
 	$("#modal_close_btn").click(function(){
