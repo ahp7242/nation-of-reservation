@@ -1,0 +1,99 @@
+#menumodal {
+	top:90px;
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	right: 1px;
+	left: 1px;
+}
+
+#menumodal .menumodal_content {
+	height:500px;
+	width: 700px;
+	margin: 100px auto;
+	padding: 20px 10px;
+	background: #fff;
+	border-radius: 10px;
+	border: 2px solid #666;
+}
+
+#menumodal .menumodal_layer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: -1;
+}
+#category {
+	float:left;
+	width:23%;
+	height:70%;
+	overflow: auto;
+}
+
+#menu {
+	float:right;
+	width:77%;
+	height:70%;
+	overflow: auto;
+}
+.category{
+	font-size: 40px;
+	height: 50px;
+}
+#total{
+	float:left;
+	width:70%;
+	height:28%;
+	overflow: auto;
+}
+#reservation{
+	float:right;
+	text-align:center;
+	width:30%;
+	height:30%;
+}
+.item{
+	height: 100px;
+	width: 100px;
+}
+.item .img{
+	height: 80px;
+	width: 70px;
+}
+.price{
+	font-size: 7px;
+}
+.price input{
+	height:20px;
+	width:40px;
+}
+.closed{
+	height:50px;
+	width: 190px;
+}
+#count {
+	font-size:15px;
+	float: left;
+	width:38%;
+}
+#price{ 
+	font-size:15px;
+	float: right;
+	width:50%;
+	height: 7px;
+}
+
+#totalprice{
+	text-align:right;
+	font-size:50px;
+	height: 55%;
+}
+
+#totalTable{
+	width:95%;
+}

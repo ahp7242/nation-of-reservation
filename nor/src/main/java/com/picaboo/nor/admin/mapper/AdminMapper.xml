@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.picaboo.nor.admin.mapper.AdminMapper">
+	<!-- FAQ 삭제 -->
+	<delete id="deleteFAQ" parameterType="int">
+   <![CDATA[
+      DELETE FROM franchisee_faq
+      WHERE faq_no = #{faqNo}
+   ]]>
+   </delete>
+   
+	<!-- FAQ 등록 -->
+	<insert id="insertFAQ" parameterType="com.picaboo.nor.admin.vo.AdminFAQ">
+	<![CDATA[
+		INSERT INTO franchisee_faq(
+			faq_title,
+			faq_content
+		) VALUES (
+			#{faqTitle},
+			#{faqContent}
+		)
+	]]>
+	</insert>
+
+	<!-- FAQ 카운트 조회 -->
+	<select id="selectAdminFAQCount" resultType="int" parameterType="string">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM franchisee_faq
+	]]>
+		<where>
+		   <if test="searchWord != null">
+		   <![CDATA[
+		      faq_title like CONCAT('%', #{searchWord}, '%')
+		   ]]>  
+		   </if>
+		</where>
+	</select>
+   
+	<!-- FAQ 리스트 출력 -->
+	<select id="selectAdminFAQ"
+	      resultType="com.picaboo.nor.admin.vo.AdminFAQ"
+	      parameterType="com.picaboo.nor.admin.vo.AdminFAQPage">
+	<![CDATA[
+	   SELECT 
+	      faq_no as faqNo,
+	      faq_title as faqTitle,
+	      faq_content as faqContent
+	   FROM franchisee_faq
+	]]>
+	   <where>
+	      <if test="searchWord != null">
+	   	  <![CDATA[
+	         faq_title like CONCAT('%', #{searchWord}, '%')
+	      ]]>   
+	      </if>
+	   </where>
+	   <![CDATA[
+	   LIMIT #{beginRow}, #{rowPerPage}
+	   ]]>
+	</select>
+	
+	<!-- QnA 상세정보를 수정하는 매퍼 -->
+	<update id="updateQnA" parameterType="com.picaboo.nor.admin.vo.AdminQnA">
+	<![CDATA[
+	  UPDATE franchisee_qna SET 
+	     qna_answer = #{qnaAnswer}
+	  WHERE 
+	     qna_no = #{qnaNo}
+	]]>
+	</update>
+	<!-- QnA 상세정보 조회 -->
+	<select id="selectQnAOne" parameterType="int" resultType="com.picaboo.nor.admin.vo.AdminQnA">
+	<![CDATA[
+	   SELECT 
+	    qna_no as qnaNo,
+		customer_no as customerNo,
+		qna_type as qnaType,
+		qna_title as qnaTitle,
+		qna_question as qnaQuestion,
+		qna_answer as qnaAnswer,
+		qna_date as qnaDate
+	   FROM franchisee_qna
+	   WHERE qna_no = #{qnaNo}
+	]]>   
+	</select>
+	
+	<!-- QnA 카운트 조회 -->
+	<select id="selectAdminQnACount" resultType="int" parameterType="string">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM franchisee_qna
+	]]>	
+	</select>
+   
+	<!-- QnA 리스트 출력 -->
+	<select id="selectAdminQnA"
+	      resultType="com.picaboo.nor.admin.vo.AdminQnA"
+	      parameterType="com.picaboo.nor.admin.vo.AdminQnAPage">
+	<![CDATA[
+	   SELECT 
+		qna_no as qnaNo,
+		customer_no as customerNo,
+		qna_type as qnaType,
+		qna_title as qnaTitle,
+		qna_question as qnaQuestion,
+		qna_answer as qnaAnswer,
+		qna_date as qnaDate
+	   FROM franchisee_qna
+	   LIMIT #{beginRow}, #{rowPerPage}
+	   ]]>
+	</select>
+</mapper>
