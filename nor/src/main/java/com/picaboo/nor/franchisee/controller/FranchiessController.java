@@ -16,11 +16,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.picaboo.nor.franchisee.service.FranchiseeService;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
+import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 @Controller
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
+	
+	// QnA 입력
+	@PostMapping("/QnAFranchisee")
+    public String addFranchisee(FranchiseeQnA franchiseeQnA, HttpSession session) {
+		String customerNo = (String) session.getAttribute("memberNo");
+		franchiseeQnA.setCustomerNo(customerNo);
+		System.out.println("addFranchisee param franchisee: " + franchiseeQnA);
+        franchiseeService.addFranchiseeQnA(franchiseeQnA);
+        return "redirect:/franchiseeIndex";
+	}
+	
+	// QnA 입력 페이지 요청
+	   @GetMapping("/QnAFranchisee")
+	   public String QnAFranchisee(HttpSession session,FranchiseeQnA franchiseeQnA){
+	      if (session.getAttribute("memberNo") == null) {
+	         return "redirect:/";
+	      }
+	      return "franchisee/QnAFranchisee";
+	   }
 	
 	// 가맹점 정보 수정 페이지 요청
 	@GetMapping("/modifyFranchiseeInfo")
