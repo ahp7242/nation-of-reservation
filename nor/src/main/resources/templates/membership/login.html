@@ -19,9 +19,21 @@
 		height:50px;
 		width:255px;
 	}
+	#logo{
+		text-align: center;
+		height:170px;
+	}
+	
+	.gradation{
+        background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+    }
 </style>
+</head>
 <body>
-	<div th:include="/part/templet::nav"></div>
+<div id="logo" >
+	<img src="/loginimage/logo.jpg">
+</div>
+	<div th:include="/part/templet::nav" class="gradation"></div>
 	<div class="container">
 		<div style="height: 100px;"></div>
 		<div class="card align-middle" style="width: 20rem; border-radius: 20px; margin-left: auto; margin-right: auto;">
@@ -58,7 +70,7 @@
 	<!-- 중간 여백 -->
 
 	<div style="height: 146px;"></div>
-	<div th:include="/part/templet::copyright"></div>
+	<div th:include="/part/templet::copyright" class="gradation"></div>
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

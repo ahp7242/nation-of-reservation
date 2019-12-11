@@ -70,6 +70,8 @@ public class MembershipServiceImpl implements MembershipService{
 	@Override
 	public int getOverlapCustomerId(String customerId) {
 		
+		//System.out.println("서비스"+customerId);
+		
 		return membershipMapper.selectOverlapCustomerId(customerId);
 	}
 }
