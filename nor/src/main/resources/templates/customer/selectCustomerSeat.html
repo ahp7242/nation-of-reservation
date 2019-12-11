@@ -8,11 +8,22 @@
 <meta name="author" content="">
 <!-- Bootstrap core CSS -->
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<!-- Custom styles for this template -->
-<link href="css/heroic-features.css" rel="stylesheet">
 </head>
 <title>CUSTOMER</title>
+<link rel="stylesheet" href="/css/menumodal.css">
+<link rel="stylesheet" href="/css/seatmodal.css">
+<link rel="stylesheet" href="/css/thumnailmodal.css">
 <style>
+#logo {
+	padding-top:54px;
+	text-align: center;
+	height:226px;
+}
+
+.gradation {
+	background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+}
+
 .box {
 	height: 50px;
 	width: 50px;
@@ -22,7 +33,7 @@
 }
 
 .center {
-	width:100%;
+	width: 100%;
 	text-align: center;
 }
 
@@ -35,159 +46,123 @@
 	background-color: #EAEAEA;
 }
 
-#modal {
-	top:90px;
-	display: none;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-	right: 1px;
-	left: 1px;
-}
-
-#modal button {
-	display: inline-block;
-	width: 100px;
-	margin-left: calc(100% - 100px - 10px);
-}
-
-#modal .modal_content {
-	height:430px;
-	width: 340px;
-	margin: 100px auto;
-	padding: 20px 10px;
-	background: #fff;
-	border-radius: 10px;
-	border: 2px solid #666;
-}
-
-#modal .modal_layer {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	z-index: -1;
-}
-
-.List {
-	margin-left: 5px;
-	margin-right: 30px;
-	width:100%;
-	height:150px;
-	
-}
-
-.close{
+.close {
 	font-size: 15px;
 }
-
-ul{
-   list-style:none;
-}
-
-.menu {
-	float:right;
-	height:150px;
-	width:65%;
-	text-align: center;
-	overflow:auto;
-}
-
-.seat {
-	float:left;
-	height:150px;
-	width:35%;
-	text-align: center;
-	overflow:auto;
-}
-
 </style>
 </head>
 <body>
-	<div th:include="/part/customerNav::nav"></div>
+<div id="logo" >		
+	<img src="/loginimage/logo.jpg">
+</div>
+	<div th:include="/part/customerNav::nav" class="gradation"></div>
 	<div class="container center">
 		<h1>CustomerSeat</h1>
 		<div style="height:50px" th:text="${franchisee.franchiseeName}"></div>
-		<div style="height:150px">
-			스펙 및 이미지<br>
-			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
-			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
-			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
-			<img class='card-img-top pic' src='http://placehold.it/500x325' style="width:100px;height:100px;">
+
+		<!-- 이미지 클릭시 모달창 오픈 -->
+		<div class="picmodal_link">
+			<!-- 썸네일  -->
+			<img class="thumbnail round" src="loginimage/pc1.jpg">
+			<img class="thumbnail round" src="loginimage/pc2.jpg">
+			<img class="thumbnail round" src="loginimage/pc3.jpg">
+			<img class="thumbnail round" src="loginimage/pc4.jpg">
 		</div>
-		<div id="modal">
-			<div class="modal_content ">
+		<!--모달창 내용 -->
+		<div id="picmodal">
+			<div class="picmodal_content">
+				<!-- 슬라이드 -->
+				<div class="slideshow-container">
+					<div class="mySlides">
+						<img src="loginimage/pc1.jpg" style="width: 100%">
+					</div>
+					<div class="mySlides">
+						<img src="loginimage/pc2.jpg" style="width: 100%">
+					</div>
+					<div class="mySlides">
+						<img src="loginimage/pc3.jpg" style="width: 100%">
+					</div>
+					<div class="mySlides">
+						<img src="loginimage/pc4.jpg" style="width: 100%">
+					</div>
+					<a class="prev" onclick="plusSlides(-1)"></a> 
+					<a class="next" onclick="plusSlides(1)"></a>
+				</div>
+			</div>
+			<div class="picmodal_layer"></div>
+		</div>
+
+		<!-- 좌석예약 모달창 -->
+		<div id="seatmodal">
+			<div class="seatmodal_content ">
 				<a href="" class="close">❌</a><br>
 				<h2>예약</h2>
 				<input type='date' id='date'><br> 
 				<input type="time" id='time'><br>
 				<hr>
 				<div class="List">
-					<div class="seat">
-						<table class="center">
-							<thead>
-								<tr>
-									<td> 좌석 </td>
-								</tr>
-							<thead>
-							<tbody>
-								<tr>
-									<td id="RList">
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="menu">
-						<table class="center">
-							<tr>
-								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
-								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
-								<td>
-									<img src="/loginimage/짜파게티.jpg" width="60" height="50" class="bt_up" />
-								</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
-								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
-								<td>
-									<img src="/loginimage/너구리.jpg" width="60" height="50" class="bt_up" />
-								</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
-								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
-								<td>
-									<img src="/loginimage/신라면.jpg" width="60" height="50" class="bt_up" />
-								</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox" name="checkbox" value="1" style="border: 0"></td>
-								<td><input type="number" min="0" name="num" value="0" class="num" style="width:60px;"></td>
-								<td>
-									<img src="/loginimage/참깨라면.jpg" width="60" height="50" class="bt_up" />
-								</td>
-							</tr>
-						</table>
-					</div>
+					<ul id="RList">
+					</ul>
 				</div>
 				<hr>
-				<button type="button" id="modal_close_btn" class="btn btn-primary">예약 완료</button>
+				<button type="button" id="seatmodal_close_btn" class="btn btn-primary">예약 완료</button>
 			</div>
-			<div class="modal_layer"></div>
+			<div class="seatmodal_layer"></div>
+		</div>
+		<!-- 상품선택 모달창 -->
+		<div id="menumodal">
+			<div class="menumodal_content ">
+				<a href="" class="close">❌</a><br>
+				<div id="category">
+					Menu category
+					<div class="category">전 체</div>
+					<div class="category">라면류</div>
+					<div class="category">밥 류</div>
+					<div class="category">음 료</div>
+					<div class="category">기 타</div>
+				</div>
+				<div id="menu">
+					<table border="1">
+						<tr>
+							<td class="item">
+								<img class="img" src="/loginimage/너구리.jpg" alt="너구리">
+								<div class="price"><input type="number" min="1" id="count"><p id="price">3000원</p></div>
+							</td>
+							<td class="item"></td>
+							<td class="item"></td>
+							<td class="item"></td>
+							<td class="item"></td>
+						</tr>
+					</table>
+				</div>
+				<div id="total">
+					<table id="totalTable">
+						<tr>
+							<th>상품명</th>
+							<th>판매금액</th>
+							<th>수량</th>
+							<th>최종금액</th>
+						</tr>
+					</table>
+				</div>
+				<div id="reservation">
+					<div id="totalprice">원</div>
+					<div>
+						<button type="button" id="menumodal_close_btn" class="btn btn-primary closed">상품 예약</button>
+					</div>
+				</div>
+			</div>
+			<div class="menumodal_layer"></div>
 		</div>
 		좌석표<br>
 		<table id="seat"></table>
-		<button type="button" id="modal_opne_btn" class="btn btn-primary">예약확인</button>
+		<button type="button" id="menumodal_opne_btn" class="btn btn-primary">상품 주문 후 예약</button>
+		<button type="button" id="seatmodal_opne_btn" class="btn btn-primary">바로 예약</button>
 	</div>
-	<div th:include="/part/customerNav::copyright"></div>
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
 </body>
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script th:inline="javascript">
 let seat = /*[[${seat}]]*/
@@ -226,7 +201,9 @@ for(let row=1; row<=rowMax+1; row++){
 $("#seat").html(html);
 
 $(document).ready(function(){
-	document.getElementById('date').value = new Date().toISOString().substring(0, 10);;
+	//document.getElementById('date').value = new Date().toISOString().substring(0, 10);;
+	let item = [];
+	console.log("이미지",$(".img").attr("alt"));
 	
 	$("#seat tr td").each(function(index1,item1){
 		//console.log($(this).closest('tr').attr('id'))
@@ -276,7 +253,6 @@ $(document).ready(function(){
 				//console.log(divId);
 				$(this).attr("id","TR")
 				$(this).css("background-color", "#A566FF")
-				//console.log(seatNo[0])
 				seatNoList.push(seatNo[0])
 				//console.log(text)
 				
@@ -293,43 +269,66 @@ $(document).ready(function(){
 		})
 	})
 	
-	$("#modal_opne_btn").click(function(){
-			$("#seat div").each(function(index,item){
+	$("#menumodal_opne_btn").click(function(){
+		$("#seat div").each(function(index,item){
 			//console.log(item.id)
 			if(item.id == "TR"){
 				reservationCount += 1;
 			}
 		})
-		
-		if(reservationCount > 0){
-			//console.log(reservationCount)
-			reservationCount = 0;
-		}
-		else {
-			alert("좌석을 선택해 주세요")
-			return;
-		}
+					
+			if(reservationCount > 0){
+				//console.log(reservationCount)
+				reservationCount = 0;
+			}
+			else {
+				alert("좌석을 선택해 주세요")
+				return;
+			}
 		
 		$("#RList").empty()
 		//console.log(seatNoList); 
 		seatNoList.sort(function (a, b) { return a-b; })
 		//console.log(seatNoList)
 		$(seatNoList).each(function(index,item){
-			$("#RList").append("<div id='"+item+"'>" + item + "번 좌석</div>")
+			$("#RList").append("<li id='"+item+"'>" + item + "번 좌석</li>")
 		})
+		$("#menumodal").fadeToggle( 'linear' )
+	});
+					   
+	$("#menumodal_close_btn").click(function(){
+		$("#seatmodal").fadeToggle( 'linear' )
+		$("#menumodal").attr("style", "display:none");
+	});
+
+	$("#seatmodal_opne_btn").click(function(){
+		$("#seat div").each(function(index,item){
+			//console.log(item.id)
+			if(item.id == "TR"){
+				reservationCount += 1;
+			}
+		})
+					
+			if(reservationCount > 0){
+				//console.log(reservationCount)
+				reservationCount = 0;
+			}
+			else {
+				alert("좌석을 선택해 주세요")
+				return;
+			}
 		
-		$("#LList").empty()
+		$("#RList").empty()
 		//console.log(seatNoList); 
 		seatNoList.sort(function (a, b) { return a-b; })
 		//console.log(seatNoList)
 		$(seatNoList).each(function(index,item){
-			$("#LList").append("<div id='"+item+"'>" + item + "번 좌석</div>")
+			$("#RList").append("<li id='"+item+"'>" + item + "번 좌석</li>")
 		})
-		
-		$("#modal").fadeToggle( 'linear' )
+		$("#seatmodal").fadeToggle( 'linear' )
 	});
-					   
-	$("#modal_close_btn").click(function(){
+	
+	$("#seatmodal_close_btn").click(function(){
 		//console.log("예약하기")
 		
 		if($("#time").val() == ""){
@@ -352,8 +351,48 @@ $(document).ready(function(){
 				}
 			})
 		})
-		$("#modal").attr("style", "display:none");
+		$("#seatmodal").attr("style", "display:none");
 	});
+	
 })
+</script>
+<script>
+//슬라이드 
+let slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+	showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+	showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+	let i;
+	let slides = $(".mySlides");
+	if (n > slides.length) {
+		slideIndex = 1
+	}
+	if (n < 1) {
+		slideIndex = slides.length
+	}
+	for (i = 0; i < slides.length; i++) {
+		slides[i].style.display = "none";
+	}
+	slides[slideIndex - 1].style.display = "block";
+	}
+</script>
+
+<script type="text/javascript">
+//모달창 스크립트
+    $(".picmodal_link").click(function(){
+		$("#picmodal").fadeToggle( 'linear' )
+        $("#picmodal").attr("style", "display:block");
+    });
+	$(".picmodal_layer").click(function(){
+		$("#picmodal").attr("style", "display:none");
+	})
 </script>
 </html>
