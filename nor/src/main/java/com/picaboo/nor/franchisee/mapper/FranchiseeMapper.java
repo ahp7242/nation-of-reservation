@@ -8,12 +8,15 @@ import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
 import com.picaboo.nor.franchisee.vo.Spec;
 
 @Mapper
 public interface FranchiseeMapper {
+	// QnA 등록 
+	public int insertFranchiseeQnA(FranchiseeQnA franchiseeQnA);
 	// pc 사양 조회
 	public List<Spec> selectSpec(String specType);
 	// FAQ 리스트 카운트 조회

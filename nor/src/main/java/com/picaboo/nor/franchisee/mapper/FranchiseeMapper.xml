@@ -4,6 +4,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- QnA 등록 -->
+	<insert id="insertFranchiseeQnA" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
+	<![CDATA[
+		INSERT INTO franchisee_qna(
+			customer_no,
+			qna_type,
+			qna_title,
+			qna_question,
+			qna_date
+		) VALUES (
+			#{customerNo},
+			#{qnaType},
+			#{qnaTitle},
+			#{qnaQuestion},
+			NOW()
+		)
+	]]>
+	</insert>
 
 	<!-- 사양 리스트 조회 -->
 	<select id="selectSpec" resultType="com.picaboo.nor.franchisee.vo.Spec" parameterType="string">
@@ -148,7 +166,6 @@
 	      franchisee_crn as franchiseeCrn,
 	      franchisee_name as franchiseeName,
 	      franchisee_phone as franchiseePhone,
-	      franchisee_pic as franchiseePic,
 	      owner_no as ownerNo
 	   FROM franchisee
 	   WHERE franchisee_no = #{franchiseeNo}
@@ -160,8 +177,7 @@
 	<![CDATA[
 	   SELECT 
 	      franchisee_no as franchiseeNo,
-	      franchisee_name as franchiseeName,
-	      franchisee_pic as franchiseePic
+	      franchisee_name as franchiseeName
 	   FROM franchisee
 	   WHERE owner_no = #{owner_no}
 	]]>   

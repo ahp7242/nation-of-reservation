@@ -18,6 +18,7 @@ import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
 import com.picaboo.nor.franchisee.vo.Spec;
@@ -26,6 +27,12 @@ import com.picaboo.nor.franchisee.vo.Spec;
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	
+	// QnA 등록
+	@Override
+	public int addFranchiseeQnA(FranchiseeQnA franchiseeQnA) {		
+		return franchiseeMapper.insertFranchiseeQnA(franchiseeQnA);
+	}
 	
 	// pc 사양 조회
 	@Override

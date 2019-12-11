@@ -5,9 +5,12 @@ import java.util.Map;
 
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
+import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 public interface FranchiseeService {
+	// QnA 등록
+	public int addFranchiseeQnA(FranchiseeQnA franchiseeQnA);
 	// pc 사양 리스트 조회
 	public Map<String, Object> getSpec();
 	// FAQ 리스트 조회
