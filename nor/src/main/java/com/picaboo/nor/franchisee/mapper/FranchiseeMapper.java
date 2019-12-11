@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
+import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
@@ -15,6 +16,14 @@ import com.picaboo.nor.franchisee.vo.Spec;
 
 @Mapper
 public interface FranchiseeMapper {
+	// 가맹점 썸네일 사진 조회
+	public List<FranchiseePic> selectFranchiseeThumbnail();
+	// 가맹점 사진 삭제
+	public int deleteFranchiseePic(int picNo);
+	// 사진 번호로 가맹점 사진 하나 조회
+	public FranchiseePic selectFranchiseePicOne(int picNo);
+	// 가맹점 pc 사양정보 수정
+	public int updateFranchiseeSpec(FranchiseeSpec franchiseeSpec);
 	// QnA 등록 
 	public int insertFranchiseeQnA(FranchiseeQnA franchiseeQnA);
 	// pc 사양 조회

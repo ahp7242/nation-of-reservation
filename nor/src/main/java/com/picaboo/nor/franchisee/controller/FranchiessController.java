@@ -23,6 +23,18 @@ import com.picaboo.nor.franchisee.vo.Seat;
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
 	
+	// 음식 상품 관리 페이지 요청
+	@GetMapping("franchiseeFoodIndex")
+	public String franchiseeFoodIndex(HttpSession session, @RequestParam(value="franchiseeNo") String franchiseeNo) {
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		System.out.println("session memberNo: " + ownerNo);
+	
+		return "franchisee/franchiseeFoodIndex";
+	}
 	// QnA 입력
 	@PostMapping("/QnAFranchisee")
     public String addFranchisee(FranchiseeQnA franchiseeQnA, HttpSession session) {
@@ -35,13 +47,32 @@ public class FranchiessController {
 	
 	// QnA 입력 페이지 요청
 	   @GetMapping("/QnAFranchisee")
-	   public String QnAFranchisee(HttpSession session,FranchiseeQnA franchiseeQnA){
-	      if (session.getAttribute("memberNo") == null) {
+	   public String QnAFranchisee(HttpSession session,FranchiseeQnA franchiseeQnA) {
+		  // 세션 검사
+		  String ownerNo = (String)session.getAttribute("memberNo");
+	      if (ownerNo == null) {
 	         return "redirect:/";
 	      }
+	      System.out.println("session memberNo: " + ownerNo);
+	      
 	      return "franchisee/QnAFranchisee";
 	   }
 	
+	// 가맹점 정보 수정
+	@PostMapping("modifyFranchiseeInfo")
+	public String modifyFranchiseeInfo(FranchiseeInfoForm franchiseeInfoForm) {
+		System.out.println("modifyFranchiseeInfo POST 요청");
+		System.out.println("Controller franchiseeInfoForm: " + franchiseeInfoForm);
+		
+		int rows = franchiseeService.modifyFranchiseeInfo(franchiseeInfoForm);
+		if(rows < 0) 
+			System.out.println("파일 형식 오류");
+		else
+			System.out.println("처리된 행의 수: " + rows);
+		
+		return "redirect:/detailFranchisee?franchiseeNo="+franchiseeInfoForm.getFranchiseeNo();
+	}
+	   
 	// 가맹점 정보 수정 페이지 요청
 	@GetMapping("/modifyFranchiseeInfo")
 	public String modifyFranchiseeInfo(HttpSession session, Model model, @RequestParam(value="franchiseeNo") String franchiseeNo) {
@@ -85,14 +116,8 @@ public class FranchiessController {
 	
 	// 가맹점 정보 입력
 	@PostMapping("/addFranchiseeInfo")
-	public String addFranchiseeInfo(HttpSession session, FranchiseeInfoForm franchiseeInfoForm) {
+	public String addFranchiseeInfo(FranchiseeInfoForm franchiseeInfoForm) {
 		System.out.println("addFranchiseeInfo POST 요청");
-		
-		// 세션 검사
-		String ownerNo = (String)session.getAttribute("memberNo");
-		if (ownerNo == null) {
-		return "redirect:/";
-		}
 		
 		System.out.println("Controller franchiseeInfoForm: " + franchiseeInfoForm);
 		
@@ -158,10 +183,7 @@ public class FranchiessController {
 		// 가맹점 정보 사진, pc사양 가져와서 model로 넘김
 		Map<String, Object> franchiseeInfo = franchiseeService.getFranchiseeInfo(franchiseeNo);
 		System.out.println("franchiseeInfo:" + franchiseeInfo);
-		System.out.println("infoSize: " + franchiseeInfo.size());
 		model.addAttribute("franchiseeInfo", franchiseeInfo);
-		model.addAttribute("infoSize", franchiseeInfo.size());
-		
 		
 		return "franchisee/detailFranchisee";
 	}
@@ -179,7 +201,13 @@ public class FranchiessController {
 		
 		// 가맹점 리스트 가져와서 넘김
 		List<Franchisee> franchiseeList = franchiseeService.getFranchiseeList(ownerNo);
+		System.out.println("index franchiseeList:" + franchiseeList);
 		model.addAttribute("franchiseeList", franchiseeList);
+		
+		// 가맹점 썸네일 사진 가져와서 Model로 넘김
+		Map<String, Object> thumbnailInfo = franchiseeService.getFranchiseeThumbnail(franchiseeList);
+		System.out.println("thumbnailInfo: " + thumbnailInfo);
+		model.addAttribute("thumbnailInfo", thumbnailInfo);
 		
 		return "franchiseeIndex";
 	}

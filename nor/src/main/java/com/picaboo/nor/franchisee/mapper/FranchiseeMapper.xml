@@ -4,6 +4,56 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- 가맹점 썸네일 사진 조회 -->
+	<select id="selectFranchiseeThumbnail" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
+	<![CDATA[
+		SELECT 
+			pic_no as picNo,
+			file_name as fileName,
+			extension as extension,
+			content_type as contentType,
+			size as size,
+			origin_name as originName
+		FROM franchisee_pic
+		GROUP BY franchisee_no
+		HAVING MIN(pic_no)
+	]]>
+	</select>
+	<!-- 가맹점 사진 삭제 -->
+	<delete id="deleteFranchiseePic" parameterType="int"> 
+	<![CDATA[
+		DELETE
+		FROM franchisee_pic
+		WHERE pic_no = #{picNo}
+	]]>
+	</delete>
+	<!-- 사진 번호로 가맹점 사진 하나 조회 -->
+	<select id="selectFranchiseePicOne" parameterType="int" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
+	<![CDATA[
+		SELECT
+			franchisee_no as franchiseeNo,
+			file_name as fileName,
+			extension as extension,
+			content_type as contentType,
+			size as size,
+			origin_name as originName
+		FROM franchisee_pic
+		WHERE pic_no = #{picNo}
+	]]>
+	</select>
+	
+	<!-- pc사양 수정 -->
+	<update id="updateFranchiseeSpec">
+	<![CDATA[
+		UPDATE franchisee_spec
+		SET
+			cpu = #{cpu},
+			vga = #{vga},
+			ram = #{ram}
+		WHERE franchisee_no = #{franchiseeNo}
+	]]>
+	</update>
+	
 	<!-- QnA 등록 -->
 	<insert id="insertFranchiseeQnA" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
 	<![CDATA[
@@ -76,13 +126,14 @@
 	<!-- 저장된 파일 이름, 확장명, 원래 파일 이름, 가맹점 번호 조회 -->
 	<select id="selectFranchiseePic" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
 	<![CDATA[
-	   SELECT 
-	      franchisee_no as franchiseeNo,
-	      file_name as fileName,
-	      extension as extension,
-	      origin_name as originName
-	   FROM franchisee_pic
-	   WHERE franchisee_no = #{franchiseeNo}
+		SELECT
+			pic_no as picNo,
+			franchisee_no as franchiseeNo,
+			file_name as fileName,
+			extension as extension,
+			origin_name as originName
+		FROM franchisee_pic
+		WHERE franchisee_no = #{franchiseeNo}
 	]]>
 	</select>
 	

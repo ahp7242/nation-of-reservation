@@ -79,40 +79,41 @@
   </div>
   <!-- Page Content -->
   <div class="container-fluid jumbotron my-4">
-	
 	  <!-- pc방 상세 페이지 -->
 	  <h1 class="my-4" th:text="${franchisee.franchiseeName}"></h1>
-	  		
-	  <!-- pc방 정보 -->
-	  <div class="col-md-4">
-	    <h3 class="my-3">PC방 정보</h3>
-	    <div th:object="${franchisee}">
-		     <p th:text="*{franchiseeCrn}">
-		     <p th:text="*{franchiseePhone}">
-   		</div>
-   		
-	    <h3 class="my-3">PC방 사양</h3>
-	    <div th:object="${franchiseeInfo}">
-	      <ul>
-	        <li th:text="*{franchiseeSpec?.cpu}">cpu</li>
-	        <li th:text="*{franchiseeSpec?.vga}">vga</li>
-	        <li th:text="*{franchiseeSpec?.ram}">ram</li>
-	        <li>짜파게티 보유</li>
-	      </ul>
-	    </div>
-	    
-	  </div>
 	  
 	  <h2><small>좌석 정보</small></h2>
-	  <!-- 좌석 정보 테이블 -->
-	
+	  
 	  <div class="row">
+	  
+	  <!-- 좌석 정보 테이블 -->
 	    <div class="col-md-8">
 	      <div style="overflow:auto">
 	      	<table id="seat"></table>
 	    	</div>	             
 	 	</div>
 	
+	    <!-- pc방 정보 -->
+	    <div class="col-md-2 shadow p-4 mb-4 bg-light">
+	  
+		    <h3 class="my-3">PC방 정보</h3>
+		    <div th:object="${franchisee}">
+			     <p th:text="'CRN: ' + *{franchiseeCrn}">crn</p>
+			     <p th:text="'Phone: ' + *{franchiseePhone}">phone</p>
+		    </div>
+	   		
+		    <h3 class="my-3">PC방 사양</h3>
+		    <div th:object="${franchiseeInfo}">
+		      <ul>
+		        <li th:text="*{franchiseeSpec?.cpu}">cpu</li>
+		        <li th:text="*{franchiseeSpec?.vga}">vga</li>
+		        <li th:text="*{franchiseeSpec?.ram}">ram</li>
+		        <li>짜파게티 보유</li>
+		      </ul>
+		    </div>
+	    
+	    </div>
+		
 	  </div>
 	  <!-- /.row -->
 		
@@ -141,14 +142,18 @@
 	      <a href="#" th:href="@{/removeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 삭제</a>
 	    </div>
 	
-	    <div th:if="${infoSize<1}" class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${franchiseeInfo.franchiseeSpec == null}" class="col-md-3 col-sm-6 mb-4">
 	      <a href="#" th:href="@{/addFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 입력</a>
 	    </div>
 	
-	    <div th:if="${infoSize>0}" class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${franchiseeInfo.franchiseeSpec != null}" class="col-md-3 col-sm-6 mb-4">
 	      <a href="#" th:href="@{/modifyFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 수정</a>
 	    </div>
-	
+		
+		<div th:if="${franchiseeInfo.franchiseeSpec != null}" class="col-md-3 col-sm-6 mb-4">
+	      <a href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 상품 관리</a>
+	    </div>
+		
 	  </div>
 	  <!-- /.row -->
 	

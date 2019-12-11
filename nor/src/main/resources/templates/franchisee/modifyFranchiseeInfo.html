@@ -56,7 +56,7 @@
    </div>
   <!-- Page Content -->
   <div class="container jumbotron my-4">
-  	<h4>가맹점 상세 정보 입력</h4>
+  	<h4>가맹점 상세 정보 수정	</h4>
 		<form action="/modifyFranchiseeInfo" method="post" enctype="multipart/form-data">
 			<div>
 				<input type="hidden" th:value="${franchiseeNo}" name="franchiseeNo">
@@ -96,14 +96,14 @@
             	  <!-- 삭제 요청 체크박스 -->
             	  <div>
             	  	<label for="fileDelCheckBox">remove file: </label>
-            	  	<input type="checkbox" name="removeFile" value="removeFile">
+            	  	<input type="checkbox" name="removeFileList" th:value="${pic.picNo}">
             	  </div>
             	  
 		        </div>
 	    	  </div>
 	        </div>
 	        <!-- 전체 선택 -->
-	      	<button type="button" class="btn btn-outline-secondary">전체 선택</button>
+	      	<button type="button" id="checkAll" class="btn btn-outline-secondary">전체 선택/해제</button>
 	        <br><br>
 			<button id="addButton" type="submit" class="btn btn-primary">입력</button>
 		</form>
@@ -123,6 +123,18 @@
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+	  $(document).ready(function(){
+		    //전체 선택 해제 버튼 클릭
+		    $("#checkAll").click(function(){
+		 		if($("input[name=removeFileList]").is(":checked")) {
+		 			$("input[name=removeFileList]").prop("checked", false);
+		 		}else {
+		 			$("input[name=removeFileList]").prop("checked", true);
+		 		}
+		    });
+		});
+  </script>
 </body>
 
 </html>

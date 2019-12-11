@@ -28,6 +28,140 @@ import com.picaboo.nor.franchisee.vo.Spec;
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
 	
+	@Override
+	public Map<String, Object> getFranchiseeThumbnail(List<Franchisee> franchiseeList) {
+		System.out.println("getFranchiseeThumbnail franchiseeList: " + franchiseeList);
+		// 썸네일 사진과 경로를 가지는 맵 리턴
+		Map<String, Object> thumbnailInfo = new HashMap<String, Object>();
+		// 저장 경로
+		String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
+		thumbnailInfo.put("uploadPath", uploadPath);
+		// 썸네일 사진
+		List<FranchiseePic> thumbnailList = franchiseeMapper.selectFranchiseeThumbnail();
+		
+		thumbnailInfo.put("thumbnailList", thumbnailList);
+		
+		return thumbnailInfo;
+	}
+	
+	@Override
+	public int modifyFranchiseeInfo(FranchiseeInfoForm franchiseeInfoForm) {
+		// 리턴 변수
+		int rows = 0;
+		//franchiseeInfoForm을 franchiseePic, franchiseeSpec으로 분리
+		System.out.println("Service modify franchiseeInfoForm: " + franchiseeInfoForm);
+		// 1. franchiseeSpec UPDATE
+		FranchiseeSpec franchiseeSpec = new FranchiseeSpec();
+		franchiseeSpec.setFranchiseeNo(franchiseeInfoForm.getFranchiseeNo());
+		franchiseeSpec.setCpu(franchiseeInfoForm.getCpu());
+		franchiseeSpec.setVga(franchiseeInfoForm.getVga());
+		franchiseeSpec.setRam(franchiseeInfoForm.getRam());
+		
+		franchiseeMapper.updateFranchiseeSpec(franchiseeSpec);
+		
+		// 2. franchiseePic DELETE
+		// 삭제할 파일 목록 저장
+		List<Integer> deletePicList = franchiseeInfoForm.getRemoveFileList();
+		// 목록이 null이 아닐경우 파일 삭제 체크한 사진 삭제 
+		if(deletePicList != null) {
+			for(int picNo : deletePicList) {
+				// 저장 경로
+				String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
+				// 삭제할 사진 가져옴
+				FranchiseePic deletePic = franchiseeMapper.selectFranchiseePicOne(picNo);
+				
+				System.out.println("파일 삭제 시작");
+				try {
+					// db에서 삭제
+					rows += franchiseeMapper.deleteFranchiseePic(picNo);
+					// 파일 삭제
+					File file = new File( (uploadPath+"\\"+deletePic.getFileName()) );
+					if( file.exists() ){
+						if(file.delete()){ 
+							System.out.println("파일 삭제 성공"); 
+						}else{ 
+							System.out.println("파일 삭제 실패"); 
+						}
+					} else{
+						System.out.println("파일이 존재하지 않습니다."); 
+					} 
+				} catch (Exception e) {
+					e.printStackTrace();
+					// 파일을 삭제할 때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
+					throw new RuntimeException();
+				} 
+			}
+		}
+		
+		// 3. 사진 추가, franchiseePic INSERT
+		// 파일 리스트 가져옴
+		List<MultipartFile> picList = franchiseeInfoForm.getFranchiseePicList();
+		// 파일로 저장할 사진 리스트
+		List<FranchiseePic> fileList = new ArrayList<FranchiseePic>();
+		// 사진 리스트에서 하나씩 정보를 추출하여 db에 저장
+		for(MultipartFile mf : picList) {
+			String contentType = mf.getContentType();
+			String name = mf.getName();
+			String originName = mf.getOriginalFilename();
+			long size = mf.getSize();
+			// 파일 확장자명
+			String extension = originName.substring(originName.lastIndexOf(".")+1);
+			// 랜덤한 UUID에 -를 빼고 원래 파일이름의 확장자만 더해서 저장할 파일이름을 생성
+			String saveFileName = UUID.randomUUID().toString().replace("-", "")+"."+extension;
+						
+			System.out.println("addFranchiseeInfo contentType: " + contentType);
+			System.out.println("addFranchiseeInfo name: " + name);
+			System.out.println("addFranchiseeInfo originName: " + originName);
+			System.out.println("addFranchiseeInfo size: " + size);
+			System.out.println("addFranchiseeInfo extension: " + extension);
+			System.out.println("addFranchiseeInfo saveFileName: " + saveFileName);
+			
+			if(!contentType.equals("image/jpeg") && !contentType.equals("image/png") && 
+					!contentType.equals("image/gif") && !contentType.equals("image/svg+xml") ) {
+				return -1;
+			}
+			
+			// franchiseePic으로  db에 저장
+			FranchiseePic franchiseePic = new FranchiseePic();
+			franchiseePic.setFranchiseeNo(franchiseeInfoForm.getFranchiseeNo());
+			franchiseePic.setContentType(contentType);
+			franchiseePic.setExtension(extension);
+			franchiseePic.setFileName(saveFileName);
+			franchiseePic.setOriginName(originName);
+			franchiseePic.setSize(size);
+			// 파일로 저장할 사진 목록에 추가
+			fileList.add(franchiseePic);
+			rows += franchiseeMapper.insertFranchiseePic(franchiseePic);
+		}
+		
+		// 파일로 저장할 목록 인덱스
+		int FileListIndex = 0;
+		// 파일로 저장, SQL예외가 발생하면 파일이 저장되지 않아야 하므로 맨 마지막에 실행
+		for(MultipartFile mf : picList) {
+			
+			// saveFileName을 가져오기 위한 객체
+			FranchiseePic franchiseePic = fileList.get(FileListIndex);
+			
+			// 저장될 파일 이름
+			String fileName = franchiseePic.getFileName();
+			
+			// 저장 경로
+			String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
+			
+			try {
+				mf.transferTo(new File(uploadPath+"\\"+fileName));		
+			} catch (Exception e) {
+				e.printStackTrace();
+				// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
+				throw new RuntimeException();
+			}
+			
+			// 인덱스 증가
+			FileListIndex++;
+		}
+
+		return rows;
+	}
 	// QnA 등록
 	@Override
 	public int addFranchiseeQnA(FranchiseeQnA franchiseeQnA) {		
@@ -104,8 +238,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 	}
 	
 	@Override
-	public int addFranchiseeInfo(FranchiseeInfoForm FranchiseeInfoForm) {
-		// 성공한 처리수를 리턴할 함수
+	public int addFranchiseeInfo(FranchiseeInfoForm franchiseeInfoForm) {
+		// 성공한 처리수를 리턴할 변수
 		int rows = 0;
 		
 		/*
@@ -125,10 +259,10 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		
 		// FranchiseeInfo로 db에 저장
 		FranchiseeSpec franchiseeSpec = new FranchiseeSpec();
-		franchiseeSpec.setFranchiseeNo(FranchiseeInfoForm.getFranchiseeNo());
-		franchiseeSpec.setCpu(FranchiseeInfoForm.getCpu());
-		franchiseeSpec.setVga(FranchiseeInfoForm.getVga());
-		franchiseeSpec.setRam(FranchiseeInfoForm.getRam());
+		franchiseeSpec.setFranchiseeNo(franchiseeInfoForm.getFranchiseeNo());
+		franchiseeSpec.setCpu(franchiseeInfoForm.getCpu());
+		franchiseeSpec.setVga(franchiseeInfoForm.getVga());
+		franchiseeSpec.setRam(franchiseeInfoForm.getRam());
 
 		System.out.println("getCpu: "+ franchiseeSpec.getCpu());
 		System.out.println("getVga: " + franchiseeSpec.getVga());
@@ -139,7 +273,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		// 2. FranchiseePic
 		
 		// 파일 리스트 가져옴
-		List<MultipartFile> picList = FranchiseeInfoForm.getFranchiseePicList();
+		List<MultipartFile> picList = franchiseeInfoForm.getFranchiseePicList();
 		// 파일로 저장할 사진 리스트
 		List<FranchiseePic> fileList = new ArrayList<FranchiseePic>();
 		
@@ -168,7 +302,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			
 			// franchiseePic으로  db에 저장
 			FranchiseePic franchiseePic = new FranchiseePic();
-			franchiseePic.setFranchiseeNo(FranchiseeInfoForm.getFranchiseeNo());
+			franchiseePic.setFranchiseeNo(franchiseeInfoForm.getFranchiseeNo());
 			franchiseePic.setContentType(contentType);
 			franchiseePic.setExtension(extension);
 			franchiseePic.setFileName(saveFileName);

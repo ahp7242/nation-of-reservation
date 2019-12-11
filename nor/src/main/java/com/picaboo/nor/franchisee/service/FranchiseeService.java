@@ -5,10 +5,15 @@ import java.util.Map;
 
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
+import com.picaboo.nor.franchisee.vo.FranchiseePic;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 public interface FranchiseeService {
+	// 가맹점 썸네일 사진 조회
+	public Map<String, Object> getFranchiseeThumbnail(List<Franchisee> franchiseeList);
+	// 가맹점 정보 수정
+	public int modifyFranchiseeInfo(FranchiseeInfoForm franchiseeInfoForm);
 	// QnA 등록
 	public int addFranchiseeQnA(FranchiseeQnA franchiseeQnA);
 	// pc 사양 리스트 조회
