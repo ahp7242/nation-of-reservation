@@ -1,6 +1,7 @@
 package com.picaboo.nor.franchisee.service;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
 import com.picaboo.nor.franchisee.vo.Spec;
+import com.picaboo.nor.ftp.FTPService;
 
 @Service
 @Transactional
@@ -54,7 +56,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		// 썸네일 사진과 경로를 가지는 맵 리턴
 		Map<String, Object> thumbnailInfo = new HashMap<String, Object>();
 		// 저장 경로
-		String uploadPath = "C:/upload";
+		String uploadPath = "http://ahp7242.cdn3.cafe24.com/";
 		thumbnailInfo.put("uploadPath", uploadPath);
 		// 썸네일 사진
 		List<FranchiseePic> thumbnailList = franchiseeMapper.selectFranchiseeThumbnail();
@@ -84,32 +86,33 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		List<Integer> deletePicList = franchiseeInfoForm.getRemoveFileList();
 		// 목록이 null이 아닐경우 파일 삭제 체크한 사진 삭제 
 		if(deletePicList != null) {
+			// 삭제 리스트 반복문
 			for(int picNo : deletePicList) {
-				// 저장 경로
-				String uploadPath = "C:\\upload";
 				// 삭제할 사진 가져옴
 				FranchiseePic deletePic = franchiseeMapper.selectFranchiseePicOne(picNo);
+				String storeFileName = deletePic.getFileName();
 				
-				System.out.println("파일 삭제 시작");
 				try {
 					// db에서 삭제
 					rows += franchiseeMapper.deleteFranchiseePic(picNo);
-					// 파일 삭제
-					File file = new File( (uploadPath+"\\"+deletePic.getFileName()) );
-					if( file.exists() ){
-						if(file.delete()){ 
-							System.out.println("파일 삭제 성공"); 
-						}else{ 
-							System.out.println("파일 삭제 실패"); 
-						}
-					} else{
-						System.out.println("파일이 존재하지 않습니다."); 
-					} 
+					
+					// CDN에서 삭제 시작
+					System.out.println("Delete Start");
+					FTPService ftpUploader = new FTPService();
+					// FTP 연결
+					ftpUploader.connectFTP(null);
+					// 파일 업로드
+					ftpUploader.deleteFile(storeFileName);
+					// FTP 연결 해제
+					ftpUploader.disconnect();
+					System.out.println("Done");
+					
 				} catch (Exception e) {
 					e.printStackTrace();
-					// 파일을 삭제할 때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
+					// 파일 삭제할 때 예외발생 시 rollback 시키기 위해 강제로 런타임 예외 발생시킴.
 					throw new RuntimeException();
-				} 
+				}
+				
 			}
 		}
 		
@@ -156,20 +159,37 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		
 		// 파일로 저장할 목록 인덱스
 		int FileListIndex = 0;
-		// 파일로 저장, SQL예외가 발생하면 파일이 저장되지 않아야 하므로 맨 마지막에 실행
+		
+		// CDN 서버에 파일 저장
+		// SQL예외가 발생하면 파일이 저장되지 않아야 하므로 맨 마지막에 실행
 		for(MultipartFile mf : picList) {
 			
 			// saveFileName을 가져오기 위한 객체
 			FranchiseePic franchiseePic = fileList.get(FileListIndex);
 			
 			// 저장될 파일 이름
-			String fileName = franchiseePic.getFileName();
-			
-			// 저장 경로
-			String uploadPath = "C:\\upload";
+			String storeFileName = franchiseePic.getFileName();
 			
 			try {
-				mf.transferTo(new File(uploadPath+"\\"+fileName));		
+				// MultipartFile을 File로 변환
+				String fileName = mf.getOriginalFilename();
+				File convertFile = new File(fileName);
+				convertFile.createNewFile();
+				FileOutputStream fos = new FileOutputStream(convertFile);
+				fos.write(mf.getBytes());
+				fos.close();
+				
+				// CDN에 업로드 시작
+				System.out.println("Upload Start");
+				FTPService ftpUploader = new FTPService();
+				// FTP 연결
+				ftpUploader.connectFTP(convertFile);
+				// 파일 업로드
+				ftpUploader.uploadFile(convertFile, storeFileName);
+				// FTP 연결 해제
+				ftpUploader.disconnect();
+				System.out.println("Done");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
@@ -252,9 +272,9 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		
 		// 가맹점 사진
 		List<FranchiseePic> franchisePicList = franchiseeMapper.selectFranchiseePic(franchiseeNo);
-		System.out.println("franchisePicList: " + franchisePicList);
+		System.out.println("Service franchisePicList: " + franchisePicList);
 		// 저장 경로
-		String uploadPath = "C:/upload";
+		String uploadPath = "http://ahp7242.cdn3.cafe24.com/";
 		
 		franchiseeInfo.put("franchisePicList", franchisePicList);
 		franchiseeInfo.put("uploadPath", uploadPath);
@@ -337,26 +357,43 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			fileList.add(franchiseePic);
 			rows += franchiseeMapper.insertFranchiseePic(franchiseePic);
 		}
+		
 		// 파일로 저장할 목록 인덱스
 		int FileListIndex = 0;
-		// 파일로 저장, SQL예외가 발생하면 파일이 저장되지 않아야 하므로 맨 마지막에 실행
+		
+		// CDN 서버에 파일 저장
+		// SQL예외가 발생하면 파일이 저장되지 않아야 하므로 맨 마지막에 실행
 		for(MultipartFile mf : picList) {
 			
 			// saveFileName을 가져오기 위한 객체
 			FranchiseePic franchiseePic = fileList.get(FileListIndex);
 			
 			// 저장될 파일 이름
-			String fileName = franchiseePic.getFileName();
+			String storeFileName = franchiseePic.getFileName();
 			
-			// 저장 경로
-			String uploadPath = "C:\\upload";
-					
 			try {
-				mf.transferTo(new File(uploadPath+"\\"+fileName));		
+				// MultipartFile을 File로 변환
+				String fileName = mf.getOriginalFilename();
+				File convertFile = new File(fileName);
+				convertFile.createNewFile();
+				FileOutputStream fos = new FileOutputStream(convertFile);
+				fos.write(mf.getBytes());
+				fos.close();
+				
+				// CDN에 업로드 시작
+				System.out.println("Upload Start");
+				FTPService ftpUploader = new FTPService();
+				// FTP 연결
+				ftpUploader.connectFTP(convertFile);
+				// 파일 업로드
+				ftpUploader.uploadFile(convertFile, storeFileName);
+				// FTP 연결 해제
+				ftpUploader.disconnect();
+				System.out.println("Done");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
-				// 아직 예외처리를 따로 만들지 않고 일단 런타임 예외를 발생시켰다.
 				throw new RuntimeException();
 			}
 			

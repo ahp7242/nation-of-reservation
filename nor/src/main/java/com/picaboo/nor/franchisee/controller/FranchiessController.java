@@ -74,9 +74,6 @@ public class FranchiessController {
     public String addFranchisee(FranchiseeQnA franchiseeQnA, HttpSession session) {
 		String customerNo = (String) session.getAttribute("memberNo");
 		franchiseeQnA.setCustomerNo(customerNo);
-		String customerMail = (String) session.getAttribute("memberEmail");
-		franchiseeQnA.setCustomerMail(customerMail);
-		
 		System.out.println("addFranchisee param franchisee: " + franchiseeQnA);
         franchiseeService.addFranchiseeQnA(franchiseeQnA);
         return "redirect:/franchiseeIndex";
@@ -217,7 +214,7 @@ public class FranchiessController {
 		model.addAttribute("seat", seat);
 		model.addAttribute("seatSize", seat.size());
 		
-		// 가맹점 정보 사진, pc사양 가져와서 model로 넘김
+		// 가맹점 정보 사진, 업로드 경로, pc사양 가져와서 model로 넘김
 		Map<String, Object> franchiseeInfo = franchiseeService.getFranchiseeInfo(franchiseeNo);
 		System.out.println("franchiseeInfo:" + franchiseeInfo);
 		model.addAttribute("franchiseeInfo", franchiseeInfo);
