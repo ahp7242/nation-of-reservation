@@ -20,7 +20,7 @@ import com.picaboo.nor.admin.vo.AdminQnA;
 public class AdminController {
 	@Autowired AdminService adminService;
 
-	// FAQ 등록
+	// FAQ 삭제
 		@PostMapping("/delFAQ")
 	    public String delFAQ(HttpSession session,@RequestParam(value="qnaNo") int faqNo ) {
 			String customerNo = (String) session.getAttribute("memberNo");
@@ -92,7 +92,7 @@ public class AdminController {
 				return "redirect:/";
 			}
 			//System.out.println("currentPage : " + currentPage);
-			int rowPerPage = 12;
+			int rowPerPage = 10;
 			Map<String, Object> map = adminService.getAdminQnA(currentPage, rowPerPage);
 			model.addAttribute("map", map);
 			//System.out.println("map : " + map);
