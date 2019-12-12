@@ -19,14 +19,6 @@ import com.picaboo.nor.admin.vo.AdminQnA;
 
 public class AdminController {
 	@Autowired AdminService adminService;
-	// FAQ 등록
-	@GetMapping("/mypageFranchisee")
-    public String mypageFranchisee(HttpSession session){
-		if (session.getAttribute("memberNo") == null) {
-         return "redirect:/";
-		}
-      return "franchisee/mypageFranchisee";
-	}
 
 	// FAQ 등록
 		@PostMapping("/delFAQ")
@@ -57,7 +49,7 @@ public class AdminController {
 			}
 			//System.out.println("currentPage : " + currentPage);
 			//System.out.println("searchWord : " + searchWord);
-			int rowPerPage = 5;
+			int rowPerPage = 10;
 			Map<String, Object> map = adminService.getAdminFAQList(currentPage, rowPerPage, searchWord);
 			model.addAttribute("map", map);
 			//System.out.println("map : " + map);

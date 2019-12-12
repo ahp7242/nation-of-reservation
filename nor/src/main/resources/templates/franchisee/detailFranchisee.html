@@ -67,6 +67,9 @@
             <a class="nav-link" href="/logout">logout</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/mypageFranchisee">MyPage</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
           </li>
           <li class="nav-item">
@@ -78,7 +81,7 @@
   </nav>
   </div>
   <!-- Page Content -->
-  <div class="container-fluid jumbotron my-4">
+  <div class="container jumbotron my-4">
 	  <!-- pc방 상세 페이지 -->
 	  <h1 class="my-4" th:text="${franchisee.franchiseeName}"></h1>
 	  
@@ -111,19 +114,19 @@
 		        <li>짜파게티 보유</li>
 		      </ul>
 		    </div>
-	    
+    
 	    </div>
 		
 	  </div>
 	  <!-- /.row -->
 		
-	  	  <!-- pc방 사진 -->
+	  	  <!--${franchiseeInfo.uploadPath} pc방 사진 -->
 	  <div>
       <h3 class="my-3">PC방 사진</h3>
       <div class="row">
       	<div th:each="pic : ${franchiseeInfo.franchisePicList}">
 	        <div>
-	          <img th:src="${franchiseeInfo.uploadPath}+ '/' +${pic.fileName}" th:alt-title="${pic.originName}" width="200" height="200">
+	          <img th:src="'C:/upload'+ '/' +${pic.fileName}" th:alt-title="${pic.originName}" width="200" height="200">
 	        </div>
     	</div>
       </div>
@@ -135,23 +138,23 @@
 		
 			
 	    <div th:if="${seatSize<1}" class="col-md-3 col-sm-6 mb-4">
-	      <a href="#" th:href="@{/addFranchiseeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 입력</a>
+	      <a href="#" th:href="@{/addFranchiseeSeat?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">좌석 입력</a>
 	    </div>
 	
 		<div th:if="${seatSize>0}" class="col-md-3 col-sm-6 mb-4">
-	      <a href="#" th:href="@{/removeSeat?(franchiseeNo=${franchisee.franchiseeNo})}">좌석 삭제</a>
+	      <a href="#" th:href="@{/removeSeat?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">좌석 삭제</a>
 	    </div>
 	
 	    <div th:if="${franchiseeInfo.franchiseeSpec == null}" class="col-md-3 col-sm-6 mb-4">
-	      <a href="#" th:href="@{/addFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 입력</a>
+	      <a href="#" th:href="@{/addFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 정보 입력</a>
 	    </div>
 	
 	    <div th:if="${franchiseeInfo.franchiseeSpec != null}" class="col-md-3 col-sm-6 mb-4">
-	      <a href="#" th:href="@{/modifyFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 정보 수정</a>
+	      <a href="#" th:href="@{/modifyFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 정보 수정</a>
 	    </div>
 		
 		<div th:if="${franchiseeInfo.franchiseeSpec != null}" class="col-md-3 col-sm-6 mb-4">
-	      <a href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchisee.franchiseeNo})}">가맹점 상품 관리</a>
+	      <a href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 상품 관리</a>
 	    </div>
 		
 	  </div>

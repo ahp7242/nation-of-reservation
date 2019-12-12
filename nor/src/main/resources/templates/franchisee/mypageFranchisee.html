@@ -6,42 +6,21 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>MY PAGE</title>
+  <title>Franchisee Index</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
   <link href="css/heroic-features.css" rel="stylesheet">
-  <style>
-	.box {
-		height: 50px;
-		width: 50px;
-		text-align: center;
-		border: 1px solid black;
-		border-radius: 5px;
-	}
-	
-	.center {
-		text-align: center;
-	}
-	
-	
-	::-webkit-scrollbar{width: 16px;}
-		::-webkit-scrollbar-track {background-color:#4C4C4C;}
-		::-webkit-scrollbar-thumb {background-color:#6799FF;border-radius: 10px;}
-		::-webkit-scrollbar-thumb:hover {background: #555;}
-		::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
-		width:16px;height:16px;background:#4C4C4C;} 
-	
-</style>
+
 </head>
 
 <body>
 
 <!-- Navigation -->
   <div th:fragment="nav">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="/franchiseeIndex">PI-CA-BOO</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,13 +29,12 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
         
-      	  <li class="nav-item">
-            <label class="nav-link" th:text="${memberName}"></label>
-          </li>
-       
           <!-- 로그아웃 -->
           <li class="nav-item">
             <a class="nav-link" href="/logout">logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mypageFranchisee">MyPage</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
@@ -67,23 +45,79 @@
         </ul>
       </div>
     </div>
-  </nav>
+   </nav>
   </div>
-  <!-- Page Content -->
-  <div class="container-fluid jumbotron my-4">
-	<!-- pc방 상세 페이지 -->
-	  <h1 class="my-4" th:text="${franchisee.franchiseeName}"></h1>
-	  		
-	  <!-- pc방 정보 -->
-	  <div class="col-md-4">
-	    <h3 class="my-3">PC방 정보</h3>
-	    <div th:object="${franchisee}">
-		     <p th:text="*{franchiseeCrn}">
-		     <p th:text="*{franchiseePhone}">
-   		</div>
+  
+  <!-- 수정가능 테이블 -->
+  <div class="container">
+  	<div class="low">
+	<form action="/modifyFranchiseeOwner" method="post">
+		<table class="table table-boardered">
+			<tr>
+				<th>아이디</th>
+				<td><input type="text" name="customerId" class="form-control" th:value="${franchiseeNo}" th:placeholder="${franchiseeOwner.customerId}" readonly="readonly" ></td>
+			</tr>
+			<tr>
+				<th>이름</th>
+				<td><input type="text" name="customerName" class="form-control" th:value="${franchiseeOwner.customerName}"></td>
+			</tr>
+			<tr>
+				<th>생일</th>
+				<td><input type="date" name="customerBirth" class="form-control" th:value="${franchiseeOwner.customerBirth}" readonly="readonly"></td>
+			</tr>
+			<tr>
+				<th>이메일</th>
+				<td><input type="email" name="customerEmail" class="form-control" th:value="${franchiseeOwner.customerEmail}"></td>
+			</tr>
+			<tr>
+				<th>번호</th>
+				<td><input type="text" name="customerPhone" class="form-control" th:value="${franchiseeOwner.customerPhone}"></td>
+			</tr>
+		</table>
+		<button type="submit" class="btn btn-primary" id="modifyFranchiseeMypage">수정</button>
+	</form>
+	</div>
 	
+    <!-- Jumbotron Header(이벤트 배너) -->
+    <div th:fragment="event">
+    	<!-- 가맹점 목록 -->
+	    <header class="jumbotron my-4">
+	    <h3>가맹점 리스트</h3>
+	    <div class="row text-center">
+	      <div class="col-lg-3 col-md-6 mb-4" th:each="list:${franchiseeList}">
+	        <div class="card h-100">
+	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+	          <div class="card-body">
+	            <h4 class="card-title" th:text="${list.franchiseeName}">FranchiseeName</h4>
+	          </div>
+	          <div class="card-footer">
+	            <a href="#" class="btn btn-primary" th:href="@{/detailFranchisee?(franchiseeNo=${list.franchiseeNo})}" th:text="info">info</a>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	    </header>
+	</div>
+	
+	<header class="jumbotron my-4">
+	<h3>QnA 리스트</h3>
+	    <div class="row text-center">
+	      <div class="col-lg-3 col-md-6 mb-4" th:each="list:${franchiseeQnaList}">
+	        <div class="card h-100">
+	          <div class="card-body">
+	            <h4 class="card-title" th:text="${list.qnaNo}">qnaNo</h4>
+	            <h4 class="card-title" th:text="${list.customerNo}">customerNo</h4>
+	            <h4 class="card-title" th:text="${list.qnaType}">qnaType</h4>
+	            <h4 class="card-title" th:text="${list.qnaTitle}">qnaTitle</h4>
+	            <h4 class="card-title" th:text="${list.qnaQuestion}">qnaQuestion</h4>
+	            <h4 class="card-title" th:text="${list.qnaAnswer}">qnaAnswer</h4>
+	            <h4 class="card-title" th:text="${list.qnaDate}">qnaDate</h4>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+    </header>
   </div>
-	  
   <!-- Footer -->
   <div th:fragment="copyright">
 	  <footer class="py-5 bg-dark">
@@ -93,6 +127,15 @@
 	    <!-- /.container -->
 	  </footer>
   </div>
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+	$("#modifyFranchiseeMypage").click(function(){
+	 alert("수정이 완료되었습니다.");
+	});
+  </script>
+	
 </body>
 
 </html>

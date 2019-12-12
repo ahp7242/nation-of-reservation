@@ -5,11 +5,17 @@ import java.util.Map;
 
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
-import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 public interface FranchiseeService {
+	// 회원문의 정보 확인 서비스
+	public List<FranchiseeQnA> getFranchiseeQnaList(String ownerNo);	
+	// 회원의 상세정보를 수정하는 서비스
+	public int modifyFranchiseeOwner(FranchiseeOwner franchiseeOwner);	
+	// 회원의 상세정보를 가져오는 서비스
+	public FranchiseeOwner detailFranchiseeOwner(String ownerNo);
 	// 가맹점 썸네일 사진 조회
 	public Map<String, Object> getFranchiseeThumbnail(List<Franchisee> franchiseeList);
 	// 가맹점 정보 수정

@@ -4,6 +4,54 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- 고객문의 사항 상세확인가능 -->
+	<select id="selectFranchiseeQnaList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
+	
+	<![CDATA[
+	   SELECT 
+	   
+	      qna_no as qnaNo,
+	      customer_no as customerNo,
+	      qna_type as qnaType,
+	      qna_title as qnaTitle,
+	      qna_question as qnaQuestion,
+	      qna_answer as qnaAnswer,
+	      qna_date as qnaDate
+	   FROM franchisee_qna
+	   WHERE customer_no = #{ownerNo}
+	]]>   
+	
+	</select>
+	   
+	<!-- 고객의 상세정보를 수정하는 매퍼 -->
+	<update id="updateFranchiseeOwner" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeOwner">
+	<![CDATA[
+	  UPDATE customer SET 
+	     customer_name = #{customerName},
+	     customer_email = #{customerEmail},
+	     customer_phone = #{customerPhone}
+	  WHERE 
+	     customer_no = #{customerNo}
+	]]>
+	</update>
+   
+	<!-- 고객의 상세정보를 불러오는 매퍼 -->
+    <select id="selectFranchiseeOwner" parameterType="String" resultType="com.picaboo.nor.franchisee.vo.FranchiseeOwner">
+    <![CDATA[
+      SELECT  customer_no as customerNo,
+            customer_id as customerId,
+            customer_pw as customerPw,
+            customer_name as customerName,
+            customer_birth as customerBirth,
+            customer_gender as customerGender,
+            customer_email as customerEmail,
+            customer_phone as customerPhone,
+            customer_type as customerType
+      FROM customer
+      WHERE customer_no = #{String}
+    ]]>
+    </select>
+    
 	<!-- 가맹점 썸네일 사진 조회 -->
 	<select id="selectFranchiseeThumbnail" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
 	<![CDATA[

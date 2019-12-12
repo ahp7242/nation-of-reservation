@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.picaboo.nor.franchisee.service.FranchiseeService;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
+import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
 
@@ -23,6 +24,39 @@ import com.picaboo.nor.franchisee.vo.Seat;
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
 	
+	//고객 상세정보 수정후 post요청
+		@PostMapping("/modifyFranchiseeOwner")
+		public String modifyFranchiseeOwner(FranchiseeOwner franchiseeOwner,HttpSession session) {
+			String ownerNo = (String)session.getAttribute("memberNo");
+			System.out.println("controller No:  " + ownerNo);
+			franchiseeOwner.setCustomerNo((String)session.getAttribute("memberNo"));
+			
+			System.out.println("controller:  " + franchiseeOwner);
+			franchiseeService.modifyFranchiseeOwner(franchiseeOwner);
+			return "redirect:/mypageFranchisee";
+		}
+		
+		// 마이페이지 요청
+		@GetMapping("/mypageFranchisee")
+	    public String mypageFranchisee(HttpSession session, Model model){
+			// 세션 검사
+			String ownerNo = (String)session.getAttribute("memberNo");
+			if (ownerNo == null) {
+				return "redirect:/";
+			}
+			//고객상세정보 확인
+			FranchiseeOwner franchiseeOwner = franchiseeService.detailFranchiseeOwner(ownerNo);
+			model.addAttribute("franchiseeOwner", franchiseeOwner);
+			// 가맹점 리스트 가져와서 넘김
+			List<Franchisee> franchiseeList = franchiseeService.getFranchiseeList(ownerNo);
+			//System.out.println("index franchiseeList:" + franchiseeList);
+			model.addAttribute("franchiseeList", franchiseeList);
+			
+			List<FranchiseeQnA> franchiseeQnaList = franchiseeService.getFranchiseeQnaList(ownerNo);
+			model.addAttribute("franchiseeQnaList", franchiseeQnaList);
+	      return "franchisee/mypageFranchisee";
+		}
+		
 	// 음식 상품 관리 페이지 요청
 	@GetMapping("franchiseeFoodIndex")
 	public String franchiseeFoodIndex(HttpSession session, @RequestParam(value="franchiseeNo") String franchiseeNo) {
@@ -106,7 +140,7 @@ public class FranchiessController {
 		}
 		System.out.println("currentPage : " + currentPage);
 		System.out.println("searchWord : " + searchWord);
-		int rowPerPage = 12;
+		int rowPerPage = 10;
 		Map<String, Object> map = franchiseeService.getFranchiseeFAQ(currentPage, rowPerPage, searchWord);
 		model.addAttribute("map", map);
 		//System.out.println("map : " + map);

@@ -66,9 +66,6 @@
             <a class="nav-link" href="/logout">logout</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/#">modify</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
           </li>
           <li class="nav-item">
@@ -81,50 +78,49 @@
    </div>
   
   <!-- /.container -->
-  <div class="container-fluid jumbotron my-4">
+  <div class="container jumbotron my-4">
    <div th:fragment="event">
-       <!-- 가맹점 목록 -->
-       <header class="jumbotron my-4">
-       <h3>FAQ List</h3>
-	  <form action="/addFAQ" method="post">
-      <label for="faqTitle">title추가 : </label>
-      <br>
-      <input name="faqTitle" type="text">
-      <br>
-      <label for="faqContent">content추가 : </label>
-      <br>
-      <textarea cols="50" rows="10" id="faqContent" name="faqContent"></textarea>
-      <br>
-      <button type="submit">추가</button>
+      <!-- 가맹점 목록 -->
+      <h3>FAQ List</h3>
+	  <form action="/addFAQ" method="post" class="was-validated">
+	 	  <div class="form-group">
+	     	 <label for="faqTitle">title추가 : </label>
+	     	 <input type="text" class="form-control" id="faqTitle" name="faqTitle" placeholder="Enter Title" required>
+	      </div>
+	      
+	      <div class="form-group">
+	     	 <label for="faqContent">content추가 : </label>
+	     	 <textarea cols="50" rows="10" class="form-control" id="faqContent" name="faqContent" placeholder="Enter Content" required></textarea>
+	      </div>
+	      
+	      <button type="submit" class="btn btn-info" id="faqAdminAdd">추가</button>
       </form>
-      <a th:if="${map.currentPage > 1}" th:href="@{/FAQAdmin?(currentPage=${map.currentPage-1},searchWord=${map.searchWord})}">이전</a>
-      <a th:if="${map.currentPage < map.lastPage}" th:href="@{/FAQAdmin?(currentPage=${map.currentPage+1},searchWord=${map.searchWord})}">다음</a>
-      <form action="/FAQAdmin" method="get">
-      <label for="searchWord">검색어(제목) : </label>
-      <br>
-      <input name="searchWord" type="text">
-      <button type="submit">검색</button>
-      </form>
-         <div class="col-lg-6 col-md-6 mb-12" th:each="str:${map.list}">
-      <div class="base">
-          <div class="preface">
-            
-            <form action="/delFAQ" method="post">
-            <input type="hidden" th:value="${str.faqNo}" name="qnaNo" id="qnaNo">
-            <h5 th:text="${str.faqNo} + . + ' ' + ${str.faqTitle}"></h5>
-            <button type="submit">삭제</button>
-            </form>
-          </div>
-          <div class="content">
-              <h5 th:text="${str.faqContent}"></h5>
-          </div>
-
-      </div>
-      </div>
-      
-      </header>
+    </div>
    </div>
-  </div>
+   <div class="container jumbotron my-4"> 
+      <form action="/FAQAdmin" method="get">
+	      <label for="searchWord">검색어(제목) : </label>
+	      <br>
+	      <input name="searchWord" type="text">
+	      <button type="submit" class="btn btn-secondary">검색</button>
+      </form>
+	      <a th:if="${map.currentPage > 1}" th:href="@{/FAQAdmin?(currentPage=${map.currentPage-1},searchWord=${map.searchWord})}" class="btn btn-info">이전</a>
+	      <a th:if="${map.currentPage < map.lastPage}" th:href="@{/FAQAdmin?(currentPage=${map.currentPage+1},searchWord=${map.searchWord})}" class="btn btn-info">다음</a>
+      <div class="col-lg-6 col-md-6 mb-12" th:each="str:${map.list}">
+	      <div class="base">
+	          <div class="preface">
+	            <form action="/delFAQ" method="post">
+	            <input type="hidden" th:value="${str.faqNo}" name="qnaNo" id="qnaNo">
+	            <h5 th:text="${str.faqNo} + . + ' ' + ${str.faqTitle}"></h5>
+	            <button type="submit" class="btn btn-danger">삭제</button>
+	            </form>
+	          </div>
+	          <div class="content">
+	              <h5 th:text="${str.faqContent}"></h5>
+	          </div>
+	      </div>
+      </div>  
+   </div>
    
    <!-- Footer -->
    <div th:fragment="copyright">
@@ -140,17 +136,20 @@
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-   <script>
-   (function transitionsDemo() {
-       var isExpanded = false;
-       
-       $(".preface").click(function(){
-           var el = $(this).parent().find(".content");
-           el.toggleClass("expanded");
-       });
-       
-   })();
-   </script>
-
+	<script>
+		(function transitionsDemo() {
+		    var isExpanded = false;
+		    
+		    $(".preface").click(function(){
+		        var el = $(this).parent().find(".content");
+		        el.toggleClass("expanded");
+		    });
+		    
+		})();
+		
+		$("#faqAdminAdd").click(function(){
+			alert("FAQ 추가되었습니다.");
+		});
+	</script>
 </body>
 </html>

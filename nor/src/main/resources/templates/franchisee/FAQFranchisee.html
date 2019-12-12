@@ -69,7 +69,7 @@
             <a class="nav-link" href="/logout">logout</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/#">modify</a>
+            <a class="nav-link" href="/mypageFranchisee">MyPage</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Services</a>
@@ -84,20 +84,19 @@
    </div>
   
   <!-- /.container -->
-  <div class="container-fluid jumbotron my-4">
+  <div class="container jumbotron my-4">
    <div th:fragment="event">
        <!-- 가맹점 목록 -->
        <header class="jumbotron my-4">
-       <h3>FAQ List</h3>
-       <a th:if="${map.currentPage > 1}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage-1},searchWord=${map.searchWord})}">이전</a>
-       <a th:if="${map.currentPage < map.lastPage}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage+1},searchWord=${map.searchWord})}">다음</a>
-   
+       <h3>FAQ List</h3>   
       <form action="/FAQFranchisee" method="get">
       <label for="searchWord">검색어(제목) : </label>
       <input name="searchWord" type="text">
       <button type="submit">검색</button>
       </form>
-         <div class="col-lg-6 col-md-6 mb-12" th:each="str:${map.list}">
+      <a th:if="${map.currentPage > 1}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage-1},searchWord=${map.searchWord})}" class="btn btn-primary">이전</a>
+      <a th:if="${map.currentPage < map.lastPage}" th:href="@{/FAQFranchisee?(currentPage=${map.currentPage+1},searchWord=${map.searchWord})}" class="btn btn-primary">다음</a>
+         <div class="col-lg-8 col-md-6 mb-12" th:each="str:${map.list}">
       <div class="base">
           <div class="preface">
             <h5 th:text="${str.faqNo} + . + ' ' + ${str.faqTitle}"></h5>

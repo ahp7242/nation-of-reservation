@@ -47,7 +47,12 @@ public class AdminServiceImpl implements AdminService{
 		
 		// 페이징 버튼을 위한 마지막 페이지 계산
 		int totalRowCount = adminMapper.selectAdminFAQCount(searchWord);
-		int lastPage = totalRowCount / rowPerPage;
+		int lastPage = 0;
+		if(totalRowCount % rowPerPage == 0) {
+			lastPage = totalRowCount / rowPerPage;
+		} else {
+			lastPage = totalRowCount / rowPerPage + 1;
+		}
 		
 		// 검색과, 페이징한 리스트와 현재 페이지 정보를 맵에 저장하여 리턴
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -87,7 +92,12 @@ public class AdminServiceImpl implements AdminService{
 		
 		// 페이징 버튼을 위한 마지막 페이지 계산
 		int totalRowCount = adminMapper.selectAdminQnACount();
-		int lastPage = totalRowCount / rowPerPage;
+		int lastPage = 0;
+		if(totalRowCount % rowPerPage == 0) {
+			lastPage = totalRowCount / rowPerPage;
+		} else {
+			lastPage = totalRowCount / rowPerPage + 1;
+		}
 		
 		// 페이징한 리스트와 현재 페이지 정보를 맵에 저장하여 리턴
 		Map<String, Object> map = new HashMap<String, Object>();

@@ -17,6 +17,7 @@ import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
+import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
@@ -28,13 +29,32 @@ import com.picaboo.nor.franchisee.vo.Spec;
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
 	
+	//qna 답변 확인가능 
+	@Override
+	public List<FranchiseeQnA> getFranchiseeQnaList(String ownerNo) { 
+		return franchiseeMapper.selectFranchiseeQnaList(ownerNo);
+	}
+	
+	//회원의 상세정보를 수정하는 서비스
+	@Override
+	public int modifyFranchiseeOwner(FranchiseeOwner franchiseeOwner) {
+		System.out.println("service Impl :  " + franchiseeOwner);
+		return franchiseeMapper.updateFranchiseeOwner(franchiseeOwner);
+	}
+	
+	//회원의 상세정보를 가져오는 서비스
+	@Override
+	public FranchiseeOwner detailFranchiseeOwner(String ownerNo) {
+		return franchiseeMapper.selectFranchiseeOwner(ownerNo);
+	}
+	
 	@Override
 	public Map<String, Object> getFranchiseeThumbnail(List<Franchisee> franchiseeList) {
 		System.out.println("getFranchiseeThumbnail franchiseeList: " + franchiseeList);
 		// 썸네일 사진과 경로를 가지는 맵 리턴
 		Map<String, Object> thumbnailInfo = new HashMap<String, Object>();
 		// 저장 경로
-		String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
+		String uploadPath = "C:/upload";
 		thumbnailInfo.put("uploadPath", uploadPath);
 		// 썸네일 사진
 		List<FranchiseePic> thumbnailList = franchiseeMapper.selectFranchiseeThumbnail();
@@ -66,7 +86,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		if(deletePicList != null) {
 			for(int picNo : deletePicList) {
 				// 저장 경로
-				String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
+				String uploadPath = "C:\\upload";
 				// 삭제할 사진 가져옴
 				FranchiseePic deletePic = franchiseeMapper.selectFranchiseePicOne(picNo);
 				
@@ -146,7 +166,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			String fileName = franchiseePic.getFileName();
 			
 			// 저장 경로
-			String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
+			String uploadPath = "C:\\upload";
 			
 			try {
 				mf.transferTo(new File(uploadPath+"\\"+fileName));		
@@ -201,7 +221,12 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		
 		// 페이징 버튼을 위한 마지막 페이지 계산
 		int totalRowCount = franchiseeMapper.selectFranchiseeFAQCount(searchWord);
-		int lastPage = totalRowCount / rowPerPage;
+		int lastPage = 0;
+		if(totalRowCount % rowPerPage == 0) {
+			lastPage = totalRowCount / rowPerPage;
+		} else {
+			lastPage = totalRowCount / rowPerPage + 1;
+		}
 		
 		// 검색과, 페이징한 리스트와 현재 페이지 정보를 맵에 저장하여 리턴
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -229,7 +254,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		List<FranchiseePic> franchisePicList = franchiseeMapper.selectFranchiseePic(franchiseeNo);
 		System.out.println("franchisePicList: " + franchisePicList);
 		// 저장 경로
-		String uploadPath = "/upload";
+		String uploadPath = "C:/upload";
 		
 		franchiseeInfo.put("franchisePicList", franchisePicList);
 		franchiseeInfo.put("uploadPath", uploadPath);
@@ -324,8 +349,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			String fileName = franchiseePic.getFileName();
 			
 			// 저장 경로
-			String uploadPath = "C:\\picaboo\\workspace\\maven.1575360369454\\nor\\src\\main\\webapp\\upload";
-			
+			String uploadPath = "C:\\upload";
+					
 			try {
 				mf.transferTo(new File(uploadPath+"\\"+fileName));		
 			} catch (Exception e) {
