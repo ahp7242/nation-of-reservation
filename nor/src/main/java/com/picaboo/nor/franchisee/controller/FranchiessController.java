@@ -74,6 +74,9 @@ public class FranchiessController {
     public String addFranchisee(FranchiseeQnA franchiseeQnA, HttpSession session) {
 		String customerNo = (String) session.getAttribute("memberNo");
 		franchiseeQnA.setCustomerNo(customerNo);
+		String customerMail = (String) session.getAttribute("memberEmail");
+		franchiseeQnA.setCustomerMail(customerMail);
+		
 		System.out.println("addFranchisee param franchisee: " + franchiseeQnA);
         franchiseeService.addFranchiseeQnA(franchiseeQnA);
         return "redirect:/franchiseeIndex";

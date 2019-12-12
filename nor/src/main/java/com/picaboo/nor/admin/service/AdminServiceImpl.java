@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,19 +15,19 @@ import com.picaboo.nor.admin.vo.AdminFAQ;
 import com.picaboo.nor.admin.vo.AdminFAQPage;
 import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.admin.vo.AdminQnAPage;
-import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 
 
 @Service
 @Transactional
 public class AdminServiceImpl implements AdminService{
 	@Autowired AdminMapper adminMapper;
+	@Autowired JavaMailSender javaMailSender;
 	// FAQ삭제
 	@Override
 	public int delFAQ(int faqNo) {		
 		return adminMapper.deleteFAQ(faqNo);
 	}
-	// QnA 등록
+	// FAQ 등록
 	@Override
 	public int addFAQ(AdminFAQ adminFAQ) {		
 		return adminMapper.insertFAQ(adminFAQ);
@@ -67,6 +69,17 @@ public class AdminServiceImpl implements AdminService{
 	// admin 답변기능
 	@Override
 	public int modifyQnA(AdminQnA adminQnA) {
+		
+		String email = adminQnA.getCustomerMail();
+		String text = adminQnA.getQnaAnswer();
+		System.out.println("service IMPL EMAI:  "+email);
+		System.out.println("service IMPL TEXT:  "+text);
+		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+			simpleMailMessage.setTo(email);
+			simpleMailMessage.setFrom("kuooeee@gmail.com");
+			simpleMailMessage.setSubject("PI-KA-BOO 문의하신 답변내용이 전달되었습니다.");
+			simpleMailMessage.setText(text);
+			javaMailSender.send(simpleMailMessage);
 		return adminMapper.updateQnA(adminQnA);
 	}
 	

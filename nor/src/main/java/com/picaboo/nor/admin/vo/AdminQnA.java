@@ -11,4 +11,5 @@ public class AdminQnA {
 	private String qnaQuestion;
 	private String qnaAnswer;
 	private String qnaDate;
+	private String customerMail;
 }
