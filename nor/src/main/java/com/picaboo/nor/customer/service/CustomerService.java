@@ -3,6 +3,7 @@ package com.picaboo.nor.customer.service;
 import java.util.List;
 
 import com.picaboo.nor.customer.vo.*;
+import com.picaboo.nor.franchisee.vo.*;
 
 public interface CustomerService {
 	//데이터베이스의 저장된 좌석 가져오는 서비스
@@ -13,4 +14,10 @@ public interface CustomerService {
 	public Franchisee getFranchisee(String franchiseeNo);
 	//좌석 예약을 하는 서비스
 	public void addReservation(SeatReservation seatReservation);
+
+	public List<FranchiseePic> getFranchiseeThumbnail();
+	
+	public List<FranchiseePic> getFranchiseeThumbnailList(String franchiseeNo);
+	
+	public List<Food> getFoodList(String franchiseeNo);
 }

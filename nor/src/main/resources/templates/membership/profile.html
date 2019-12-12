@@ -7,20 +7,24 @@
 <meta name="author" content="">
 
 <title>singupType</title>
-<!-- <style>
-	td {
-		text-align: center;
-	}
-</style> -->
-<!-- Bootstrap core CSS -->
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Custom styles for this template -->
 <link href="css/heroic-features.css" rel="stylesheet">
-
 </head>
+<style>
+	#logo{
+		text-align: center;
+		height:170px;
+	}
+	
+	.gradation{
+        background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+    }
+</style>
 <body>
-	<div th:include="/part/customerNav::nav"></div>
+<div id="logo" >
+	<img src="/loginimage/logo.jpg">
+</div>
+	<div th:include="/part/customerNav::nav" class="gradation"></div>
 
 	<div class="container">
 		<table class="table table-boardered">
@@ -51,8 +55,27 @@
 		</table>
 		<a th:href="@{/modifyMembership}" class="btn btn-primary">수정</a> 
 		<a th:href="@{/removeMembership(customerId=${membership.customerId})}" class="btn btn-danger">탈퇴</a>
+		
+		<hr>
+		<h3>QnA 리스트</h3>
+		<div class="row text-center">
+			<div class="col-lg-3 col-md-6 mb-4"
+				th:each="list:${franchiseeQnaList}">
+				<div class="card h-100">
+					<div class="card-body">
+						<h4 class="card-title" th:text="${list.qnaNo}">qnaNo</h4>
+						<h4 class="card-title" th:text="${list.customerNo}">customerNo</h4>
+						<h4 class="card-title" th:text="${list.qnaType}">qnaType</h4>
+						<h4 class="card-title" th:text="${list.qnaTitle}">qnaTitle</h4>
+						<h4 class="card-title" th:text="${list.qnaQuestion}">qnaQuestion</h4>
+						<h4 class="card-title" th:text="${list.qnaAnswer}">qnaAnswer</h4>
+						<h4 class="card-title" th:text="${list.qnaDate}">qnaDate</h4>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
-	<div th:include="/part/customerNav::copyright"></div>
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
 </body>
 </html>

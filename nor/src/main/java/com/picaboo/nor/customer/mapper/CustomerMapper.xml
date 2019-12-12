@@ -6,7 +6,7 @@
 <mapper namespace="com.picaboo.nor.customer.mapper.CustomerMapper">
 	
 	<!-- 좌석 출력 -->
-	<select id="selectSeat" resultType="com.picaboo.nor.customer.vo.Seat" parameterType="String">
+	<select id="selectSeat" resultType="com.picaboo.nor.franchisee.vo.Seat" parameterType="String">
 		<![CDATA[
 			SELECT franchisee_no as franchiseeNo,
 				   seat_no as seatNo,
@@ -18,7 +18,7 @@
 		]]>
 	</select>
 	<!-- 모든 프렌차이즈 정보를 가져옴 -->
-	<select id="selectFranchiseeNo" resultType="com.picaboo.nor.customer.vo.Franchisee">
+	<select id="selectFranchiseeNo" resultType="com.picaboo.nor.franchisee.vo.Franchisee">
 		<![CDATA[
 			SELECT 
 					franchisee_no as franchiseeNo,
@@ -27,7 +27,7 @@
 		]]>
 	</select>
 	<!-- 프렌차이즈 상세정보를 가져옴 -->
-	<select id="selectFranchisee" parameterType="String" resultType="com.picaboo.nor.customer.vo.Franchisee">
+	<select id="selectFranchisee" parameterType="String" resultType="com.picaboo.nor.franchisee.vo.Franchisee">
 		<![CDATA[
 			SELECT 
 					franchisee_no as franchiseeNo,
@@ -82,4 +82,46 @@
 			WHERE franchisee_no = #{franchiseeNo} AND seat_no = #{seatNo}
 		]]>
 	</delete>
+	
+	<select id="selectFranchiseeThumbnail" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
+		<![CDATA[
+			SELECT
+				MIN(pic_no) as picNo,
+				franchisee_no as franchiseeNo,
+				file_name as fileName,
+				extension as extension,
+				content_type as contentType,
+				size as size,
+				origin_name as originName
+			FROM franchisee_pic
+			GROUP BY franchisee_no
+		]]>
+	</select>
+	
+	<select id="selectFranchiseeThumbnailList" parameterType="String" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
+		<![CDATA[
+			SELECT
+				pic_no as picNo,
+				franchisee_no as franchiseeNo,
+				file_name as fileName,
+				extension as extension,
+				content_type as contentType,
+				size as size,
+				origin_name as originName
+			FROM franchisee_pic
+			WHERE franchisee_no = #{franchiseeNo}
+		]]>
+	</select>
+	
+	<select id="selectFoodList" parameterType="String" resultType="com.picaboo.nor.franchisee.vo.Food">
+		<![CDATA[
+			SELECT
+				food_no as foodNo,
+				food_name as foodName,
+				food_category as foodCategory,
+				food_price as foodPrice
+			FROM food
+			WHERE franchisee_no = #{String}
+		]]>
+	</select>
 </mapper>
