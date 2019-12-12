@@ -21,9 +21,20 @@
 		width:600px;
 		text-align:center;
 	}
+	#logo{
+		text-align: center;
+		height:170px;
+	}
+	
+	.gradation{
+        background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+    }
 </style>
 <body>
-	<div th:include="/part/templet::nav"></div>
+<div id="logo" >
+	<img src="/loginimage/logo.jpg">
+</div>
+	<div th:include="/part/templet::nav" class="gradation"></div>
 	
 	<div class="container">
 		<table>
@@ -38,6 +49,6 @@
 		</table>
 	</div>
 	
-	<div th:include="/part/templet::copyright"></div>
+	<div th:include="/part/templet::copyright" class="gradation"></div>
 </body>
 </html>

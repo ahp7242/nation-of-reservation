@@ -49,7 +49,8 @@
       SELECT  customer_no as customerNo,
             customer_id as customerId,
             customer_name as customerName,
-            customer_type as customerType
+            customer_type as customerType,
+            customer_email as customerEmail
       FROM customer
       WHERE customer_id = #{customerId} AND customer_pw = #{customerPw} 
    ]]>

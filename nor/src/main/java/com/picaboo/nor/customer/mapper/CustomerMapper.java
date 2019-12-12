@@ -3,6 +3,7 @@ package com.picaboo.nor.customer.mapper;
 import java.util.*;
 import org.apache.ibatis.annotations.Mapper;
 import com.picaboo.nor.customer.vo.*;
+import com.picaboo.nor.franchisee.vo.*;
 
 @Mapper
 public interface CustomerMapper {
@@ -20,4 +21,10 @@ public interface CustomerMapper {
 	public List<SeatReservation> selectSeatReservation(String franchiseeNo);
 	//예약기간이 지난 예약 삭제
 	public void deleteSeatReservation(SeatReservation seatReservation);
+
+	public List<FranchiseePic> selectFranchiseeThumbnail();
+	
+	public List<FranchiseePic> selectFranchiseeThumbnailList(String franchiseeNo);
+	
+	public List<Food> selectFoodList(String franchiseeNo);
 }

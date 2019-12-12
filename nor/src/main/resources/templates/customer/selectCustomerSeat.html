@@ -63,28 +63,13 @@
 		<!-- 이미지 클릭시 모달창 오픈 -->
 		<div class="picmodal_link">
 			<!-- 썸네일  -->
-			<img class="thumbnail round" src="loginimage/pc1.jpg">
-			<img class="thumbnail round" src="loginimage/pc2.jpg">
-			<img class="thumbnail round" src="loginimage/pc3.jpg">
-			<img class="thumbnail round" src="loginimage/pc4.jpg">
 		</div>
 		<!--모달창 내용 -->
 		<div id="picmodal">
 			<div class="picmodal_content">
 				<!-- 슬라이드 -->
 				<div class="slideshow-container">
-					<div class="mySlides">
-						<img src="loginimage/pc1.jpg" style="width: 100%">
-					</div>
-					<div class="mySlides">
-						<img src="loginimage/pc2.jpg" style="width: 100%">
-					</div>
-					<div class="mySlides">
-						<img src="loginimage/pc3.jpg" style="width: 100%">
-					</div>
-					<div class="mySlides">
-						<img src="loginimage/pc4.jpg" style="width: 100%">
-					</div>
+					
 					<a class="prev" onclick="plusSlides(-1)"></a> 
 					<a class="next" onclick="plusSlides(1)"></a>
 				</div>
@@ -115,25 +100,15 @@
 				<a href="" class="close">❌</a><br>
 				<div id="category">
 					Menu category
-					<div class="category">전 체</div>
-					<div class="category">라면류</div>
-					<div class="category">밥 류</div>
-					<div class="category">음 료</div>
-					<div class="category">기 타</div>
+					<div class="category" id="all">전 체</div>
+					<div class="category" id="Noodle">라면류</div>
+					<div class="category" id="Meal">밥 류</div>
+					<div class="category" id="Drink">음 료</div>
+					<div class="category" id="Snack">과자</div>
+					<div class="category" id="Dessert">간식</div>
 				</div>
 				<div id="menu">
-					<table border="1">
-						<tr>
-							<td class="item">
-								<img class="img" src="/loginimage/너구리.jpg" alt="너구리">
-								<div class="price"><input type="number" min="1" id="count"><p id="price">3000원</p></div>
-							</td>
-							<td class="item"></td>
-							<td class="item"></td>
-							<td class="item"></td>
-							<td class="item"></td>
-						</tr>
-					</table>
+					
 				</div>
 				<div id="total">
 					<table id="totalTable">
@@ -167,7 +142,78 @@
 <script th:inline="javascript">
 let seat = /*[[${seat}]]*/
 let franchiseeNo = /*[[${franchisee.franchiseeNo}]]*/
+let picList = /*[[${picList}]]*/
+	let category = "all"
+	let menuList = function(category){
+		$("#menu").empty()
+		$.ajax({
+			url:"/getFoodList",
+			method:"POST",
+			data:{"franchiseeNo":franchiseeNo},
+			success:function(json){
+				//console.log("success")
+				//console.log(json)
+				let html = "<table border='1'>";
+				html += "<tr>";
+				$(json).each(function(index,item){
+					if(category == "all") {
+						html += "<td class='item'>";
+						html += "<img class='img' src='/loginimage/너구리.jpg' alt='";
+						html += item.foodName;
+						html += "'>";
+						html += "<div class='price'><input type='number' min='1' id='count'><p id='price'>";
+						html += item.foodPrice;
+						html += "원</p></div>"
+						html += "</td>"
+						if((index+1)%5 == 0){
+							html += "</tr><tr>"
+						}
+					}
+					if(category == item.foodCategory){
+						html += "<td class='item'>";
+						html += "<img class='img' src='/loginimage/너구리.jpg' alt='";
+						html += item.foodName;
+						html += "'>";
+						html += "<div class='price'><input type='number' value='1' min='1' id='count'><p id='price'>";
+						html += item.foodPrice;
+						html += "원</p></div>"
+						html += "</td>"
+						if((index+1)%5 == 0){
+							html += "</tr><tr>"
+						}
+					}
+				})
+				html += "</tr>"
+				html += "</table>"
+				$("#menu").append(html)
+			}
+		})
+	}
+	menuList(category)
+	$(".category").click(function(){
+		let category = $(this).attr("id");
+		//console.log(category)
+		menuList(category)
+	})
+	
+	
+	
+let thumPic = "";
+let thumBic	= "";
+$(picList).each(function(index,item){
+	//console.log(item)
+	thumPic += "<img class='thumbnail round' src='/upload/";
+	thumPic += item.fileName
+	thumPic += "'>"
+	
+	thumBic += "<div class='mySlides'> <img src='/upload/";
+	thumBic += item.fileName;
+	thumBic += "' style='width: 100%'> </div>"
+})
+$(".picmodal_link").append(thumPic)
+$(".slideshow-container").append(thumBic)
 //console.log(seat);
+//console.log(picList)
 let html = "";
 let rowMax = 0;
 let colsMax = 0;
@@ -201,9 +247,22 @@ for(let row=1; row<=rowMax+1; row++){
 $("#seat").html(html);
 
 $(document).ready(function(){
+	let $img = "";
+	let $price = "";
+	let $count = "";
+	$(".img").click(function(){
+		$img = $(this).attr("alt")
+		$price = $(this).next().find("#price").text()
+		$count = $(this).next().find("#count").val()
+		$price = $price.substr(0,($price.length-1))
+		console.log("가격"+$price)
+		console.log("수량"+$count)
+		console.log("이미지"+$img)
+	})
+	
 	//document.getElementById('date').value = new Date().toISOString().substring(0, 10);;
 	let item = [];
-	console.log("이미지",$(".img").attr("alt"));
+	//console.log("이미지",$(".img").attr("alt"));
 	
 	$("#seat tr td").each(function(index1,item1){
 		//console.log($(this).closest('tr').attr('id'))

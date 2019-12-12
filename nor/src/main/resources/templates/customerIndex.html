@@ -111,14 +111,19 @@ showSlides(slideIndex);
 		url:"/getFranchiseeList",
 		method:"POST",
 		success:function(json){
-			/* console.log("success");
-			console.log(json); */
+			console.log("success");
+			console.log(json);
 			let html = "";
-			$(json).each(function(index, item){
-				console.log(item);
+			let fList = json.franchiseeList;
+			console.log(fList)
+			let fpList = json.franchiseePicList
+			console.log(fpList)
+			$(fList).each(function(index, item){
 				html += "<div class='col-lg-3 col-md-6 mb-4'>";
 				html += "<div class='card h-100'>";
-				html += "<img class='card-img-top' src='/loginimage/pc"+(index+1)+".jpg' alt=''>";
+				html += "<img class='card-img-top' id='img";
+				html += index
+				html += "' width='500' height='180'>";
 				html += "<div class='card-body'>";
 				html += "<h4 class='card-title'>";
 				html += item.franchiseeName;
@@ -138,6 +143,12 @@ showSlides(slideIndex);
 				html += "</div>";
 			})
 			$("#main").append(html);
+			$(fpList).each(function(index,item){
+				console.log(item);
+				$("#img"+index).attr("src","/upload/"+item.fileName)
+				$("#img"+index).attr("alt",item.originName)
+			})
+			console.log(html)
 		}
 	})
 </script>

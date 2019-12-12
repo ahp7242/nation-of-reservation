@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.picaboo.nor.customer.service.CustomerService;
 import com.picaboo.nor.customer.vo.*;
+import com.picaboo.nor.franchisee.vo.*;
 
 @RestController
 public class CustomerRestController {
@@ -18,10 +19,15 @@ public class CustomerRestController {
 	
 	//인덱스에서 출력할 프렌차이즈 목록을 List로 반환
 	@PostMapping("/getFranchiseeList")
-	public List<Franchisee> getFranchiseeList(){
-		List<Franchisee> list = customerService.getFranchiseeNo();
-		System.out.println("restcontroller"+list);
-		return list;
+	public Map<String, Object> getFranchiseeList(){
+		List<Franchisee> franchiseeList = customerService.getFranchiseeNo();
+		System.out.println("restcontroller"+franchiseeList);
+		List<FranchiseePic> franchiseePicList = customerService.getFranchiseeThumbnail();
+		System.out.println("pic list"+franchiseePicList);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("franchiseeList", franchiseeList);
+		map.put("franchiseePicList", franchiseePicList);
+		return map;
 	}
 	
 	@PostMapping("/seatReservation")
@@ -51,5 +57,14 @@ public class CustomerRestController {
 		seatReservation.setType("R");
 		
 		customerService.addReservation(seatReservation);
+	}
+	
+	@PostMapping("/getFoodList")
+	public List<Food> getFoodList(@RequestParam("franchiseeNo")String franchiseeNo) {
+		System.out.println("getFoodList"+franchiseeNo);
+		
+		List<Food> list = customerService.getFoodList(franchiseeNo);
+		System.out.println("getFoodList"+list);
+		return list;
 	}
 }

@@ -108,6 +108,7 @@ public class MembershipController {
 			//System.out.println("type"+type);
 			
 			//member에 저장된 값을 세션에 저장
+			session.setAttribute("memberEmail", member.getCustomerEmail());
 			session.setAttribute("memberName", member.getCustomerName());
 			session.setAttribute("memberType", member.getCustomerType());
 			session.setAttribute("memberNo", member.getCustomerNo());
@@ -181,9 +182,16 @@ public class MembershipController {
 	}
 	//고객 상세정보 수정후 post요청
 	@PostMapping("/modifyMembership")
-	public String modifyMembership(Membership membership) {
-		//System.out.println("수정후 " + membership);
+	public String modifyMembership(HttpSession session, Membership membership) {
+		String cusNo = (String)session.getAttribute("memberNo");
+		System.out.println("post :"+ cusNo);
+		//System.out.println("수정후 " + membership);		
+		//System.out.println("postMod :"+membership);
+		membership.setCustomerNo(cusNo);
+		session.removeAttribute("memberName");
+		session.setAttribute("memberName", membership.getCustomerName());
 		membershipService.modifyMembership(membership);
+		//System.out.println("@#@@#"+membershipService.modifyMembership(membership));
 		return "redirect:/profile";
 	}
 	

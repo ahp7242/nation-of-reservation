@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<style>
+	#logo{
+		text-align: center;
+		height:170px;
+	}
+	
+	.gradation{
+        background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+    }
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>singupType</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+</head>
+<body>
+	<div id="logo" >
+	<img src="/loginimage/logo.jpg">
+	</div>
+	<!-- Navigation(상단메뉴) -->
+	<div th:include="/part/customerNav::nav" class="gradation"></div>
+	<div class="container" style="padding: 10px;">
+		<h4>QnA</h4>
+		<form action="/QnACustomer" class="was-validated" method="post">
+			<div class="form-group">
+				<label>QnA_Category</label> <select name="qnaType"
+					class="form-control" id="qnaType" required>
+					<option value="이용문의">이용문의</option>
+					<option value="가입">가입/로그인</option>
+					<option value="예약">pc방찾기/예약</option>
+					<option value="회원정보">회원정보</option>
+					<option value="이벤트">이벤트</option>
+					<option value="pc방게임대회">pc방게임대회</option>
+					<option value="기타">기타</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label for="qnaTitle">QnA_Title:</label> 
+				<input type="text" class="form-control" id="qnaTitle" placeholder="Enter qnaTitle" name="qnaTitle" required>
+				<div class="valid-feedback">입력완료.</div>
+				<div class="invalid-feedback">문의 제목을 입력하여주세요.</div>
+			</div>
+
+			<div class="form-group">
+				<label for="qnaContent">QnA_Content:</label>
+				<textarea class="form-control" cols="50" rows="10" id="qnaQuestion"
+					name="qnaQuestion" required></textarea>
+				<div class="valid-feedback">입력완료.</div>
+				<div class="invalid-feedback">문의 내용을 입력하여주세요.</div>
+			</div>
+			<button id="addButton" type="submit" class="btn btn-primary">입력</button>
+		</form>
+	</div>
+
+	<!-- Footer -->
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
+</body>
+
+</html>

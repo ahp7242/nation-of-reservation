@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picaboo.nor.customer.mapper.CustomerMapper;
 import com.picaboo.nor.customer.vo.*;
+import com.picaboo.nor.franchisee.vo.*;
 
 @Service
 @Transactional
@@ -62,5 +63,25 @@ public class CustomerServiceImpl implements CustomerService {
 		System.out.println("service"+seatReservation);
 		customerMapper.insertReservation(seatReservation);
 		customerMapper.updateSeatType(seatReservation);
+	}
+	
+	@Override
+	public List<FranchiseePic> getFranchiseeThumbnail() {
+		
+		return customerMapper.selectFranchiseeThumbnail();
+	}
+	
+	@Override
+	public List<FranchiseePic> getFranchiseeThumbnailList(String franchiseeNo) {
+		System.out.println(franchiseeNo);
+		return customerMapper.selectFranchiseeThumbnailList(franchiseeNo);
+	}
+	
+	@Override
+	public List<Food> getFoodList(String franchiseeNo) {
+		System.out.println(franchiseeNo);
+		List<Food> list = customerMapper.selectFoodList(franchiseeNo);
+		System.out.println(list);
+		return list;
 	}
 }

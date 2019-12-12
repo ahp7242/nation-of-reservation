@@ -15,8 +15,21 @@
   <link href="css/heroic-features.css" rel="stylesheet">
 
 </head>
+<style>
+	#logo{
+		text-align: center;
+		height:170px;
+	}
+	
+	.gradation{
+        background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+    }
+</style>
 <body>
-	<div th:include="/part/templet::nav"></div>
+<div id="logo" >
+	<img src="/loginimage/logo.jpg">
+</div>
+	<div th:include="/part/templet::nav" class="gradation"></div>
 	
 	<div class="container">
 		<table class="table table-boardered">
@@ -66,7 +79,7 @@
 		</table>
 		<button type="button" class="btn btn-primary" id="join">회원가입</button>
 	</div>
-	<div th:include="/part/templet::copyright"></div>
+	<div th:include="/part/templet::copyright" class="gradation"></div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
