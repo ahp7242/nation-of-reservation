@@ -17,7 +17,6 @@ public class FTPService {
     private static final String USER = "ahp7242";
     private static final int PORT = 21;
     private static final String PW = "z1x2c3v4!@";
-    private static final String DIR = "/www/";
     
     FTPClient ftp = null;
     
@@ -54,11 +53,11 @@ public class FTPService {
         
     }
     // 파일 업로드
-    public void uploadFile(File file, String storeFileName){
+    public void uploadFile(File file, String storeFileName, String dir){
         InputStream input = null;
         try {
             input = new FileInputStream(file);
-            ftp.storeFile(DIR+storeFileName,input);
+            ftp.storeFile(dir+storeFileName,input);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

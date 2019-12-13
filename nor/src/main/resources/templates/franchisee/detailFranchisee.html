@@ -153,10 +153,13 @@
 	      <a href="#" th:href="@{/modifyFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 정보 수정</a>
 	    </div>
 		
-		<div th:if="${franchiseeInfo.franchiseeSpec != null}" class="col-md-3 col-sm-6 mb-4">
+		<div class="col-md-3 col-sm-6 mb-4">
 	      <a href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 상품 관리</a>
 	    </div>
 		
+		<div class="col-md-3 col-sm-6 mb-4">
+		<button id="food" class="btn btn-primary" onclick="window.open('foodReservationList','window_name','width=780,height=600,location=no,status=no,scrollbars=yes');">음식주문 확인</button>
+	  	</div>
 	  </div>
 	  <!-- /.row -->
 	

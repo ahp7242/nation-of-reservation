@@ -3,6 +3,8 @@ package com.picaboo.nor.franchisee.service;
 import java.util.List;
 import java.util.Map;
 
+import com.picaboo.nor.franchisee.vo.FoodForm;
+import com.picaboo.nor.franchisee.vo.FoodReservationList;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
@@ -10,6 +12,14 @@ import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 public interface FranchiseeService {
+	// 주문완료 음식 삭제
+	public int delFoodReservation(int reservationNo);
+	// 음식 리스트 확인 서비스
+	public List<FoodReservationList> getFoodReservationList(String franchiseeNo);
+	// 가맹점 상품 리스트 조회
+	public Map<String,Object> getFranchiseeFood(String franchiseeNo);
+	// 가맹점 상품 등록
+	public int addFranchiseeFood(FoodForm foodForm);
 	// 회원문의 정보 확인 서비스
 	public List<FranchiseeQnA> getFranchiseeQnaList(String ownerNo);	
 	// 회원의 상세정보를 수정하는 서비스

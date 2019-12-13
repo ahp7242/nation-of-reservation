@@ -56,37 +56,44 @@
    </div>
   <!-- Page Content -->
   <div class="container jumbotron my-4">
-  	<h4>가맹점 상세 정보 입력</h4>
-		<form action="/addFranchiseeInfo" method="post" enctype="multipart/form-data">
+  	<h4>가맹점 상품 추가</h4>
+		<form action="/addFranchiseeFood" method="post" enctype="multipart/form-data">
 			<div>
 				<input type="hidden" th:value="${franchiseeNo}" name="franchiseeNo">
 			</div>
 			<div class="form-group">
-		      <label for="cpu">Select CPU list:</label>
-		      <select class="form-control" id="cpu" name="cpu" >
-		        <option th:each="item : ${spec.cpu}" th:text="${item.specName}"></option>
-		      </select>
+		      <label for="foodName">상품 이름</label>
+		      <input class="form-control" type="text" name="foodName">
 			</div>
 			<div class="form-group">
-		      <label for="vga">Select VGA list:</label>
-		      <select class="form-control" id="vga" name="vga" >
-		        <option th:each="item : ${spec.vga}" th:text="${item.specName}"></option>
-		      </select>
+		      <label for="foodPrice">상품 가격</label>
+		      <input class="form-control" type="text" name="foodPrice">
 			</div>
 			<div class="form-group">
-		      <label for="ram">Select RAM list:</label>
-		      <select class="form-control" id="ram" name="ram">
-		        <option th:each="item : ${spec.ram}" th:text="${item.specName}"></option>
+		      <label for="foodCategory">상품 카테고리</label>
+		      <select class="form-control" name="foodCategory">
+		      	<option value="Snack">Snack</option>
+		      	<option value="Drink">Drink</option>
+		      	<option value="Dessert">Dessert</option>
+		      	<option value="Noodle">Noodle</option>
+		      	<option value="Meal">Meal</option>
 		      </select>
 			</div>
 				
 			<div class="form-group">
-				<label for="franchiseePic">franchiseePic:</label> 
-				<input multiple="multiple" type="file" class="form-control" id="franchiseePic" placeholder="Enter Pictures" name="franchiseePicList" >
+				<label for="foodPic">상품 사진</label> 
+				<input type="file" class="form-control" id="foodPic" placeholder="Enter Pictures" name="foodPic" >
 			</div>
 			
-			<button id="addButton" type="submit" class="btn btn-primary">입력</button>
+			<button id="addButton" type="submit" class="btn btn-primary">등록</button>
 		</form>
+		<br>
+		<div class="shadow p-4 mb-4 bg-light">
+			<p>사진 미리보기</p>
+			<div id="preview">
+				<img id="previewImg" width="300" height="200">
+			</div>
+		</div>
 
 	</div>
   <!-- /.container -->
@@ -103,7 +110,34 @@
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+  <script type="text/javascript"> 
+  
+		let sel_file;
+ 
+		$(document).ready(function() {
+            $("#foodPic").on("change", handleFile);
+        }); 
+ 
+        function handleFile(e) {
+        	let files = e.target.files;
+        	let filesArr = Array.prototype.slice.call(files);
+ 
+            filesArr.forEach(function(f) {
+                if(!f.type.match("image.*")) {
+                    alert("이미지만 업로드 가능합니다");
+                    return;
+                }
+ 
+                sel_file = f;
+ 
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    $("#previewImg").attr("src", e.target.result);
+                }
+                reader.readAsDataURL(f);
+            });
+        }
+    </script>
 </body>
 
 </html>

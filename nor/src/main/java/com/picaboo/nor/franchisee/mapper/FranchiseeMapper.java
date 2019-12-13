@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.picaboo.nor.franchisee.vo.Food;
+import com.picaboo.nor.franchisee.vo.FoodPic;
+import com.picaboo.nor.franchisee.vo.FoodReservationList;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
@@ -16,11 +19,25 @@ import com.picaboo.nor.franchisee.vo.Spec;
 
 @Mapper
 public interface FranchiseeMapper {
-	//고객 문의사항 정보 매퍼
+	// food 통계 계수 추가
+	public int addFoodReservation(int reservationNo);
+	// 주문완료 음식 삭제
+	public int delFoodReservation(int reservationNo);
+	// 음식 주문 확인 서비스
+	public List<FoodReservationList> selectFoodReservationList(String franchiseeNo);
+	// 가맹점 상품 사진 조회
+	public List<FoodPic> getFoodPicList(String franchiseeNo);
+	// 가맹점 상품 리스트 조회
+	public List<Food> getFoodList(String franchiseeNo);
+	// 가맹점 상품 사진 등록
+	public int insertFranchiseeFoodPic(FoodPic foodPic);
+	// 가맹점 상품 등록
+	public int insertFranchiseeFood(Food food);
+	// 고객 문의사항 정보 매퍼
 	public List<FranchiseeQnA> selectFranchiseeQnaList(String ownerNo);
-	//고객의 상세정보를 수정하는 매퍼
+	// 고객의 상세정보를 수정하는 매퍼
 	public int updateFranchiseeOwner(FranchiseeOwner franchiseeOwner);
-	//고객의 상세정보를 불러오는 매퍼
+	// 고객의 상세정보를 불러오는 매퍼
 	public FranchiseeOwner selectFranchiseeOwner(String ownerNo);
 	// 가맹점 썸네일 사진 조회
 	public List<FranchiseePic> selectFranchiseeThumbnail();

@@ -14,6 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.picaboo.nor.franchisee.mapper.FranchiseeMapper;
+import com.picaboo.nor.franchisee.vo.Food;
+import com.picaboo.nor.franchisee.vo.FoodForm;
+import com.picaboo.nor.franchisee.vo.FoodPic;
+import com.picaboo.nor.franchisee.vo.FoodReservationList;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
@@ -30,6 +34,120 @@ import com.picaboo.nor.ftp.FTPService;
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	//주문완료 음식 삭제
+		@Override
+		public int delFoodReservation(int reservationNo) {
+			franchiseeMapper.addFoodReservation(reservationNo);
+
+			return franchiseeMapper.delFoodReservation(reservationNo);
+		}
+		//음식 주문 서비스 확인
+		public List<FoodReservationList> getFoodReservationList(String franchiseeNo) {
+			System.out.println("service Impl :  " + franchiseeNo);
+			return franchiseeMapper.selectFoodReservationList(franchiseeNo);
+		}
+	// 가맹점 상품 정보 가져오기
+	@Override
+	public Map<String, Object> getFranchiseeFood(String franchiseeNo) {
+		System.out.println("Service franchiseNo: " + franchiseeNo);
+		
+		// 상품 리스트와 상품 사진 리스트를 가지는 맵
+		Map<String, Object> franchiseeFood = new HashMap<String, Object>();
+		
+		// 상품 리스트
+		List<Food> foodList = franchiseeMapper.getFoodList(franchiseeNo);
+		franchiseeFood.put("foodList", foodList);
+		// 상품 사진 리스트
+		List<FoodPic> foodPicList = franchiseeMapper.getFoodPicList(franchiseeNo);
+		franchiseeFood.put("foodPicList", foodPicList);
+		
+		String uploadPath = "http://ahp7242.cdn3.cafe24.com/food/";
+		franchiseeFood.put("uploadPath", uploadPath);
+		
+		return franchiseeFood;
+	}
+	
+	@Override
+	public int addFranchiseeFood(FoodForm foodForm) {
+		System.out.println("Service foodForm: " + foodForm);
+		
+		// 성공한 행의 수를 리턴할 변수
+		int rows = 0;
+		// foodForm -> Food, FoodPic 으로 나눔
+		
+		// 1. Food
+		Food food = new Food();
+		food.setFoodName(foodForm.getFoodName());
+		food.setFoodPrice(foodForm.getFoodPrice());
+		food.setFoodCategory(foodForm.getFoodCategory());
+		food.setFranchisee(new Franchisee());
+		food.getFranchisee().setFranchiseeNo(foodForm.getFranchiseeNo());
+		// db에 저장
+		rows += franchiseeMapper.insertFranchiseeFood(food);
+		
+		// 2. FoodPic
+		
+		MultipartFile mf = foodForm.getFoodPic();
+		
+		String originName = mf.getOriginalFilename();
+		String contentType = mf.getContentType();
+		
+		// 이미지 타입 아닐경우 리턴
+		if(!contentType.equals("image/jpeg") && !contentType.equals("image/png") && 
+				!contentType.equals("image/gif") && !contentType.equals("image/svg+xml") ) {
+			return -1;
+		}
+		
+		FoodPic foodPic = new FoodPic();
+		foodPic.setFoodNo(food.getFoodNo());
+		foodPic.setContentType(contentType);
+		foodPic.setSize(mf.getSize());
+		foodPic.setOriginName(originName);
+
+		// 파일 확장자명
+		String extension = originName.substring(originName.lastIndexOf(".")+1);
+		// 랜덤한 UUID에 -를 빼고 원래 파일이름의 확장자만 더해서 저장할 파일이름을 생성
+		String saveFileName = UUID.randomUUID().toString().replace("-", "")+"."+extension;
+		
+		// 확장자명
+		foodPic.setExtension(extension);
+		// 파일명
+		foodPic.setFileName(saveFileName);
+		
+		System.out.println("foodPic: " + foodPic.toString());
+		
+		try {
+			// db에 저장
+			rows += franchiseeMapper.insertFranchiseeFoodPic(foodPic);
+			
+			// MultipartFile을 File로 변환
+			File convertFile = new File(saveFileName);
+			convertFile.createNewFile();
+			FileOutputStream fos = new FileOutputStream(convertFile);
+			fos.write(mf.getBytes());
+			fos.close();
+			
+			// 업로드 디렉토리
+			String dir = "/www/food/";
+			
+			// CDN에 업로드 시작
+			System.out.println("Upload Start");
+			FTPService ftpUploader = new FTPService();
+			// FTP 연결
+			ftpUploader.connectFTP(convertFile);
+			// 파일 업로드
+			ftpUploader.uploadFile(convertFile, saveFileName, dir);
+			// FTP 연결 해제
+			ftpUploader.disconnect();
+			System.out.println("Done");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
+			throw new RuntimeException();
+		}
+		
+		return rows;
+	}
 	
 	//qna 답변 확인가능 
 	@Override
@@ -56,7 +174,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		// 썸네일 사진과 경로를 가지는 맵 리턴
 		Map<String, Object> thumbnailInfo = new HashMap<String, Object>();
 		// 저장 경로
-		String uploadPath = "http://ahp7242.cdn3.cafe24.com/";
+		String uploadPath = "http://ahp7242.cdn3.cafe24.com/franchisee/";
 		thumbnailInfo.put("uploadPath", uploadPath);
 		// 썸네일 사진
 		List<FranchiseePic> thumbnailList = franchiseeMapper.selectFranchiseeThumbnail();
@@ -178,6 +296,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				FileOutputStream fos = new FileOutputStream(convertFile);
 				fos.write(mf.getBytes());
 				fos.close();
+				// 업로드 디렉토리
+				String dir = "/www/franchisee/";
 				
 				// CDN에 업로드 시작
 				System.out.println("Upload Start");
@@ -185,7 +305,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				// FTP 연결
 				ftpUploader.connectFTP(convertFile);
 				// 파일 업로드
-				ftpUploader.uploadFile(convertFile, storeFileName);
+				ftpUploader.uploadFile(convertFile, storeFileName, dir);
 				// FTP 연결 해제
 				ftpUploader.disconnect();
 				System.out.println("Done");
@@ -274,7 +394,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		List<FranchiseePic> franchisePicList = franchiseeMapper.selectFranchiseePic(franchiseeNo);
 		System.out.println("Service franchisePicList: " + franchisePicList);
 		// 저장 경로
-		String uploadPath = "http://ahp7242.cdn3.cafe24.com/";
+		String uploadPath = "http://ahp7242.cdn3.cafe24.com/franchisee/";
 		
 		franchiseeInfo.put("franchisePicList", franchisePicList);
 		franchiseeInfo.put("uploadPath", uploadPath);
@@ -282,6 +402,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		return franchiseeInfo;
 	}
 	
+	// 가맹점 정보 입력
 	@Override
 	public int addFranchiseeInfo(FranchiseeInfoForm franchiseeInfoForm) {
 		// 성공한 처리수를 리턴할 변수
@@ -379,6 +500,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				FileOutputStream fos = new FileOutputStream(convertFile);
 				fos.write(mf.getBytes());
 				fos.close();
+				// 업로드 디렉토리
+				String dir = "/www/franchisee/";
 				
 				// CDN에 업로드 시작
 				System.out.println("Upload Start");
@@ -386,7 +509,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				// FTP 연결
 				ftpUploader.connectFTP(convertFile);
 				// 파일 업로드
-				ftpUploader.uploadFile(convertFile, storeFileName);
+				ftpUploader.uploadFile(convertFile, storeFileName, dir);
 				// FTP 연결 해제
 				ftpUploader.disconnect();
 				System.out.println("Done");

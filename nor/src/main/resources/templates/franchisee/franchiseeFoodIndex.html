@@ -59,12 +59,12 @@
 	    <header class="jumbotron my-4">
 	    
 	    <div class="row text-center">
-	      <div class="col-lg-3 col-md-6 mb-4">
+	      <div class="col-lg-3 col-md-6 mb-4" th:each="food : ${franchiseeFood.foodList}">
 	        <div class="card h-100">
-	          <img class="card-img-top" src="http://placehold.it/500x325" alt="">
+			  <img class="card-img-top" th:each="foodPic : ${franchiseeFood.foodPicList}" th:if="${foodPic.foodNo} == ${food.foodNo}" th:src="${franchiseeFood.uploadPath} + ${foodPic.fileName}" alt="foodPic">
 	          <div class="card-body">
-	            <h4 class="card-title">상품 1</h4>
-	            <p class="card-text">상품 설명</p>
+	            <h4 class="card-title" th:text="${food.foodName}">foodName</h4>
+	            <p class="card-text" th:text="${food.foodPrice}+'원'">foodPrice</p>
 	          </div>
 	          <div class="card-footer">
 	            <a href="#" class="btn btn-primary">수정</a>
@@ -84,13 +84,13 @@
 	    
 	      <div class="col-lg-3 col-md-6 mb-4">
 	          <div class="card">
-	            <a href="/addFranchiseeFood" class="btn btn-primary">상품 추가</a>
+	            <a href="#" th:href="@{/addFranchiseeFood?(franchiseeNo=${franchiseeNo})}" class="btn btn-primary">상품 추가</a>
 	          </div>
 	      </div>
 	      
 	      <div class="col-lg-3 col-md-6 mb-4">
 	          <div class="card">
-	            <a href="/removeFranchiseeFood" class="btn btn-primary">상품 삭제</a>
+	            <a href="#" th:href="@{/removeFranchiseeFood}" class="btn btn-primary">상품 삭제</a>
 	          </div>
 	      </div>
 	      

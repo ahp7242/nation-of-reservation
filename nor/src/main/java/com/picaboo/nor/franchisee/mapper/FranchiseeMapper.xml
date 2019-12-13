@@ -4,6 +4,127 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!--food 통계 계수 추가-->
+	<insert id="addFoodReservation" parameterType="int">
+	<![CDATA[
+		INSERT INTO del_food_reservation
+			(
+			food_no,
+			reservation_count,
+			reservation_date,
+			customer_no,
+			customer_name)
+		SELECT 
+
+			food_no,
+			reservation_count,
+			reservation_date,
+			customer_no,
+			customer_name
+		FROM food_reservation
+		
+		WHERE reservation_no = #{reservationNo}
+	]]>
+	</insert>
+	
+	<!--주문완료 음식 삭제 -->
+	<delete id="delFoodReservation" parameterType="int">
+    <![CDATA[
+      DELETE
+		FROM food_reservation
+		WHERE reservation_no = #{reservationNo}
+    ]]>
+    </delete>
+   
+	<!-- 음식 서비스 확인가능 -->
+	<select id="selectFoodReservationList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FoodReservationList">
+	<![CDATA[
+		SELECT
+		    r.reservation_no as reservationNo,
+			r.food_no as foodNo,
+			r.reservation_count as reservationCount,
+			r.customer_no as customerNo,
+			r.customer_name as customerName,
+			r.reservation_date as reservationDate
+			FROM food AS f             
+        INNER JOIN food_reservation AS r       
+		ON f.food_no = r.food_no  
+		WHERE f.franchisee_no = #{franchiseeNo}
+
+	]]>   
+	
+	</select>
+	<!-- 가맹점 상품 사진 리스트 조회 --> 
+	<select id="getFoodPicList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FoodPic">
+	<![CDATA[
+		SELECT
+		food_no as foodNo,
+		file_name as fileName,
+		extension as extension,
+		content_type as contentType,
+		size as size,
+		origin_name as originName
+		FROM food_pic
+		WHERE food_no IN (
+							SELECT food_no
+							FROM food
+							WHERE franchisee_no = #{franchiseeNo}
+						)
+	]]>
+	</select>
+	
+	<!-- 가맹점 상품 리스트 조회 -->
+	<select id="getFoodList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Food">
+	<![CDATA[
+		SELECT
+			food_no as foodNo,
+			food_name as foodName,
+			food_category as foodCategory,
+			food_price as foodPrice
+		FROM food
+		WHERE franchisee_no = #{franchiseeNo}
+	]]>
+	</select>
+	<!-- 가맹점 상품 사진 등록 -->
+	<insert id="insertFranchiseeFoodPic" parameterType="com.picaboo.nor.franchisee.vo.FoodPic">
+	<![CDATA[
+		INSERT INTO food_pic (
+			food_no,
+			file_name,
+			extension,
+			content_type,
+			size,
+			origin_name
+		) VALUES(
+			#{foodNo},
+			#{fileName},
+			#{extension},
+			#{contentType},
+			#{size},
+			#{originName}
+		)		
+	]]>
+	</insert>
+	
+	<!-- 가맹점 상품 등록 -->
+	<insert id="insertFranchiseeFood" parameterType="com.picaboo.nor.franchisee.vo.Food" useGeneratedKeys="true" keyProperty="foodNo">
+	<![CDATA[
+		INSERT INTO food (
+			food_no,
+			franchisee_no,
+			food_name,
+			food_category,
+			food_price
+		) VALUES(
+			#{foodNo},
+			#{franchisee.franchiseeNo},
+			#{foodName},
+			#{foodCategory},
+			#{foodPrice}
+		)		
+	]]>
+	</insert>
+
 	<!-- 고객문의 사항 상세확인가능 -->
 	<select id="selectFranchiseeQnaList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
 	
@@ -325,6 +446,7 @@
 	<![CDATA[
 	   SELECT seq_no
 	   FROM franchisee_seq
+	   LIMIT 1;
 	]]>
 	</select>
 	
