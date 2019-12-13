@@ -19,6 +19,18 @@
 	.gradation{
         background: linear-gradient(to right bottom, #B96BC6, #FE5196);
     }
+    /* .spec {
+		width: 170px;
+		height: 20px;
+		background-color:gray;
+		-webkit-transition: height 2s; /* For Safari 3.1 to 6.0 */
+		transition: height 2s;
+		position: absolute;
+	}
+	
+	.spec:hover {
+		height: 100px;
+	} */
 </style>
 <body>
 <div id="logo" >
@@ -30,31 +42,34 @@
 	<div class="container">
 		<br>
 		<!-- Jumbotron Header(이벤트 배너) -->
-		<div class="slideshow-container">
-			<div class="mySlides">
-				
-				<img src="/loginimage/google.png" style="width:100%" >
-			</div>
-
-			<div class="mySlides">
-				
-				<img src="/loginimage/naver.png" style="width: 100%">
-			</div>
-			
-			<div class="mySlides">
-				
-				<img src="/loginimage/kakao.png" style="width: 100%">
-			</div>
-			<a class="prev" onclick="plusSlides(-1)">&#10094;</a> 
-			<a class="next" onclick="plusSlides(1)">&#10095;</a>
-
-		</div>
-		<br>
-		<div style="text-align: center">
-			<span class="dot" onclick="currentSlide(1)"></span> 
-			<span class="dot" onclick="currentSlide(2)"></span>
-			<span class="dot" onclick="currentSlide(3)"></span>
-		</div>			
+		<div id="demo" class="carousel slide" data-ride="carousel">
+			<!-- Indicators -->
+			<ul class="carousel-indicators">
+			<li data-target="#demo" data-slide-to="0" class="active"></li>
+			<li data-target="#demo" data-slide-to="1"></li>
+			<li data-target="#demo" data-slide-to="2"></li>
+			</ul>			
+			<!-- The slideshow 이미지 부분 -->
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="loginimage/event1.jpg" alt="Los Angeles" width="1100" height="500">
+				</div>
+				<div class="carousel-item">
+					<img src="loginimage/event2.jpg" alt="Chicago" width="1100" height="500">
+				</div>
+				<div class="carousel-item">
+					<img src="loginimage/event3.jpg" alt="New York" width="1100" height="500">
+				</div>
+			</div>	  
+			<!-- Left and right controls 좌우 클릭 -->
+			<a class="carousel-control-prev" href="#demo" data-slide="prev">
+			<span class="carousel-control-prev-icon"></span>
+			</a>
+			<a class="carousel-control-next" href="#demo" data-slide="next">
+			<span class="carousel-control-next-icon"></span>
+			</a>
+		</div>	
+		<br>	
 		<!-- Page Features(메인 베너) -->
 		<div class="row text-center" id="main">
 			
@@ -118,6 +133,8 @@ showSlides(slideIndex);
 			console.log(fList)
 			let fpList = json.franchiseePicList
 			console.log(fpList)
+			let fsList = json.franchiseeSpecList
+			console.log(fsList)
 			$(fList).each(function(index, item){
 				html += "<div class='col-lg-3 col-md-6 mb-4'>";
 				html += "<div class='card h-100'>";
@@ -128,8 +145,9 @@ showSlides(slideIndex);
 				html += "<h4 class='card-title'>";
 				html += item.franchiseeName;
 				html += "</h4>";
-				html += "<p class='card-text'>";
-				html += "PC방 사양";
+				html += "<div class='spec'><p class='card-text' id='spec";
+				html += index
+				html += "'></div>";
 				html += "</p>";
 				html += "</div>";
 				html += "<div class='card-footer'>";
@@ -148,7 +166,16 @@ showSlides(slideIndex);
 				$("#img"+index).attr("src","/upload/"+item.fileName)
 				$("#img"+index).attr("alt",item.originName)
 			})
-			console.log(html)
+			/* $(fsList).each(function(index,item){
+				console.log(item);
+				let spectext = "pc방 사양 <br>";
+				spectext += item.cpu;
+				spectext += "<br>";
+				spectext += item.vga;
+				spectext += "<br>";
+				spectext += item.ram
+				$("#spec"+index).append(spectext)
+			}) */
 		}
 	})
 </script>

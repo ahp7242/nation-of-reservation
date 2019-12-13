@@ -85,44 +85,44 @@
        <!-- 가맹점 목록 -->
        <header class="jumbotron my-4">
        <h3>QnA List</h3>
-		<div class="row text-center">
-	      <div class="col-lg-3 col-md-6 mb-4"  th:each="str:${map.list}" th:if="${str.qnaAnswer == null}">
-	   
-			<div class="card h-100"> 
-			  <div class="card-body">
-	            <h4 class="card-title" th:text="${str.customerNo}">customerNo</h4>
-	          </div>
-	          
-	          <div class="card-body">
-	            <h4 class="card-title" th:text="${str.qnaType}">qnaType</h4>
-	          </div>
-	          
-	          <div class="card-body">
-	            <h4 class="card-title" th:text="${str.qnaTitle}">qnaTitle</h4>
-	          </div> 
-	          
-	          <div class="card-body">
-	            <h4 class="card-title" th:text="${str.qnaDate}">qnaDate</h4>
-	          </div>
-	          
-	          <div class="card-footer">
-	            <a href="#" class="btn btn-primary" th:href="@{/QnADetail?(qnaNo=${str.qnaNo})}" th:text="답변입력하기">답변입력하기</a>
-			  </div>
-			</div>
-	
-	</div>
-	 </div>
-	   <a th:if="${map.currentPage > 1}" th:href="@{/QnAList?(currentPage=${map.currentPage-1})}">이전</a>
+      <div class="row text-center">
+         <div class="col-lg-3 col-md-6 mb-4"  th:each="str:${map.list}" th:if="${str.qnaAnswer == null}">
+      
+         <div class="card h-100"> 
+           <div class="card-body">
+               <h4 class="card-title" th:text="${str.customerNo}">customerNo</h4>
+             </div>
+             
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.qnaType}">qnaType</h4>
+             </div>
+             
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.qnaTitle}">qnaTitle</h4>
+             </div> 
+             
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.qnaDate}">qnaDate</h4>
+             </div>
+             
+             <div class="card-footer">
+               <a href="#" class="btn btn-primary" th:href="@{/QnADetail?(qnaNo=${str.qnaNo})}" th:text="답변입력하기">답변입력하기</a>
+           </div>
+         </div>
+   
+   </div>
+    </div>
+      <a th:if="${map.currentPage > 1}" th:href="@{/QnAList?(currentPage=${map.currentPage-1})}">이전</a>
        <a th:if="${map.currentPage < map.lastPage}" th:href="@{/QnAList?(currentPage=${map.currentPage+1})}">다음</a>
  
-	    </header>
-	</div>
+       </header>
+   </div>
    </div>
    <!-- Footer -->
    <div th:fragment="copyright">
       <footer class="py-5 bg-dark">
        <div class="container">
-         <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+         <p class="m-0 text-center text-white">Copyright &copy; PICABOO 2019</p>
         </div>
         <!-- /.container -->
        </footer>

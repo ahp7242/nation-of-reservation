@@ -3,19 +3,45 @@ package com.picaboo.nor.membership.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import com.picaboo.nor.membership.mapper.MembershipMapper;
+import com.picaboo.nor.membership.vo.Address;
 import com.picaboo.nor.membership.vo.Login;
 import com.picaboo.nor.membership.vo.Membership;
+import com.picaboo.nor.membership.vo.SignForm;
+
 
 @Service
 @Transactional
 public class MembershipServiceImpl implements MembershipService{
 	@Autowired private MembershipMapper membershipMapper;
 	
+	/*
+	 * //회원가입시 주소를 입력하는 서비스
+	 * 
+	 * @Override public int addAddress(Address address) { return
+	 * membershipMapper.insertAddress(address); }
+	 */
+	
 	//회원가입정보를 입력하는 서비스
 	@Override
-	public int addMembership(Membership membership) {
+	public void addMembership(SignForm signForm) {
+		// signForm 을 address, membership 으로 나누어 처리
+		
+		// 1. address 
+		Address address = new Address();
+		address.setDetailAddress(signForm.getDetailAddress());
+		address.setJibunAddress(signForm.getJibunAddress());
+		address.setPostcode(signForm.getPostcode());
+		address.setRoadAddress(signForm.getRoadAddress());
+		
+		// db에 저장하고 기본키 리턴
+		membershipMapper.insertAddress(address);
+		
+		// 2. membership
+		
+		// 회원번호 생성 코드
 		
 		// 회원가입후 마지막 등록된 회원번호를 호출
 		String seqNo = membershipMapper.selectCustomerSeq();
@@ -29,11 +55,25 @@ public class MembershipServiceImpl implements MembershipService{
 		membershipMapper.updateCustomerSeq(nextNo);
 		
 		//고객의 타입과 번호를 더하여 customerNo값 생성
-		String customerNo = membership.getCustomerType() + nextNo;
+		String customerNo = signForm.getCustomerType() + nextNo;
 		
-		//System.out.println(customerNo);
+		System.out.println("cutomerNo: " + customerNo);
+		
+		Membership membership = new Membership();
+		System.out.println("address.getAddressNo: " + address.getAddressNo());
+		membership.setAddressNo(address.getAddressNo());
 		membership.setCustomerNo(customerNo);
-		return membershipMapper.insertMembership(membership);
+		membership.setCustomerId(signForm.getCustomerId());
+		membership.setCustomerPw(signForm.getCustomerPw());
+		membership.setCustomerName(signForm.getCustomerName());
+		membership.setCustomerBirth(signForm.getCustomerBirth());
+		membership.setCustomerGender(signForm.getCustomerGender());
+		membership.setCustomerEmail(signForm.getCustomerEmail());
+		membership.setCustomerPhone(signForm.getCustomerPhone());
+		membership.setCustomerType(signForm.getCustomerType());
+
+		membershipMapper.insertMembership(membership);
+		
 	}
 	
 	//로그인시 회원정보의 유무를 확인하는 서비스

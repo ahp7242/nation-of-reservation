@@ -9,6 +9,5 @@ public class SeatReservation {
 	private String customerName;
 	private int seatNo;
 	private String reservationDate;
-	private String reservationTime;
 	private String type;
 }
