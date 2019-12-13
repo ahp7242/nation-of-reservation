@@ -21,12 +21,15 @@ public class CustomerRestController {
 	@PostMapping("/getFranchiseeList")
 	public Map<String, Object> getFranchiseeList(){
 		List<Franchisee> franchiseeList = customerService.getFranchiseeNo();
-		System.out.println("restcontroller"+franchiseeList);
+		//System.out.println("restcontroller"+franchiseeList);
 		List<FranchiseePic> franchiseePicList = customerService.getFranchiseeThumbnail();
-		System.out.println("pic list"+franchiseePicList);
+		//System.out.println("pic list"+franchiseePicList);
+		List<FranchiseeSpec> franchiseeSpecList = customerService.getFranchiseeSpecList();
+		//System.out.println(franchiseeSpecList);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("franchiseeList", franchiseeList);
 		map.put("franchiseePicList", franchiseePicList);
+		map.put("franchiseeSpecList", franchiseeSpecList);
 		return map;
 	}
 	
@@ -37,34 +40,64 @@ public class CustomerRestController {
 								@RequestParam("franchiseeNo")String franchiseeNo) {
 		String memberName = (String) session.getAttribute("memberName");
 		String memberNo = (String) session.getAttribute("memberNo");
+		String newDate = date + " " + time;
 		
 		System.out.println("memberName"+memberName);
 		System.out.println("memberNo"+memberNo);
+		System.out.println("예약컨트롤러"); 
+		System.out.println("seatNo"+seatNo);
+		System.out.println("date"+newDate);
+		System.out.println("franchiseeNo"+franchiseeNo);
 		
-		/*
-		 * System.out.println("예약컨트롤러"); System.out.println("seatNo"+seatNo);
-		 * System.out.println("date"+date); System.out.println("time"+time);
-		 * System.out.println("franchiseeNo"+franchiseeNo);
-		 * System.out.println(memberName);
-		 */
 		SeatReservation seatReservation = new SeatReservation();
 		seatReservation.setCustomerNo(memberNo);
 		seatReservation.setCustomerName(memberName);
 		seatReservation.setFranchiseeNo(franchiseeNo);
-		seatReservation.setReservationDate(date);
-		seatReservation.setReservationTime(time);
+		seatReservation.setReservationDate(newDate);
 		seatReservation.setSeatNo(Integer.parseInt(seatNo));
 		seatReservation.setType("R");
 		
-		customerService.addReservation(seatReservation);
+		customerService.addSeatReservation(seatReservation);
 	}
 	
 	@PostMapping("/getFoodList")
 	public List<Food> getFoodList(@RequestParam("franchiseeNo")String franchiseeNo) {
-		System.out.println("getFoodList"+franchiseeNo);
+		//System.out.println("getFoodList"+franchiseeNo);
 		
 		List<Food> list = customerService.getFoodList(franchiseeNo);
-		System.out.println("getFoodList"+list);
+		//System.out.println("getFoodList"+list);
 		return list;
+	}
+	
+	@PostMapping("/foodReservation")
+	public void foodReservation(HttpSession session,
+								@RequestParam("foodNo")String foodNo,
+								@RequestParam("count")String count,
+								@RequestParam("date")String date,
+								@RequestParam("time")String time) {
+		String memberName = (String) session.getAttribute("memberName");
+		String memberNo = (String) session.getAttribute("memberNo");
+		String newDate = date + " " + time;
+		int newCount = Integer.parseInt(count);
+		int newFoodNo = Integer.parseInt(foodNo);
+		
+		System.out.println("memberName"+memberName);
+		System.out.println("memberNo"+memberNo);
+		System.out.println("foodNo"+foodNo);
+		System.out.println("reservationCount"+count);
+		System.out.println("date"+date);
+		System.out.println("time"+time);
+		System.out.println("new Date"+newDate);
+		System.out.println("new Count"+newCount);
+		System.out.println("new FoodNo"+newFoodNo);
+		
+		FoodReservation foodReservation = new FoodReservation();
+		foodReservation.setCustomerName(memberName);
+		foodReservation.setCustomerNo(memberNo);
+		foodReservation.setReservationDate(newDate);
+		foodReservation.setReservationCount(newCount);
+		foodReservation.setFoodNo(newFoodNo);
+		
+		customerService.addFoodReservation(foodReservation);
 	}
 }

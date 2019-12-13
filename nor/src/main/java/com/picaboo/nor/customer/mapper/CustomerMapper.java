@@ -14,17 +14,29 @@ public interface CustomerMapper {
 	//프렌차이즈 상세정보를 가져옴
 	public Franchisee selectFranchisee(String franchiseeNo);
 	//좌석 예약
-	public void insertReservation(SeatReservation seatReservation);
+	public void insertSeatReservation(SeatReservation seatReservation);
 	//예약한 좌석 타입 변경
 	public void updateSeatType(SeatReservation seatReservation);
-	//예약된 좌석 리스트
+	//예약된 좌석중 시간이 10분 지난 리스트
 	public List<SeatReservation> selectSeatReservation(String franchiseeNo);
+	//예약기간이 지난 예약 을 cancel테이블로 이동
+	public void insertCancelSeatReaservation(SeatReservation seatReservation);
 	//예약기간이 지난 예약 삭제
 	public void deleteSeatReservation(SeatReservation seatReservation);
-
+	//프렌차이즈의 대표 이미지 가져옴
 	public List<FranchiseePic> selectFranchiseeThumbnail();
-	
+	//선택된 프렌차이즈의 이미지를 가져옴
 	public List<FranchiseePic> selectFranchiseeThumbnailList(String franchiseeNo);
-	
+	//선택된 프렌차이즈에 등록된 상품목록을 가져옴
 	public List<Food> selectFoodList(String franchiseeNo);
+	//프렌차이즈의 스펙을 가져옴
+	public List<FranchiseeSpec> selectSpecList();
+	//예약한 상품을 데이터베이스에 저장
+	public void insertFoodReservation(FoodReservation foodReservation);
+	//예약된 상품의 리스트를 가져옴
+	public List<FoodReservation> selectFoodReservation(String franchiseeNo);
+	//예약된 상품중 기간이 10분지난 목록을 cancel테이블로 이동
+	public void insertCancelFoodReservation(FoodReservation foodreservation);
+	//예약된 상품중 기간이 10분지난 목록을 예약 테이블에서 삭제
+	public void deleteFoodReservation(int reservationNo);
 }

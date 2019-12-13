@@ -141,19 +141,21 @@
 					</table>
 				</div>
 				<div id="total">
-					<table id="totalTable">
+					<table id="totalTable" border="1">
 						<tr>
 							<th>상품명</th>
 							<th>판매금액</th>
 							<th>수량</th>
 							<th>최종금액</th>
+							<th>취소</th>
 						</tr>
 					</table>
 				</div>
 				<div id="reservation">
-					<div id="totalprice">원</div>
+					<div id="totalprice">
+					</div>
 					<div>
-						<button type="button" id="menumodal_close_btn" class="btn btn-primary closed">상품 예약</button>
+						<button type="button" id="menumodal_close_btn" class="btn btn-primary closed res_btn">상품 예약</button>
 					</div>
 				</div>
 			</div>
@@ -168,11 +170,47 @@
 </body>
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 <script th:inline="javascript">
+<<<<<<< HEAD
 let seat = /*[[${seat}]]*/
 let franchiseeNo = /*[[${franchisee.franchiseeNo}]]*/
+=======
+	let seat = /*[[${seat}]]*/
+	let franchiseeNo = /*[[${franchisee.franchiseeNo}]]*/
+	let picList = /*[[${picList}]]*/
+	let category = "all";
+	let menu = [];
+	$.ajax({
+		url:"/getFoodList",
+		method:"POST",
+		data:{"franchiseeNo":franchiseeNo},
+		success:function(json){
+			//console.log("success")
+			//console.log("json",json)
+			menu = json;
+			//console.log("menu",menu)
+		}
+	})
+	
+	
+let thumPic = "";
+let thumBic	= "";
+$(picList).each(function(index,item){
+	//console.log(item)
+	thumPic += "<img class='thumbnail round' src='/upload/";
+	thumPic += item.fileName
+	thumPic += "'>"
+	
+	thumBic += "<div class='mySlides'> <img src='/upload/";
+	thumBic += item.fileName;
+	thumBic += "' style='width: 100%'> </div>"
+})
+$(".picmodal_link").append(thumPic)
+$(".slideshow-container").append(thumBic)
+>>>>>>> refs/remotes/origin/master
 //console.log(seat);
+<<<<<<< HEAD
 let html = "";
 let rowMax = 0;
 let colsMax = 0;
@@ -204,8 +242,156 @@ for(let row=1; row<=rowMax+1; row++){
 	html += "</tr>"
 }
 $("#seat").html(html);
+=======
+//console.log(picList)
+>>>>>>> refs/remotes/origin/master
 
 $(document).ready(function(){
+<<<<<<< HEAD
+=======
+	let html = "";
+	let rowMax = 0;
+	let colsMax = 0;
+	let reservationCount = 0
+	
+	$(seat).each(function(index,item){
+	//seat값을 검사하여 row값의 최대값을 rowMax에 저장
+		if(item.seatRow > rowMax){
+			rowMax = item.seatRow;
+		}
+		//seat값을 검사하여 cols값의 최대값을 colsMax에 저장
+		if(item.seatCols > colsMax){
+			colsMax = item.seatCols
+		}
+	})
+	//console.log(rowMax)
+	//console.log(colsMax)
+	
+	//좌석 표시중 마지막줄에 1줄 더하여 출력(pc방 길)
+	for(let row=1; row<=rowMax+1; row++){
+		html += "<tr id='"+row+"'>"
+		for(let cols=1; cols<=colsMax; cols++){
+			html += "<td id='"+cols+"'>"
+			html += "<div class='box'></div>";
+			html += "</td>";
+		}
+		html += "</tr>"
+	}
+	$("#seat").html(html);
+
+	//console.log(menu)
+	
+	let category = "all"
+	$(".category").click(function(){
+		//console.log("category click")
+		category = $(this).attr("id");
+		//console.log(category)
+		$("#menu").empty()
+		let menuhtml = "<table border='1'>";
+		menuhtml += "<tr>";
+		$(menu).each(function(index,item){
+			if(category == "all") {
+				menuhtml += "<td class='item'>";
+				menuhtml += "<img src='/loginimage/너구리.jpg' class='image' id='No"+item.foodNo+"' alt='";
+				menuhtml += item.foodName;
+				menuhtml += "'>";
+				menuhtml += "<div class='price'><input type='number' value='1' min='1' id='count'><p id='price'>";
+				menuhtml += item.foodPrice;
+				menuhtml += "원</p></div>"
+					menuhtml += "</td>"
+				if((index+1)%5 == 0){
+					menuhtml += "</tr><tr>"
+				}
+			}
+			if(category == item.foodCategory){
+				menuhtml += "<td class='item'>";
+				menuhtml += "<img src='/loginimage/너구리.jpg' class='image' id='No"+item.foodNo+"' alt='";
+				menuhtml += item.foodName;
+				menuhtml += "'>";
+				menuhtml += "<div class='price'><input type='number' value='1' min='1' id='count'><p id='price'>";
+				menuhtml += item.foodPrice;
+				menuhtml += "원</p></div>";
+				menuhtml += "</td>";
+				if((index+1)%5 == 0){
+					menuhtml += "</tr><tr>";
+				}
+			}
+		})
+		menuhtml += "</tr>";
+		menuhtml += "</table>";
+		$("#menu").append(menuhtml)
+		
+		$('.image').on('click',function() {
+			let count = 0;
+			//console.log("image click")
+			let $no = $(this).attr("id")
+			let $name = $(this).attr("alt")
+			let $price = $(this).next().find("#price").text()
+			let $count = Number($(this).next().find("#count").val())
+			$price = Number($price.substr(0,($price.length-1)))
+			//console.log("가격 :"+$price)
+			//console.log("수량 :"+$count)
+			//console.log("이미지 :"+$name)
+			//console.log($no)
+			$no = $no.substr(2)
+			//console.log("번호:",$no)
+			
+			$("#totalTable tr").each(function(index,item){
+				if($(item).attr("id") == ("food"+$no)){
+					//console.log("있음")
+					//console.log("count 값",$(item).find("#count"+$no).text())
+					let newCount = Number($(item).find("#count"+$no).text())
+					let newTotal = (newCount + $count)*$price
+					$(item).find("#count"+$no).text(newCount + $count)
+					$(item).find("#total"+$no).text(newTotal)
+					count = 1;
+					return;
+				}
+			})
+			
+			let total = "<tr id='food"+$no+"'>";
+			total += "<td id='name"+$no+"'>";
+			total += $name;
+			total += "</td><td id='price"+$no+"'>";
+			total += $price
+			total += "</td><td class='foodCount' id='count"+$no+"'>";
+			total += $count
+			total += "</td><td class='totalprice' id='total"+$no+"'>";
+			total += ($count*$price);
+			total += "</td><td class='cancel'>X</td></tr>";
+					
+			if(count == 0){
+				//console.log("최종",count)
+				$("#totalTable").append(total)
+			}
+			//console.log("클릭끝")
+			let totalprice = 0;
+			$(".totalprice").each(function(index,item){
+				
+				totalprice += Number($(item).text());
+				//console.log(totalprice)
+				$("#totalprice").text(totalprice+"원")
+			})
+			$(".cancel").on("click",function(){
+				$(this).parent().remove()
+				totalprice = 0
+				$(".totalprice").each(function(index,item){
+					totalprice += Number($(item).text());
+					//console.log(totalprice)
+					$("#totalprice").text(totalprice+"원")
+					return;
+				})
+				//console.log($(".totalprice").text())
+				if($(".totalprice").text() == ""){
+					$("#totalprice").text("")
+				}
+			})
+		})
+		
+	})
+	
+	
+>>>>>>> refs/remotes/origin/master
 	//document.getElementById('date').value = new Date().toISOString().substring(0, 10);;
 	let item = [];
 	console.log("이미지",$(".img").attr("alt"));
@@ -245,7 +431,6 @@ $(document).ready(function(){
 	})
 	let seatNoList = [];
 	$("#seat div").each(function(index,item){
-		
 		$(this).click(function(){
 			let divId = $(this).closest('div').attr("id")
 			let divtag = $(this).closest('div').text()
@@ -263,7 +448,6 @@ $(document).ready(function(){
 				
 			}
 			if(divId == "TR"){
-				
 				//console.log(seatNo[0]);
 				//console.log(divId);
 				$(this).attr("id","N")
@@ -281,7 +465,6 @@ $(document).ready(function(){
 				reservationCount += 1;
 			}
 		})
-					
 			if(reservationCount > 0){
 				//console.log(reservationCount)
 				reservationCount = 0;
@@ -313,7 +496,6 @@ $(document).ready(function(){
 				reservationCount += 1;
 			}
 		})
-					
 			if(reservationCount > 0){
 				//console.log(reservationCount)
 				reservationCount = 0;
@@ -322,7 +504,6 @@ $(document).ready(function(){
 				alert("좌석을 선택해 주세요")
 				return;
 			}
-		
 		$("#RList").empty()
 		//console.log(seatNoList); 
 		seatNoList.sort(function (a, b) { return a-b; })
@@ -332,15 +513,15 @@ $(document).ready(function(){
 		})
 		$("#seatmodal").fadeToggle( 'linear' )
 	});
-	
+
 	$("#seatmodal_close_btn").click(function(){
 		//console.log("예약하기")
+		
 		
 		if($("#time").val() == ""){
 			alert("시간입력")
 			return;
 		}
-		
 		//console.log(seatNoList)
 		$(seatNoList).each(function(index,item){
 			$.ajax({
@@ -349,16 +530,33 @@ $(document).ready(function(){
 				data:{"seatNo":item, 
 					  "date":$("#date").val(), 
 					  "time":$("#time").val(), 
-					  "franchiseeNo":franchiseeNo},
-				success:function(){
-					location.reload()
-					//console.log("예약성공")
-				}
+					  "franchiseeNo":franchiseeNo}
 			})
 		})
+		$("#total tr").each(function(index,item){
+			if($(item).attr("id") != null){
+				let foodNo = $(item).attr("id").substr(4)
+				let count = $(item).find("#count"+foodNo).text()
+				console.log(foodNo)
+				console.log(count)
+				console.log($("#date").val(),$("#time").val())
+				$.ajax({
+					url:"/foodReservation",
+					method:"POST",
+					data:{"foodNo":foodNo, 
+						  "date":$("#date").val(), 
+						  "time":$("#time").val(), 
+						  "count":count},
+					success:function(){
+						location.reload()
+						console.log("예약성공")
+					}
+				})
+				
+			}
+		})
 		$("#seatmodal").attr("style", "display:none");
-	});
-	
+	});	
 })
 </script>
 
