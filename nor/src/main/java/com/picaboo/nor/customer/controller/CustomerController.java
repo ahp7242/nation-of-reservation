@@ -36,7 +36,8 @@ public class CustomerController {
 	    	if (ownerNo == null) {
 	    	return "redirect:/";
 	    }
-	    //System.out.println("session memberNo: " + ownerNo);	
+	    //System.out.println("session memberNo: " + ownerNo);
+	    model.addAttribute("memberName",session.getAttribute("memberName"));
 	    return "customer/QnACustomer";
 	}
 	//가맹점이 등록한 pc방 좌석을 고객이 확인을 하는 페이지로 get 요청
@@ -47,7 +48,7 @@ public class CustomerController {
 			return "redirect:/";
 		}
 		String memberNo = (String) session.getAttribute("memberNo");
-		System.out.println(memberNo);
+		//System.out.println(memberNo);
 		model.addAttribute("memberNo", memberNo);
 		
 		//세션에 저장된 memberName값을 가져와 모델에 저장함
@@ -60,7 +61,7 @@ public class CustomerController {
 		//System.out.println(seat);
 		
 		List<FranchiseePic> picList = customerService.getFranchiseeThumbnailList(franchiseeNo);
-		System.out.println("picList" + picList);
+		//System.out.println("picList" + picList);
 		
 		model.addAttribute("picList",picList);
 		model.addAttribute("franchisee",franchisee);

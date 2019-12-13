@@ -47,21 +47,21 @@
 }
 #total{
 	float:left;
-	width:70%;
+	width:65%;
 	height:28%;
 	overflow: auto;
 }
 #reservation{
 	float:right;
 	text-align:center;
-	width:30%;
+	width:35%;
 	height:30%;
 }
 .item{
 	height: 100px;
 	width: 100px;
 }
-.item .img{
+.image{
 	height: 80px;
 	width: 70px;
 }
@@ -96,4 +96,8 @@
 
 #totalTable{
 	width:95%;
+}
+
+.foodCount{
+	width:50px;
 }

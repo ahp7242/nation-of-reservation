@@ -13,11 +13,15 @@ public interface CustomerService {
 	//프렌차이즈 상세정보를 가져오는 서비스
 	public Franchisee getFranchisee(String franchiseeNo);
 	//좌석 예약을 하는 서비스
-	public void addReservation(SeatReservation seatReservation);
-
+	public void addSeatReservation(SeatReservation seatReservation);
+	//프렌차이즈의 대표이미지를 가져오는 서비스
 	public List<FranchiseePic> getFranchiseeThumbnail();
-	
+	//선택된 프렌차이즈의 사진리스트를 가져오는 서비스
 	public List<FranchiseePic> getFranchiseeThumbnailList(String franchiseeNo);
-	
+	//선택된 프렌차이즈에 등록된 상품 리스트를 가져오는 서비스
 	public List<Food> getFoodList(String franchiseeNo);
+	//프렌차이즈의 스펙 리스트를 가져오는 서비스
+	public List<FranchiseeSpec> getFranchiseeSpecList();
+	//상품을 예약하는 서비스
+	public void addFoodReservation(FoodReservation foodReservation);
 }

@@ -19,6 +19,18 @@
 	.gradation{
         background: linear-gradient(to right bottom, #B96BC6, #FE5196);
     }
+    /* .spec {
+		width: 170px;
+		height: 20px;
+		background-color:gray;
+		-webkit-transition: height 2s; /* For Safari 3.1 to 6.0 */
+		transition: height 2s;
+		position: absolute;
+	}
+	
+	.spec:hover {
+		height: 100px;
+	} */
 </style>
 <body>
 <div id="logo" >
@@ -118,6 +130,8 @@ showSlides(slideIndex);
 			console.log(fList)
 			let fpList = json.franchiseePicList
 			console.log(fpList)
+			let fsList = json.franchiseeSpecList
+			console.log(fsList)
 			$(fList).each(function(index, item){
 				html += "<div class='col-lg-3 col-md-6 mb-4'>";
 				html += "<div class='card h-100'>";
@@ -128,8 +142,9 @@ showSlides(slideIndex);
 				html += "<h4 class='card-title'>";
 				html += item.franchiseeName;
 				html += "</h4>";
-				html += "<p class='card-text'>";
-				html += "PC방 사양";
+				html += "<div class='spec'><p class='card-text' id='spec";
+				html += index
+				html += "'></div>";
 				html += "</p>";
 				html += "</div>";
 				html += "<div class='card-footer'>";
@@ -148,7 +163,16 @@ showSlides(slideIndex);
 				$("#img"+index).attr("src","/upload/"+item.fileName)
 				$("#img"+index).attr("alt",item.originName)
 			})
-			console.log(html)
+			/* $(fsList).each(function(index,item){
+				console.log(item);
+				let spectext = "pc방 사양 <br>";
+				spectext += item.cpu;
+				spectext += "<br>";
+				spectext += item.vga;
+				spectext += "<br>";
+				spectext += item.ram
+				$("#spec"+index).append(spectext)
+			}) */
 		}
 	})
 </script>

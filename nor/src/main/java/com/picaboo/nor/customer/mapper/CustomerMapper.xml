@@ -38,26 +38,25 @@
 	</select>
 	
 	<!-- 좌석 예약 -->
-	<insert id="insertReservation" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
+	<insert id="insertSeatReservation" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
 		<![CDATA[
 			INSERT INTO seat_reservation (
 				franchisee_no,
 				seat_no,
 				customer_name,
 				customer_no,
-				reservation_date,
-				reservation_time
+				reservation_date
 			) VALUES (
 				#{franchiseeNo},
 				#{seatNo},
 				#{customerName},
 				#{customerNo},
-				#{reservationDate},
-				#{reservationTime}
+				#{reservationDate}
 			)
 		]]>
 	</insert>
 	
+	<!-- 예약한 좌석 타입 변경 -->
 	<update id="updateSeatType" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
 		<![CDATA[
 			UPDATE seat 
@@ -66,16 +65,40 @@
 		]]>
 	</update>
 	
+	<!-- 예약된 좌석중 시간이 10분 지난 리스트 -->
 	<select id="selectSeatReservation" parameterType="String"
 									   resultType="com.picaboo.nor.customer.vo.SeatReservation">
 		<![CDATA[
 			SELECT franchisee_no as franchiseeNo,
-				   seat_no as seatNo
+				   seat_no as seatNo,
+				   customer_no as customerNo,
+				   customer_name as customerName,
+				   reservation_date as reservationDate
 			FROM seat_reservation
-			WHERE reservation_date <= CURDATE() AND reservation_time < date_add(CURTIME(),INTERVAL 10 minute) AND franchisee_no = #{franchiseeNo}
+			WHERE reservation_date <= date_add(NOW(),INTERVAL 10 minute) AND franchisee_no = #{franchiseeNo}
 		]]>
 	</select>
 	
+	<!-- 예약기간이 지난 예약 을 cancel테이블로 이동 -->
+	<insert id="insertCancelSeatReaservation" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
+		<![CDATA[
+			INSERT INTO cancel_seat_reservation (
+				franchisee_no,
+				seat_no,
+				customer_name,
+				customer_no,
+				reservation_date
+			) VALUES (
+				#{franchiseeNo},
+				#{seatNo},
+				#{customerName},
+				#{customerNo},
+				#{reservationDate}
+			)
+		]]>
+	</insert>
+	
+	<!-- 예약기간이 지난 예약 삭제 -->
 	<delete id="deleteSeatReservation" parameterType="com.picaboo.nor.customer.vo.SeatReservation">
 		<![CDATA[
 			DELETE FROM seat_reservation
@@ -83,6 +106,7 @@
 		]]>
 	</delete>
 	
+	<!-- 프렌차이즈의 대표 이미지 가져옴 -->
 	<select id="selectFranchiseeThumbnail" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
 		<![CDATA[
 			SELECT
@@ -98,6 +122,7 @@
 		]]>
 	</select>
 	
+	<!-- 선택된 프렌차이즈의 이미지를 가져옴 -->
 	<select id="selectFranchiseeThumbnailList" parameterType="String" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
 		<![CDATA[
 			SELECT
@@ -113,6 +138,7 @@
 		]]>
 	</select>
 	
+	<!-- 선택된 프렌차이즈에 등록된 상품목록을 가져옴 -->
 	<select id="selectFoodList" parameterType="String" resultType="com.picaboo.nor.franchisee.vo.Food">
 		<![CDATA[
 			SELECT
@@ -124,4 +150,78 @@
 			WHERE franchisee_no = #{String}
 		]]>
 	</select>
+	
+	<!-- 프렌차이즈의 스펙을 가져옴 -->
+	<select id="selectSpecList" resultType="com.picaboo.nor.franchisee.vo.FranchiseeSpec">
+		<![CDATA[
+			SELECT
+				franchisee_no as franchiseeNo,
+				cpu as cpu,
+				vga as vga,
+				ram as ram
+			FROM franchisee_spec
+		]]>
+	</select>
+	
+	<!-- 예약한 상품을 데이터베이스에 저장 -->
+	<insert id="insertFoodReservation" parameterType="com.picaboo.nor.customer.vo.FoodReservation">
+		<![CDATA[
+			INSERT INTO food_reservation (
+				food_no,
+				reservation_count,
+				reservation_date,
+				customer_no,
+				customer_name
+			) VALUES (
+				#{foodNo},
+				#{reservationCount},
+				#{reservationDate},
+				#{customerNo},
+				#{customerName}
+			)
+		]]>
+	</insert>
+	
+	<!-- 예약된 상품중 기간이 10분 지난 리스트를 가져옴 -->
+	<select id="selectFoodReservation" parameterType="String" resultType="com.picaboo.nor.customer.vo.FoodReservation">
+		<![CDATA[
+			SELECT 
+				fr.reservation_no as reservationNo,
+				fr.food_no as foodNo, 
+				fr.reservation_count as reservationCount, 
+				fr.reservation_date as reservationDate, 
+				fr.customer_no as customerNo, 
+				fr.customer_name as customerName
+			FROM food_reservation as fr INNER JOIN food as f
+			ON fr.food_no = f.food_no
+			WHERE franchisee_no = #{franchiseeNo} AND fr.reservation_date <= date_add(NOW(),INTERVAL 10 minute)
+		]]>
+	</select>
+	
+	<!-- 예약된 상품중 기간이 10분지난 목록을 cancel테이블로 이동 -->
+	<insert id="insertCancelFoodReservation" parameterType="com.picaboo.nor.customer.vo.FoodReservation">
+		<![CDATA[
+			INSERT INTO cancel_food_reservation (
+				food_no,
+				reservation_count,
+				reservation_date,
+				customer_no,
+				customer_name
+			) VALUES (
+				#{foodNo},
+				#{reservationCount},
+				#{reservationDate},
+				#{customerNo},
+				#{customerName}
+			)
+		]]>
+	</insert>
+	
+	<!-- 예약된 상품중 기간이 10분지난 목록을 예약 테이블에서 삭제 -->
+	<delete id="deleteFoodReservation" parameterType="int">
+		<![CDATA[
+			DELETE FROM food_reservation
+			WHERE reservation_no = #{reservationNo}
+		]]>
+	</delete>
 </mapper>
