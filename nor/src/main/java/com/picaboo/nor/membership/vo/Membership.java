@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class Membership {
 	private String customerNo;
+	private int addressNo;
 	private String customerId;
 	private String customerPw;
 	private String customerName;

@@ -24,4 +24,6 @@ public interface MembershipMapper {
 	public int insertDelMembership(String customerId);
 	//회원가입시 고객 아이디 중복확인
 	public int selectOverlapCustomerId(String customerId);
+	//회원가입시 고객의 주소 등록하는 매퍼
+	public int insertAddress(Address address);
 }

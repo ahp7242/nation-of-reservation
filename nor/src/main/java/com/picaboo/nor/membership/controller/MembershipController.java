@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import com.picaboo.nor.membership.service.MembershipService;
 import com.picaboo.nor.membership.vo.*;
 
 @Controller
+@Transactional
 public class MembershipController {
 	@Autowired private MembershipService membershipService;
 	
@@ -64,11 +66,12 @@ public class MembershipController {
 	}
 	//회원가입 입력후 post요청
 	@PostMapping("/signup")
-	public String singup(Membership membership) {
+	public String singup(SignForm signForm) {
 		
-		//System.out.println("membershipcontroller membership : "+membership);
-		membershipService.addMembership(membership);
+		//System.out.println("controller signform"+signForm);			
+		System.out.println("signForm: " + signForm);
 		
+		membershipService.addMembership(signForm);
 		return "redirect:/login";
 	}
 	
@@ -158,6 +161,7 @@ public class MembershipController {
 		// 로그인한 회원의 상세정보를 Membership타입에 저장한다.
 		Membership membership = membershipService.detailMembership(customerNo);
 		model.addAttribute("membership", membership);
+		model.addAttribute("memberName",session.getAttribute("memberName"));
 		return "membership/profile";
 	}
 	

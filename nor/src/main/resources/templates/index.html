@@ -22,95 +22,65 @@
 </style>
 </head>
 <body>
-<div id="logo" >
-	<img src="/loginimage/logo.jpg">
-</div>
-	
+	<div id="logo" >
+		<img src="/loginimage/logo.jpg">
+	</div>	
+	<!-- 메뉴바 -->
 	<div th:include="/part/templet::nav" class="gradation"></div>
+	
 	<div class="container">
 		<br>
 		<!-- Jumbotron Header(이벤트 배너) -->
-		<div class="slideshow-container">
-			<div class="mySlides">
-				<div class="numbertext">1 / 2</div>
-				<img src="/loginimage/google.png" style="width:100%" >
-			</div>
-
-			<div class="mySlides">
-				<div class="numbertext">2 / 2</div>
-				<img src="/loginimage/naver.png" style="width: 100%">
-			</div>
-			<a class="prev" onclick="plusSlides(-1)">&#10094;</a> 
-			<a class="next" onclick="plusSlides(1)">&#10095;</a>
-
-		</div>
+			<div id="demo" class="carousel slide" data-ride="carousel">
+			<!-- Indicators -->
+			<ul class="carousel-indicators">
+			<li data-target="#demo" data-slide-to="0" class="active"></li>
+			<li data-target="#demo" data-slide-to="1"></li>
+			<li data-target="#demo" data-slide-to="2"></li>
+			</ul>
+			
+			<!-- The slideshow 이미지 부분 -->
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="loginimage/event1.jpg" alt="Los Angeles" width="1100" height="500">
+				</div>
+				<div class="carousel-item">
+					<img src="loginimage/event2.jpg" alt="Chicago" width="1100" height="500">
+				</div>
+				<div class="carousel-item">
+					<img src="loginimage/event3.jpg" alt="New York" width="1100" height="500">
+				</div>
+			</div>	  
+			<!-- Left and right controls 좌우 클릭 -->
+			<a class="carousel-control-prev" href="#demo" data-slide="prev">
+			<span class="carousel-control-prev-icon"></span>
+			</a>
+			<a class="carousel-control-next" href="#demo" data-slide="next">
+			<span class="carousel-control-next-icon"></span>
+			</a>
+		</div>		
 		<br>
-		<div style="text-align: center">
-			<span class="dot" onclick="currentSlide(1)"></span> 
-			<span class="dot" onclick="currentSlide(2)"></span>
-		</div>
-
 		<!-- Page Features(메인 베너) -->
-	
-		<div class="row text-center" id="main"></div>
+		<div class="row text-center" id="main">
+		</div>
 	</div>
 	<div th:include="/part/templet::copyright" class="gradation"></div>
 </body>
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
 <script>
-/*이벤트 배너 스크립트 */
-let slideIndex = 1;
-showSlides(slideIndex);
-
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-
-function showSlides(n) {
-  let i;
-  let slides = $(".mySlides");
-  let dots = $(".dot");
-  if (n > slides.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";  
-  }
-  
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }  
-  slides[slideIndex-1].style.display = "block";  
-  dots[slideIndex-1].className += " active";
-
-}
-</script>
-
-<script>
-//좌석 스크립트
 	$.ajax({
 		url:"/getFranchiseeList",
 		method:"POST",
 		success:function(json){
-			console.log("success");
-			console.log(json);
+			/* console.log("success");
+			console.log(json); */
 			let html = "";
-			let fList = json.franchiseeList;
-			console.log(fList)
-			let fpList = json.franchiseePicList
-			console.log(fpList)
-			$(fList).each(function(index, item){
+			$(json).each(function(index, item){
 				html += "<div class='col-lg-3 col-md-6 mb-4'>";
 				html += "<div class='card h-100'>";
-				html += "<img class='card-img-top' id='img";
-				html += index
-				html += "' width='500' height='180'>";
+				html += "<img class='card-img-top' src='http://placehold.it/500x325' alt=''>";
 				html += "<div class='card-body'>";
 				html += "<h4 class='card-title'>";
 				html += item.franchiseeName;
@@ -120,9 +90,7 @@ function showSlides(n) {
 				html += "</p>";
 				html += "</div>";
 				html += "<div class='card-footer'>";
-				html += "<a href='/selectCustomerSeat?franchiseeNo="
-				html += item.franchiseeNo;
-				html += "' class='btn btn-primary'>";
+				html += "<a href='#' class='btn btn-primary'>";
 				html += "상세";
 				html += "</a>";
 				html += "</div>";
@@ -130,12 +98,6 @@ function showSlides(n) {
 				html += "</div>";
 			})
 			$("#main").append(html);
-			$(fpList).each(function(index,item){
-				console.log(item);
-				$("#img"+index).attr("src","/upload/"+item.fileName)
-				$("#img"+index).attr("alt",item.originName)
-			})
-			console.log(html)
 		}
 	})
 </script>

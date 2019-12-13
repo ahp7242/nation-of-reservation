@@ -12,17 +12,15 @@
 				<div class="collapse navbar-collapse" id="navbarResponsive">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item">
-							<a class="nav-link" th:href="@{/profile}" th:text="${memberName}"></a>
+							<a class="nav-link" th:href="@{/profile}" th:text="${memberName}+' 님'"></a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/logout">logout</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="#">Services</a>
+							<a class="nav-link" href="/QnACustomer">QnA</a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Contact</a>
-						</li>
+						
 					</ul>
 				</div>
 			</div>
@@ -39,6 +37,7 @@
 	      <a href="#" class="btn btn-primary btn-lg">나도 참가 한다!!!</a>
 	    </header>
 	</div>
+	
     <!-- Page Features(메인 베너) -->
     <div th:fragment="main">
 	    <div class="row text-center">
