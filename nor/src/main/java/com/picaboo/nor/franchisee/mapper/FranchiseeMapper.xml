@@ -9,7 +9,6 @@
 	
 	<![CDATA[
 	   SELECT 
-	   
 	      qna_no as qnaNo,
 	      customer_no as customerNo,
 	      qna_type as qnaType,
@@ -110,13 +109,15 @@
 			qna_type,
 			qna_title,
 			qna_question,
-			qna_date
+			qna_date,
+			customer_mail
 		) VALUES (
 			#{customerNo},
 			#{qnaType},
 			#{qnaTitle},
 			#{qnaQuestion},
-			NOW()
+			NOW(),
+			#{customerMail}
 		)
 	]]>
 	</insert>

@@ -104,6 +104,15 @@
 				<div class="invalid-feedback">문의 내용을 입력하여주세요.</div>
 			</div>	
 			
+			<div class="form-group form-check">
+				<label class="form-check-label"> <input
+					class="form-check-input" type="checkbox" name="remember" required>
+					답변 메일 수신을 동의하십니까?
+					<div class="valid-feedback">동의</div>
+					<div class="invalid-feedback">수신 동의 필요</div>
+				</label>
+			</div>
+			
 			<button id="addButton" type="submit" class="btn btn-primary">입력</button>
 		</form>
 	</div>
@@ -117,7 +126,12 @@
        </footer>
    </div>
 
-
+  <script>
+	$("#addButton").click(function(){
+	 alert("문의가 정상적으로 등록되었습니다.");
+	});
+  </script>
+  
 </body>
 
 </html>

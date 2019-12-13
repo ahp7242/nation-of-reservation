@@ -82,7 +82,8 @@
 		qna_title as qnaTitle,
 		qna_question as qnaQuestion,
 		qna_answer as qnaAnswer,
-		qna_date as qnaDate
+		qna_date as qnaDate,
+		customer_mail as customerMail
 	   FROM franchisee_qna
 	   WHERE qna_no = #{qnaNo}
 	]]>   

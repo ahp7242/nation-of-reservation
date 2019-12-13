@@ -59,7 +59,7 @@ public class AdminController {
 	//QnA 답변 post요청
 		@PostMapping("/QnAUpdate")
 		public String modifyQnA(AdminQnA adminQnA) {
-			//System.out.println("수정후 " + adminQnA);
+			System.out.println("수정후 " + adminQnA);
 			adminService.modifyQnA(adminQnA);
 			return "redirect:/QnAList";
 		}
