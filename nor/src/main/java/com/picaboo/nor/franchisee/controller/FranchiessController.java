@@ -16,15 +16,66 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.picaboo.nor.franchisee.service.FranchiseeService;
 import com.picaboo.nor.franchisee.vo.FoodForm;
 import com.picaboo.nor.franchisee.vo.FoodReservationList;
+import com.picaboo.nor.franchisee.vo.FoodStatement;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.TodayStatement;
+import com.picaboo.nor.franchisee.vo.TotalStatement;
 
 @Controller
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
+	
+
+	// 상품에따른 가맹점별 매출 현황
+	@GetMapping("/totalStatement")
+	public String totalStatement(HttpSession session, Model model,TotalStatement totalStatement){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}	
+		System.out.println("get요청");
+		List<TotalStatement> totalStatement1 = franchiseeService.getTotalStatementList(ownerNo);
+
+		model.addAttribute("totalStatement1", totalStatement1);
+		System.out.println(totalStatement1);
+			return "franchisee/totalStatement";
+	}	
+	
+	// 오늘 매출 가맹점별 매출 현황
+	@GetMapping("/todayStatement")
+	public String todayStatement(HttpSession session, Model model,TodayStatement todayStatement){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}	
+		System.out.println("get요청");
+		List<TodayStatement> todayStatement1 = franchiseeService.getTodayStatementList(ownerNo);
+
+		model.addAttribute("todayStatement1", todayStatement1);
+		System.out.println(todayStatement1);
+			return "franchisee/todayStatement";
+	}
+	// 음식 예약 통계 확인
+	@GetMapping("/foodStatement")
+	public String foodStatement(HttpSession session, Model model,FoodStatement foodStatement){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}	
+		List<FoodStatement> foodStatement1 = franchiseeService.getFoodfoodStatementList(foodStatement);
+
+		model.addAttribute("foodStatement1", foodStatement1);
+		
+		
+			return "franchisee/foodStatement";
+	}
 	
 	// 가맹점 수정
 	@PostMapping("/modifyFranchiseeFood")

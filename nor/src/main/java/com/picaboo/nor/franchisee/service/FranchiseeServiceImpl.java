@@ -18,6 +18,7 @@ import com.picaboo.nor.franchisee.vo.Food;
 import com.picaboo.nor.franchisee.vo.FoodForm;
 import com.picaboo.nor.franchisee.vo.FoodPic;
 import com.picaboo.nor.franchisee.vo.FoodReservationList;
+import com.picaboo.nor.franchisee.vo.FoodStatement;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
@@ -28,12 +29,31 @@ import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
 import com.picaboo.nor.franchisee.vo.Spec;
+import com.picaboo.nor.franchisee.vo.TodayStatement;
+import com.picaboo.nor.franchisee.vo.TotalStatement;
 import com.picaboo.nor.ftp.FTPService;
 
 @Service
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	
+	// 상품에따른 가맹점별 매출 현황	
+	public List<TotalStatement> getTotalStatementList(String ownerNo) {
+		System.out.println(ownerNo);
+		return franchiseeMapper.selectTotalStatementList(ownerNo);
+	}	
+	// 오늘 매출 가맹점별 매출 현황
+		public List<TodayStatement> getTodayStatementList(String ownerNo) {
+			System.out.println(ownerNo);
+			return franchiseeMapper.selectTodayStatementList(ownerNo);
+		}
+	
+	//음식 주문 통계
+	public List<FoodStatement> getFoodfoodStatementList(FoodStatement foodStatement) {
+		return franchiseeMapper.selectFoodfoodStatementList(foodStatement);
+	}
+	
 	// 가맹점 상품 수정
 	@Override
 	public int modifyFranchiseeFood(FoodForm foodForm) {

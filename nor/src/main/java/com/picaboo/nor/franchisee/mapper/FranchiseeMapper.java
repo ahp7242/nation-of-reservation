@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.picaboo.nor.franchisee.vo.Food;
 import com.picaboo.nor.franchisee.vo.FoodPic;
 import com.picaboo.nor.franchisee.vo.FoodReservationList;
+import com.picaboo.nor.franchisee.vo.FoodStatement;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
@@ -16,9 +17,17 @@ import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
 import com.picaboo.nor.franchisee.vo.Spec;
+import com.picaboo.nor.franchisee.vo.TodayStatement;
+import com.picaboo.nor.franchisee.vo.TotalStatement;
 
 @Mapper
 public interface FranchiseeMapper {
+// 상품에따른 가맹점별 매출 현황
+	public List<TotalStatement> selectTotalStatementList(String ownerNo);
+	// 오늘 매출 가맹점별 매출 현황
+	public List<TodayStatement> selectTodayStatementList (String ownerNo);
+	// 음식 주문 통계
+	public List<FoodStatement> selectFoodfoodStatementList (FoodStatement foodStatement);
 	// 가맹점 상품 수정
 	public int updateFranchiseeFood(Food food);
 	// 가맹점 상품 조회 

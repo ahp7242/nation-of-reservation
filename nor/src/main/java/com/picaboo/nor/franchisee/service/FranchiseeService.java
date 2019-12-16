@@ -5,13 +5,22 @@ import java.util.Map;
 
 import com.picaboo.nor.franchisee.vo.FoodForm;
 import com.picaboo.nor.franchisee.vo.FoodReservationList;
+import com.picaboo.nor.franchisee.vo.FoodStatement;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.TodayStatement;
+import com.picaboo.nor.franchisee.vo.TotalStatement;
 
 public interface FranchiseeService {
+	// 상품에따른 가맹점별 매출 현황
+	public List<TotalStatement> getTotalStatementList(String ownerNo);
+	// 오늘 매출 가맹점별 매출 현황
+	public List<TodayStatement> getTodayStatementList(String ownerNo);
+	//음식 예약 통계 확인
+	public List<FoodStatement> getFoodfoodStatementList(FoodStatement foodStatement);
 	// 가맹점 상품 수정
 	public int modifyFranchiseeFood(FoodForm foodForm);
 	// 가맹점 상품 수정 정보 조회

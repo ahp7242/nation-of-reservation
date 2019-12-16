@@ -4,6 +4,55 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- 가맹점별 상품에 따른 매출 현황 -->
+	<select id="selectTotalStatementList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.TotalStatement">
+	<![CDATA[	
+		SELECT 
+			fs.franchisee_no as franchiseeNo, 
+			fd.food_name as foodName, 
+			fr.reservation_count as count,
+			SUM(food_price * reservation_count) as totalCount
+		FROM del_food_reservation fr
+		INNER JOIN food fd
+		INNER JOIN franchisee fs
+		ON fr.food_no= fd.food_no
+		AND fd.franchisee_no = fs.franchisee_no
+		WHERE fs.owner_no = #{ownerNo}
+		GROUP BY fd.franchisee_no, fr.food_no
+	]]>
+	</select>	
+	
+	<!-- 오늘의 가맹점별 매출 현황 -->
+	<select id="selectTodayStatementList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.TodayStatement">
+	<![CDATA[	
+		SELECT
+		fs.franchisee_name as franchiseeNo, 
+		SUM(food_price * reservation_count) as totalCount
+	FROM del_food_reservation fr
+	INNER JOIN food fd
+	INNER JOIN franchisee fs
+	ON fr.food_no= fd.food_no
+	AND fd.franchisee_no = fs.franchisee_no
+	WHERE DATE_FORMAT(fr.reservation_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d')
+	AND fs.owner_no = #{ownerNo}
+	GROUP BY fs.franchisee_no
+	]]>
+	</select>
+
+	<!-- 모든 상품 예약 통계 -->
+	<select id="selectFoodfoodStatementList" resultType="com.picaboo.nor.franchisee.vo.FoodStatement">
+	<![CDATA[
+		SELECT
+			f.food_name AS foodName,
+			SUM(d.reservation_count) AS reservationCount
+			FROM del_food_reservation AS d
+		INNER JOIN food AS f 
+		ON d.food_no = f.food_no 
+		GROUP BY d.food_no
+		ORDER BY reservationCount DESC
+	]]>   
+	</select>
+
 
 	<!-- 가맹점 상품 수정 -->
 	<update id="updateFranchiseeFood" parameterType="com.picaboo.nor.franchisee.vo.Food">
