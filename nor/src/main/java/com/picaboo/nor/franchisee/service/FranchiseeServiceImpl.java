@@ -34,18 +34,57 @@ import com.picaboo.nor.ftp.FTPService;
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
-	//주문완료 음식 삭제
-		@Override
-		public int delFoodReservation(int reservationNo) {
-			franchiseeMapper.addFoodReservation(reservationNo);
+	
+	// 가맹점 상품 삭제
+	public int removeFranchiseeFood(int foodNo) {
+		System.out.println("Service foodNo: " + foodNo);
+		// 삭제할 파일 이름 저장
+		String fileName = franchiseeMapper.getFoodPicFileName(foodNo);
+		// 파일 삭제 디렉토리
+		String dir = "/www/food/";
+		// 1. db에서 삭제
+		int rows = 0;
+		// 1-1. 상품 사진 삭제, 외래키 걸려있어서 먼저 수행해야 함.
+		rows += franchiseeMapper.deletefranchiseeFoodPic(foodNo);
+		// 1-2. 상품 삭제
+		rows += franchiseeMapper.deletefranchiseeFood(foodNo);
+		
+		// 2. 파일 삭제		
+		boolean result = false;
+		FTPService ftp = new FTPService();
+		try {
+			ftp.connectFTP(dir);
+			ftp.deleteFile(fileName);
+			ftp.disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 예외 발생 시 rollback 시키기 위해 런타임 예외 발생
+			throw new RuntimeException();
+		}
+		
+		if(result) {
+			System.out.println("삭제 성공");
+			rows++;
+		} else {
+			System.out.println("삭제 실패");
+		}
+		
+		return rows;
+	}
+	
+	// 주문완료 음식 삭제
+	@Override
+	public int delFoodReservation(int reservationNo) {
+		franchiseeMapper.addFoodReservation(reservationNo);
 
-			return franchiseeMapper.delFoodReservation(reservationNo);
-		}
-		//음식 주문 서비스 확인
-		public List<FoodReservationList> getFoodReservationList(String franchiseeNo) {
-			System.out.println("service Impl :  " + franchiseeNo);
-			return franchiseeMapper.selectFoodReservationList(franchiseeNo);
-		}
+		return franchiseeMapper.delFoodReservation(reservationNo);
+	}
+	// 음식 주문 서비스 확인
+	public List<FoodReservationList> getFoodReservationList(String franchiseeNo) {
+		System.out.println("service Impl :  " + franchiseeNo);
+		return franchiseeMapper.selectFoodReservationList(franchiseeNo);
+	}
+	
 	// 가맹점 상품 정보 가져오기
 	@Override
 	public Map<String, Object> getFranchiseeFood(String franchiseeNo) {
@@ -67,6 +106,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		return franchiseeFood;
 	}
 	
+	// 가맹점 음식 추가
 	@Override
 	public int addFranchiseeFood(FoodForm foodForm) {
 		System.out.println("Service foodForm: " + foodForm);
@@ -115,7 +155,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		foodPic.setFileName(saveFileName);
 		
 		System.out.println("foodPic: " + foodPic.toString());
-		
+		// 업로드 결과
+		boolean result = false;
 		try {
 			// db에 저장
 			rows += franchiseeMapper.insertFranchiseeFoodPic(foodPic);
@@ -129,45 +170,52 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			
 			// 업로드 디렉토리
 			String dir = "/www/food/";
-			
 			// CDN에 업로드 시작
 			System.out.println("Upload Start");
 			FTPService ftpUploader = new FTPService();
 			// FTP 연결
-			ftpUploader.connectFTP(convertFile);
+			ftpUploader.connectFTP(dir);
 			// 파일 업로드
-			ftpUploader.uploadFile(convertFile, saveFileName, dir);
+			result = ftpUploader.uploadFile(convertFile, saveFileName);
 			// FTP 연결 해제
 			ftpUploader.disconnect();
 			System.out.println("Done");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
 			throw new RuntimeException();
 		}
 		
+		if(result) {
+			System.out.println("업로드 성공");
+		} else {
+			System.out.println("업로드 실패");
+		}
+		
 		return rows;
 	}
 	
-	//qna 답변 확인가능 
+	// qna 답변 확인가능 
 	@Override
 	public List<FranchiseeQnA> getFranchiseeQnaList(String ownerNo) { 
 		return franchiseeMapper.selectFranchiseeQnaList(ownerNo);
 	}
 	
-	//회원의 상세정보를 수정하는 서비스
+	// 회원의 상세정보를 수정하는 서비스
 	@Override
 	public int modifyFranchiseeOwner(FranchiseeOwner franchiseeOwner) {
 		System.out.println("service Impl :  " + franchiseeOwner);
 		return franchiseeMapper.updateFranchiseeOwner(franchiseeOwner);
 	}
 	
-	//회원의 상세정보를 가져오는 서비스
+	// 회원의 상세정보를 가져오는 서비스
 	@Override
 	public FranchiseeOwner detailFranchiseeOwner(String ownerNo) {
 		return franchiseeMapper.selectFranchiseeOwner(ownerNo);
 	}
 	
+	// 썸네일 사진 가져오기
 	@Override
 	public Map<String, Object> getFranchiseeThumbnail(List<Franchisee> franchiseeList) {
 		System.out.println("getFranchiseeThumbnail franchiseeList: " + franchiseeList);
@@ -184,6 +232,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		return thumbnailInfo;
 	}
 	
+	// 가맹점 정보 수정
 	@Override
 	public int modifyFranchiseeInfo(FranchiseeInfoForm franchiseeInfoForm) {
 		// 리턴 변수
@@ -198,7 +247,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		franchiseeSpec.setRam(franchiseeInfoForm.getRam());
 		
 		franchiseeMapper.updateFranchiseeSpec(franchiseeSpec);
-		
+		// FTP 파일 경로
+		String dir = "/www/franchisee/";
 		// 2. franchiseePic DELETE
 		// 삭제할 파일 목록 저장
 		List<Integer> deletePicList = franchiseeInfoForm.getRemoveFileList();
@@ -209,7 +259,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				// 삭제할 사진 가져옴
 				FranchiseePic deletePic = franchiseeMapper.selectFranchiseePicOne(picNo);
 				String storeFileName = deletePic.getFileName();
-				
+				// 삭제 결과
+				boolean result = false;
 				try {
 					// db에서 삭제
 					rows += franchiseeMapper.deleteFranchiseePic(picNo);
@@ -218,9 +269,9 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 					System.out.println("Delete Start");
 					FTPService ftpUploader = new FTPService();
 					// FTP 연결
-					ftpUploader.connectFTP(null);
-					// 파일 업로드
-					ftpUploader.deleteFile(storeFileName);
+					ftpUploader.connectFTP(dir);
+					// 파일 삭제
+					result = ftpUploader.deleteFile(storeFileName);
 					// FTP 연결 해제
 					ftpUploader.disconnect();
 					System.out.println("Done");
@@ -230,7 +281,11 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 					// 파일 삭제할 때 예외발생 시 rollback 시키기 위해 강제로 런타임 예외 발생시킴.
 					throw new RuntimeException();
 				}
-				
+				if(result) {
+					System.out.println("삭제 성공");
+				} else {
+					System.out.println("삭제 실패");
+				}
 			}
 		}
 		
@@ -287,7 +342,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			
 			// 저장될 파일 이름
 			String storeFileName = franchiseePic.getFileName();
-			
+			// 업로드 결과
+			boolean result = false;
 			try {
 				// MultipartFile을 File로 변환
 				String fileName = mf.getOriginalFilename();
@@ -296,16 +352,14 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				FileOutputStream fos = new FileOutputStream(convertFile);
 				fos.write(mf.getBytes());
 				fos.close();
-				// 업로드 디렉토리
-				String dir = "/www/franchisee/";
 				
 				// CDN에 업로드 시작
 				System.out.println("Upload Start");
 				FTPService ftpUploader = new FTPService();
 				// FTP 연결
-				ftpUploader.connectFTP(convertFile);
+				ftpUploader.connectFTP(dir);
 				// 파일 업로드
-				ftpUploader.uploadFile(convertFile, storeFileName, dir);
+				result = ftpUploader.uploadFile(convertFile, storeFileName);
 				// FTP 연결 해제
 				ftpUploader.disconnect();
 				System.out.println("Done");
@@ -315,13 +369,18 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
 				throw new RuntimeException();
 			}
-			
+			if(result) {
+				System.out.println("업로드 성공");
+			} else {
+				System.out.println("업로드 실패");
+			}
 			// 인덱스 증가
 			FileListIndex++;
 		}
 
 		return rows;
 	}
+	
 	// QnA 등록
 	@Override
 	public int addFranchiseeQnA(FranchiseeQnA franchiseeQnA) {		
@@ -491,7 +550,10 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 			
 			// 저장될 파일 이름
 			String storeFileName = franchiseePic.getFileName();
-			
+			// 업로드 디렉토리
+			String dir = "/www/franchisee/";
+			// 업로드 결과
+			boolean result = false;
 			try {
 				// MultipartFile을 File로 변환
 				String fileName = mf.getOriginalFilename();
@@ -500,16 +562,14 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				FileOutputStream fos = new FileOutputStream(convertFile);
 				fos.write(mf.getBytes());
 				fos.close();
-				// 업로드 디렉토리
-				String dir = "/www/franchisee/";
 				
 				// CDN에 업로드 시작
 				System.out.println("Upload Start");
 				FTPService ftpUploader = new FTPService();
 				// FTP 연결
-				ftpUploader.connectFTP(convertFile);
+				ftpUploader.connectFTP(dir);
 				// 파일 업로드
-				ftpUploader.uploadFile(convertFile, storeFileName, dir);
+				result = ftpUploader.uploadFile(convertFile, storeFileName);
 				// FTP 연결 해제
 				ftpUploader.disconnect();
 				System.out.println("Done");
@@ -519,7 +579,11 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 				// 파일을 저장할때 예외가 나면 rollback 시키기 위해서 강제로 런타임 예외 발생시킴.
 				throw new RuntimeException();
 			}
-			
+			if(result) {
+				System.out.println("업로드 성공");
+			} else {
+				System.out.println("업로드 실패");
+			}
 			// 인덱스 증가
 			FileListIndex++;
 		}

@@ -19,6 +19,12 @@ import com.picaboo.nor.franchisee.vo.Spec;
 
 @Mapper
 public interface FranchiseeMapper {
+	// 가맹점 상품 사진 파일 이름 조회
+	public String getFoodPicFileName(int foodNo);
+	// 가맹점 상품 사진 삭제
+	public int deletefranchiseeFoodPic(int foodNo);
+	// 가맹점 상품 삭제
+	public int deletefranchiseeFood(int foodNo);
 	// food 통계 계수 추가
 	public int addFoodReservation(int reservationNo);
 	// 주문완료 음식 삭제

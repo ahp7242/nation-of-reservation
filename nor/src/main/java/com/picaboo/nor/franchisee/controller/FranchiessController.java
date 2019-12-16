@@ -25,36 +25,60 @@ import com.picaboo.nor.franchisee.vo.Seat;
 @Controller
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
-	// food리스트삭제
-		@GetMapping("/delFoodReservation")
-	    public String delFoodReservation(HttpSession session,@RequestParam(value="reservationNo") int reservationNo) {
-			// 세션 검사
-			String ownerNo = (String)session.getAttribute("memberNo");
-			if (ownerNo == null) {
-				return "redirect:/";
-			}
-			franchiseeService.delFoodReservation(reservationNo);
-			System.out.println("삭제 번호"+reservationNo);
-	        return "redirect:/foodReservationList";
+	
+	// 가맹점 수정 페이지 요청
+	@GetMapping("/modifyFranchiseeFood")
+	public String modifyFranchiseeFood(Model model, @RequestParam(value="foodNo") int foodNo) {
+		System.out.println("modifyFranchiseeFood Get 요청");
+		model.addAttribute("foodNo", foodNo);
+		return "franchisee/modifyFranchiseeFood";
+	}
+	
+	// 가맹점 상품 삭제 요청
+	@GetMapping("/removeFranchiseeFood") 
+	public String removeFranchiseeFood(@RequestParam(value="franchiseeNo") String franchiseeNo, @RequestParam(value="foodNo") int foodNo) {
+		System.out.println("removeFranchiseeFood Get 요청");
+		System.out.println("removeFranchiseeFood param franchiseeNo: " + franchiseeNo);
+		System.out.println("removeFranchiseeFood param foodNo: " + foodNo);
+		
+		int rows = franchiseeService.removeFranchiseeFood(foodNo);
+		System.out.println("성공한 수: " + rows);
+		
+		return "redirect:/franchiseeFoodIndex?franchiseeNo=" + franchiseeNo;
+	}
+	
+	// 음식 예약 리스트 삭제
+	@GetMapping("/delFoodReservation")
+    public String delFoodReservation(HttpSession session,@RequestParam(value="reservationNo") int reservationNo) {
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		franchiseeService.delFoodReservation(reservationNo);
+		System.out.println("삭제 번호"+reservationNo);
+		
+        return "redirect:/foodReservationList";
+	}
+	
+	// 음식 예약 리스트 확인
+	@GetMapping("/foodReservationList")
+    public String foodReservationList(HttpSession session, Model model){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
 		}
 		
-		// food리스트 확인
-		@GetMapping("/foodReservationList")
-	    public String foodReservationList(HttpSession session, Model model){
-			// 세션 검사
-			String ownerNo = (String)session.getAttribute("memberNo");
-			if (ownerNo == null) {
-				return "redirect:/";
-			}
-			
-			String franchiseeNo = (String)session.getAttribute("franchiseeNo");
-			
-			List<FoodReservationList> foodReservationList = franchiseeService.getFoodReservationList(franchiseeNo);
-			System.out.println("foodReservationList: " + foodReservationList);
-			model.addAttribute("foodReservationList", foodReservationList);
+		String franchiseeNo = (String)session.getAttribute("franchiseeNo");
+		
+		List<FoodReservationList> foodReservationList = franchiseeService.getFoodReservationList(franchiseeNo);
+		System.out.println("foodReservationList: " + foodReservationList);
+		model.addAttribute("foodReservationList", foodReservationList);
 
-				return "franchisee/foodReservationList";
-		}
+			return "franchisee/foodReservationList";
+	}
+	
 	// 가맹점 상품 추가
 	@PostMapping("/addFranchiseeFood")
 	public String addFranchiseeFood(FoodForm foodForm) {
@@ -123,6 +147,7 @@ public class FranchiessController {
 	// 음식 상품 관리 페이지 요청
 	@GetMapping("franchiseeFoodIndex")
 	public String franchiseeFoodIndex(Model model, HttpSession session, @RequestParam(value="franchiseeNo") String franchiseeNo) {
+		System.out.println("franchiseeFoddIndex Get 요청");
 		// 세션 검사
 		String ownerNo = (String)session.getAttribute("memberNo");
 		if (ownerNo == null) {
@@ -175,7 +200,7 @@ public class FranchiessController {
 		
 		int rows = franchiseeService.modifyFranchiseeInfo(franchiseeInfoForm);
 		if(rows < 0) 
-			System.out.println("파일 형식 오류");
+			System.out.println("파일 업로드 안 됨");
 		else
 			System.out.println("처리된 행의 수: " + rows);
 		
@@ -300,6 +325,7 @@ public class FranchiessController {
 	// 가맹점 인덱스 페이지 요청
 	@GetMapping("/franchiseeIndex")
 	public String franchiseeIndex(HttpSession session, Model model) {
+		System.out.println("franchiseeIndex Get 요청");
 		// 세션 검사
 		String ownerNo = (String)session.getAttribute("memberNo");
 		
@@ -310,7 +336,7 @@ public class FranchiessController {
 		
 		// 가맹점 리스트 가져와서 넘김
 		List<Franchisee> franchiseeList = franchiseeService.getFranchiseeList(ownerNo);
-		System.out.println("index franchiseeList:" + franchiseeList);
+		System.out.println("Controller franchiseeList:" + franchiseeList);
 		model.addAttribute("franchiseeList", franchiseeList);
 		
 		// 가맹점 썸네일 사진 가져와서 Model로 넘김

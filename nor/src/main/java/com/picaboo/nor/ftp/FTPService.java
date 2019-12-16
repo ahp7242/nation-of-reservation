@@ -21,7 +21,7 @@ public class FTPService {
     FTPClient ftp = null;
     
     // FTP 연결
-    public void connectFTP(File file)throws Exception{
+    public void connectFTP(String dir) throws Exception{
         ftp = new FTPClient();
         ftp.setControlEncoding("UTF-8"); // 문자 코드를 UTF-8로 인코딩
         ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
@@ -35,6 +35,12 @@ public class FTPService {
         ftp.login(USER, PW);
         ftp.setFileType(FTP.BINARY_FILE_TYPE);
         ftp.enterLocalPassiveMode();
+        ftp.changeWorkingDirectory(dir);
+        
+    }
+    // 파일 업로드
+    public boolean uploadFile(File file, String storeFileName){
+    	
 	    if(file != null) {
 	        long fileSize = getFileSize(file);
 	        // CopyStream listener 생성
@@ -50,14 +56,11 @@ public class FTPService {
 	        // CopyStream listener 등록, 쓰레드 방식
 	        ftp.setCopyStreamListener(listener);
         }
-        
-    }
-    // 파일 업로드
-    public void uploadFile(File file, String storeFileName, String dir){
+    	boolean result = false;
         InputStream input = null;
         try {
             input = new FileInputStream(file);
-            ftp.storeFile(dir+storeFileName,input);
+            result = ftp.storeFile(storeFileName,input);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -69,17 +72,23 @@ public class FTPService {
                 e.printStackTrace();
             }
         }
+        
+        return result;
     }
     
     // 파일 삭제
-    public void deleteFile(String storeFileName) {
+    public boolean deleteFile(String storeFileName) {
+    	boolean result = false;
+    	
     	try {    
-    		ftp.deleteFile(storeFileName);//파일삭제
+    		result = ftp.deleteFile(storeFileName);//파일삭제
          } catch (FileNotFoundException e) {
              e.printStackTrace();
          } catch (IOException e) {
              e.printStackTrace();
          }
+    	
+    	return result;
     }
     
     // 파일 크기 리턴
