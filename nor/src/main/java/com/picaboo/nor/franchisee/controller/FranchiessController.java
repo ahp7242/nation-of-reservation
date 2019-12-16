@@ -26,11 +26,32 @@ import com.picaboo.nor.franchisee.vo.Seat;
 public class FranchiessController {
 	@Autowired FranchiseeService franchiseeService;
 	
-	// 가맹점 수정 페이지 요청
+	// 가맹점 수정
+	@PostMapping("/modifyFranchiseeFood")
+	public String modifyFranchiseeFood(FoodForm foodForm) {
+		System.out.println("modifyFranchiseeFood POST 요청");
+		System.out.println("foodForm: " + foodForm);
+		
+		franchiseeService.modifyFranchiseeFood(foodForm);
+		
+		return "redirect:/franchiseeFoodIndex?franchiseeNo=" + foodForm.getFranchiseeNo();
+	}
+	
+	// 가맹점 상품 수정 페이지 요청
 	@GetMapping("/modifyFranchiseeFood")
-	public String modifyFranchiseeFood(Model model, @RequestParam(value="foodNo") int foodNo) {
+	public String modifyFranchiseeFood(HttpSession session, Model model, @RequestParam(value="foodNo") int foodNo) {
 		System.out.println("modifyFranchiseeFood Get 요청");
-		model.addAttribute("foodNo", foodNo);
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		System.out.println("session memberNo: " + ownerNo);
+		// 원래 상품 정보
+		System.out.println("foodNo: " + foodNo);
+		Map<String, Object> foodInfo = franchiseeService.getFranchiseeFoodOne(foodNo);
+		System.out.println("foodInfo: " + foodInfo.toString());
+		model.addAttribute("foodInfo", foodInfo);
 		return "franchisee/modifyFranchiseeFood";
 	}
 	
@@ -49,7 +70,7 @@ public class FranchiessController {
 	
 	// 음식 예약 리스트 삭제
 	@GetMapping("/delFoodReservation")
-    public String delFoodReservation(HttpSession session,@RequestParam(value="reservationNo") int reservationNo) {
+    public String delFoodReservation(HttpSession session, @RequestParam(value="reservationNo") int reservationNo) {
 		// 세션 검사
 		String ownerNo = (String)session.getAttribute("memberNo");
 		if (ownerNo == null) {

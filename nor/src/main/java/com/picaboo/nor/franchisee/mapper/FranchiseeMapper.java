@@ -19,8 +19,12 @@ import com.picaboo.nor.franchisee.vo.Spec;
 
 @Mapper
 public interface FranchiseeMapper {
-	// 가맹점 상품 사진 파일 이름 조회
-	public String getFoodPicFileName(int foodNo);
+	// 가맹점 상품 수정
+	public int updateFranchiseeFood(Food food);
+	// 가맹점 상품 조회 
+	public Food selectFood(int foodNo);
+	// 가맹점 상품 사진 파일 조회
+	public FoodPic selectFoodPic(int foodNo);
 	// 가맹점 상품 사진 삭제
 	public int deletefranchiseeFoodPic(int foodNo);
 	// 가맹점 상품 삭제
@@ -32,9 +36,9 @@ public interface FranchiseeMapper {
 	// 음식 주문 확인 서비스
 	public List<FoodReservationList> selectFoodReservationList(String franchiseeNo);
 	// 가맹점 상품 사진 조회
-	public List<FoodPic> getFoodPicList(String franchiseeNo);
+	public List<FoodPic> selectFoodPicList(String franchiseeNo);
 	// 가맹점 상품 리스트 조회
-	public List<Food> getFoodList(String franchiseeNo);
+	public List<Food> selectFoodList(String franchiseeNo);
 	// 가맹점 상품 사진 등록
 	public int insertFranchiseeFoodPic(FoodPic foodPic);
 	// 가맹점 상품 등록

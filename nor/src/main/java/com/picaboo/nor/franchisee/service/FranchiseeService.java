@@ -12,7 +12,10 @@ import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
 
 public interface FranchiseeService {
-	
+	// 가맹점 상품 수정
+	public int modifyFranchiseeFood(FoodForm foodForm);
+	// 가맹점 상품 수정 정보 조회
+	public Map<String, Object> getFranchiseeFoodOne(int foodNo);
 	// 가맹점 상품 삭제
 	public int removeFranchiseeFood(int foodNo);
 	// 주문완료 상품 삭제

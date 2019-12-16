@@ -34,14 +34,139 @@ import com.picaboo.nor.ftp.FTPService;
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	// 가맹점 상품 수정
+	@Override
+	public int modifyFranchiseeFood(FoodForm foodForm) {
+		System.out.println("Service foodForm: " + foodForm);
+		// 리턴 변수
+		int rows = 0;
+		// foodForm -> food, foodPic 으로 분리
+		
+		// 1. UPDATE food
+		Food food = new Food();
+		food.setFoodNo(foodForm.getFoodNo());
+		food.setFoodName(foodForm.getFoodName());
+		food.setFoodCategory(foodForm.getFoodCategory());
+		food.setFoodPrice(foodForm.getFoodPrice());
+		// UPDATE 수행
+		franchiseeMapper.updateFranchiseeFood(food);
+		
+		// 2. UPDATE foodPic
+		// 삭제할 파일 이름 저장
+		String delFileName = "";
+		FoodPic delFoodPic = franchiseeMapper.selectFoodPic(foodForm.getFoodNo());
+		if(delFoodPic != null)
+			delFileName = delFoodPic.getFileName();
+		System.out.println("원래 사진: "+ delFileName);
+		// 업로드 파일
+		MultipartFile mf = foodForm.getFoodPic();
+		
+		String contentType = mf.getContentType();
+		String originName = mf.getOriginalFilename();
+		long size = mf.getSize();
+		// 파일 확장자명
+		String extension = originName.substring(originName.lastIndexOf(".")+1);
+		// 랜덤한 UUID에 -를 빼고 원래 파일이름의 확장자만 더해서 저장할 파일이름을 생성
+		String uploadFileName = UUID.randomUUID().toString().replace("-", "")+"."+extension;
+		
+		System.out.println("contentType: " + contentType);
+		System.out.println("originName: " + originName);
+		System.out.println("size: " + size);
+		System.out.println("extension: " + extension);
+		System.out.println("fileName: " + uploadFileName);
+		
+		// 2-1 Insert할 foodPic
+		FoodPic foodPic = new FoodPic();
+		foodPic.setContentType(contentType);
+		foodPic.setOriginName(originName);
+		foodPic.setSize(size);
+		foodPic.setExtension(extension);
+		foodPic.setFileName(uploadFileName);
+		foodPic.setFoodNo(foodForm.getFoodNo());
+		
+		// 2-2. 업로드 파일이 있을 경우 파일 삭제, 업로드 수행
+		if(size != 0) { 
+			// 파일 디렉토리
+			String dir = "/www/food/";
+			
+			boolean delResult = false;
+			boolean upResult = false;
+			FTPService ftp = new FTPService();
+			
+			// db에서 DELETE 후 INSERT 수행
+			franchiseeMapper.deletefranchiseeFoodPic(foodForm.getFoodNo());
+			franchiseeMapper.insertFranchiseeFoodPic(foodPic);
+			
+			try {
+				
+				// MultipartFile을 File로 변환
+				File convertFile = new File(uploadFileName);
+				convertFile.createNewFile();
+				FileOutputStream fos = new FileOutputStream(convertFile);
+				fos.write(mf.getBytes());
+				fos.close();
+				
+				// ftp 접속
+				ftp.connectFTP(dir);
+				// 파일 삭제
+				delResult = ftp.deleteFile(delFileName);
+				if(delResult) {
+					System.out.println("삭제 성공");
+					rows++;
+				} else {
+					System.out.println("삭제 실패");
+				}
+				// 파일 업로드
+				upResult = ftp.uploadFile(convertFile, foodPic.getFileName());
+				if(upResult) {
+					System.out.println("업로드 성공");
+					rows++;
+				} else {
+					System.out.println("업로드 실패");
+				}
+				// ftp 연결 해제
+				ftp.disconnect();
+			} catch (Exception e) {
+				e.printStackTrace();
+				// 예외 발생 시 rollback 시키기 위해 런타임 예외 발생
+				throw new RuntimeException();
+			}
+		}
+		
+		return rows;
+		
+	}
+	
+	// 가맹점 상품 수정 정보 조회
+	@Override
+	public Map<String, Object> getFranchiseeFoodOne(int foodNo) {
+		Map<String, Object> foodInfo = new HashMap<String, Object>();
+		// 가맹점 상품 사진
+		FoodPic foodPic = franchiseeMapper.selectFoodPic(foodNo);
+		System.out.println("foodPic: " + foodPic);
+		foodInfo.put("foodPic", foodPic);
+		// 가맹점 상품 정보
+		Food food = franchiseeMapper.selectFood(foodNo);
+		System.out.println("foodPic: " + food);
+		foodInfo.put("food", food);
+		// 사진 경로
+		String uploadPath = "http://ahp7242.cdn3.cafe24.com/food/";
+		foodInfo.put("uploadPath", uploadPath);
+		
+		return foodInfo;
+	}
 	
 	// 가맹점 상품 삭제
 	public int removeFranchiseeFood(int foodNo) {
 		System.out.println("Service foodNo: " + foodNo);
+		
+		
 		// 삭제할 파일 이름 저장
-		String fileName = franchiseeMapper.getFoodPicFileName(foodNo);
-		// 파일 삭제 디렉토리
-		String dir = "/www/food/";
+		FoodPic foodPic = franchiseeMapper.selectFoodPic(foodNo);
+		String fileName = "";
+		if(foodPic != null)
+			fileName = foodPic.getFileName();
+		
 		// 1. db에서 삭제
 		int rows = 0;
 		// 1-1. 상품 사진 삭제, 외래키 걸려있어서 먼저 수행해야 함.
@@ -49,12 +174,16 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		// 1-2. 상품 삭제
 		rows += franchiseeMapper.deletefranchiseeFood(foodNo);
 		
-		// 2. 파일 삭제		
+		// 2. 파일 삭제
+		
+		// 파일 삭제 디렉토리
+		String dir = "/www/food/";
+		
 		boolean result = false;
 		FTPService ftp = new FTPService();
 		try {
 			ftp.connectFTP(dir);
-			ftp.deleteFile(fileName);
+			result = ftp.deleteFile(fileName);
 			ftp.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -94,10 +223,10 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		Map<String, Object> franchiseeFood = new HashMap<String, Object>();
 		
 		// 상품 리스트
-		List<Food> foodList = franchiseeMapper.getFoodList(franchiseeNo);
+		List<Food> foodList = franchiseeMapper.selectFoodList(franchiseeNo);
 		franchiseeFood.put("foodList", foodList);
 		// 상품 사진 리스트
-		List<FoodPic> foodPicList = franchiseeMapper.getFoodPicList(franchiseeNo);
+		List<FoodPic> foodPicList = franchiseeMapper.selectFoodPicList(franchiseeNo);
 		franchiseeFood.put("foodPicList", foodPicList);
 		
 		String uploadPath = "http://ahp7242.cdn3.cafe24.com/food/";

@@ -180,7 +180,7 @@
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script th:inline="javascript">
 	 let seat = /*[[${seat}]]*/
-	 //console.log(seat);
+	 // console.log(seat);
 	 let html = "";
 	 let a = 0;
 	 let b = 0;
@@ -223,7 +223,7 @@
 					if(trId == item2.seatRow && tdId == item2.seatCols){
 						/* console.log(item2.seatNo) */
 						$this.children().append("pc"+item2.seatNo)
-						console.log(item2)
+						// console.log(item2)
 						let use = item2.seatUse
 						switch(use){
 							case "R":
