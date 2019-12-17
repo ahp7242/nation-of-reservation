@@ -161,6 +161,9 @@
 		<button id="food" class="btn btn-primary" onclick="window.open('foodReservationList','window_name','width=780,height=600,location=no,status=no,scrollbars=yes');">음식주문 확인</button>
 	  	</div>
 	  </div>
+	  <div class="col-md-3 col-sm-6 mb-4">
+		<button id="seat" class="btn btn-primary" onclick="window.open('seatReservationList','window_name','width=780,height=600,location=no,status=no,scrollbars=yes');">좌석예약 확인</button>
+	  	</div>
 	  <!-- /.row -->
 	
 	</div>
@@ -180,7 +183,7 @@
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script th:inline="javascript">
 	 let seat = /*[[${seat}]]*/
-	 //console.log(seat);
+	 // console.log(seat);
 	 let html = "";
 	 let a = 0;
 	 let b = 0;
@@ -223,7 +226,7 @@
 					if(trId == item2.seatRow && tdId == item2.seatCols){
 						/* console.log(item2.seatNo) */
 						$this.children().append("pc"+item2.seatNo)
-						console.log(item2)
+						// console.log(item2)
 						let use = item2.seatUse
 						switch(use){
 							case "R":

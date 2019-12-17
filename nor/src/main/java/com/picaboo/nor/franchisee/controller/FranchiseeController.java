@@ -16,45 +16,175 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.picaboo.nor.franchisee.service.FranchiseeService;
 import com.picaboo.nor.franchisee.vo.FoodForm;
 import com.picaboo.nor.franchisee.vo.FoodReservationList;
+import com.picaboo.nor.franchisee.vo.FoodStatement;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.SeatReservationList;
+import com.picaboo.nor.franchisee.vo.TodayStatement;
+import com.picaboo.nor.franchisee.vo.TotalStatement;
+import com.picaboo.nor.franchisee.vo.UnverifiedFranchisee;
 
 @Controller
-public class FranchiessController {
+public class FranchiseeController {
 	@Autowired FranchiseeService franchiseeService;
-	// food리스트삭제
-		@GetMapping("/delFoodReservation")
-	    public String delFoodReservation(HttpSession session,@RequestParam(value="reservationNo") int reservationNo) {
-			// 세션 검사
-			String ownerNo = (String)session.getAttribute("memberNo");
-			if (ownerNo == null) {
-				return "redirect:/";
-			}
-			franchiseeService.delFoodReservation(reservationNo);
-			System.out.println("삭제 번호"+reservationNo);
-	        return "redirect:/foodReservationList";
+	// 좌석 예약 리스트 삭제
+	@GetMapping("/delSeatReservation")
+    public String delSeatReservation(HttpSession session, @RequestParam(value="seatReservationNo") int seatReservationNo) {
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		franchiseeService.delSeatReservation(seatReservationNo);
+		System.out.println("삭제 번호"+seatReservationNo);
+		
+        return "redirect:/seatReservationList";
+	}
+	
+	// 좌석 예약 리스트 확인
+	@GetMapping("/seatReservationList")
+    public String seatReservationList(HttpSession session, Model model){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
 		}
 		
-		// food리스트 확인
-		@GetMapping("/foodReservationList")
-	    public String foodReservationList(HttpSession session, Model model){
-			// 세션 검사
-			String ownerNo = (String)session.getAttribute("memberNo");
-			if (ownerNo == null) {
-				return "redirect:/";
-			}
-			
-			String franchiseeNo = (String)session.getAttribute("franchiseeNo");
-			
-			List<FoodReservationList> foodReservationList = franchiseeService.getFoodReservationList(franchiseeNo);
-			System.out.println("foodReservationList: " + foodReservationList);
-			model.addAttribute("foodReservationList", foodReservationList);
+		String franchiseeNo = (String)session.getAttribute("franchiseeNo");
+		
+		System.out.println("컨트롤러  "+franchiseeNo);
+		List<SeatReservationList> seatReservationList = franchiseeService.getSeatReservationList(franchiseeNo);
+		System.out.println("seatReservationList: " + seatReservationList);
+		model.addAttribute("seatReservationList", seatReservationList);
 
-				return "franchisee/foodReservationList";
+			return "franchisee/seatReservationList";
+	}
+	
+
+	// 상품에따른 가맹점별 매출 현황
+	@GetMapping("/totalStatement")
+	public String totalStatement(HttpSession session, Model model,TotalStatement totalStatement){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}	
+		System.out.println("get요청");
+		List<TotalStatement> totalStatement1 = franchiseeService.getTotalStatementList(ownerNo);
+
+		model.addAttribute("totalStatement1", totalStatement1);
+		System.out.println(totalStatement1);
+			return "franchisee/totalStatement";
+	}	
+	
+	// 오늘 매출 가맹점별 매출 현황
+	@GetMapping("/todayStatement")
+	public String todayStatement(HttpSession session, Model model,TodayStatement todayStatement){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}	
+		System.out.println("get요청");
+		List<TodayStatement> todayStatement1 = franchiseeService.getTodayStatementList(ownerNo);
+
+		model.addAttribute("todayStatement1", todayStatement1);
+		System.out.println(todayStatement1);
+			return "franchisee/todayStatement";
+	}
+	// 음식 예약 통계 확인
+	@GetMapping("/foodStatement")
+	public String foodStatement(HttpSession session, Model model,FoodStatement foodStatement){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}	
+		List<FoodStatement> foodStatement1 = franchiseeService.getFoodfoodStatementList(foodStatement);
+
+		model.addAttribute("foodStatement1", foodStatement1);
+		
+		
+			return "franchisee/foodStatement";
+	}
+	
+	// 가맹점 수정
+	@PostMapping("/modifyFranchiseeFood")
+	public String modifyFranchiseeFood(FoodForm foodForm) {
+		System.out.println("modifyFranchiseeFood POST 요청");
+		System.out.println("foodForm: " + foodForm);
+		
+		franchiseeService.modifyFranchiseeFood(foodForm);
+		
+		return "redirect:/franchiseeFoodIndex?franchiseeNo=" + foodForm.getFranchiseeNo();
+	}
+	
+	// 가맹점 상품 수정 페이지 요청
+	@GetMapping("/modifyFranchiseeFood")
+	public String modifyFranchiseeFood(HttpSession session, Model model, @RequestParam(value="foodNo") int foodNo) {
+		System.out.println("modifyFranchiseeFood Get 요청");
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
 		}
+		System.out.println("session memberNo: " + ownerNo);
+		// 원래 상품 정보
+		System.out.println("foodNo: " + foodNo);
+		Map<String, Object> foodInfo = franchiseeService.getFranchiseeFoodOne(foodNo);
+		System.out.println("foodInfo: " + foodInfo.toString());
+		model.addAttribute("foodInfo", foodInfo);
+		return "franchisee/modifyFranchiseeFood";
+	}
+	
+	// 가맹점 상품 삭제 요청
+	@GetMapping("/removeFranchiseeFood") 
+	public String removeFranchiseeFood(@RequestParam(value="franchiseeNo") String franchiseeNo, @RequestParam(value="foodNo") int foodNo) {
+		System.out.println("removeFranchiseeFood Get 요청");
+		System.out.println("removeFranchiseeFood param franchiseeNo: " + franchiseeNo);
+		System.out.println("removeFranchiseeFood param foodNo: " + foodNo);
+		
+		int rows = franchiseeService.removeFranchiseeFood(foodNo);
+		System.out.println("성공한 수: " + rows);
+		
+		return "redirect:/franchiseeFoodIndex?franchiseeNo=" + franchiseeNo;
+	}
+	
+	// 음식 예약 리스트 삭제
+	@GetMapping("/delFoodReservation")
+    public String delFoodReservation(HttpSession session, @RequestParam(value="reservationNo") int reservationNo) {
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		franchiseeService.delFoodReservation(reservationNo);
+		System.out.println("삭제 번호"+reservationNo);
+		
+        return "redirect:/foodReservationList";
+	}
+	
+	// 음식 예약 리스트 확인
+	@GetMapping("/foodReservationList")
+    public String foodReservationList(HttpSession session, Model model){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		
+		String franchiseeNo = (String)session.getAttribute("franchiseeNo");
+		System.out.println("ㅇㅇ: " + franchiseeNo);
+		List<FoodReservationList> foodReservationList = franchiseeService.getFoodReservationList(franchiseeNo);
+		System.out.println("foodReservationList: " + foodReservationList);
+		model.addAttribute("foodReservationList", foodReservationList);
+
+			return "franchisee/foodReservationList";
+	}
+	
 	// 가맹점 상품 추가
 	@PostMapping("/addFranchiseeFood")
 	public String addFranchiseeFood(FoodForm foodForm) {
@@ -121,27 +251,30 @@ public class FranchiessController {
 	}
 		
 	// 음식 상품 관리 페이지 요청
-	@GetMapping("franchiseeFoodIndex")
-	public String franchiseeFoodIndex(Model model, HttpSession session, @RequestParam(value="franchiseeNo") String franchiseeNo) {
-		// 세션 검사
-		String ownerNo = (String)session.getAttribute("memberNo");
-		if (ownerNo == null) {
-			return "redirect:/";
-		}
-		System.out.println("session memberNo: " + ownerNo);
-		// 가맹점 번호 model로 넘김
-		model.addAttribute("franchiseeNo", franchiseeNo);
-	
-		// 가맹점 상품정보 가져오기
-		Map<String,Object> franchiseeFood = franchiseeService.getFranchiseeFood(franchiseeNo);
-		System.out.println("Controller foodPicList: " + franchiseeFood.get("foodPicList"));
-		System.out.println("Controller foodList: " + franchiseeFood.get("foodList"));
-		System.out.println("Controller uploadPath: " + franchiseeFood.get("uploadPath"));
-		// 상품정보 model 로 넘김
-		model.addAttribute("franchiseeFood", franchiseeFood);
+		@GetMapping("franchiseeFoodIndex")
+		public String franchiseeFoodIndex(Model model, HttpSession session,
+				@RequestParam(value="franchiseeNo") String franchiseeNo, @RequestParam(value="foodCategory", required = false) String foodCategory) {
+			System.out.println("franchiseeFoodIndex Get 요청");
+			// 세션 검사
+			String ownerNo = (String)session.getAttribute("memberNo");
+			if (ownerNo == null) {
+				return "redirect:/";
+			}
+			System.out.println("session memberNo: " + ownerNo);
+			// 가맹점 번호 model로 넘김
+			model.addAttribute("franchiseeNo", franchiseeNo);
 		
-		return "franchisee/franchiseeFoodIndex";
-	}
+			// 가맹점 상품정보 가져오기
+			Map<String,Object> franchiseeFood = franchiseeService.getFranchiseeFood(franchiseeNo, foodCategory);
+			System.out.println("Controller foodPicList: " + franchiseeFood.get("foodPicList"));
+			System.out.println("Controller foodList: " + franchiseeFood.get("foodList"));
+			System.out.println("Controller uploadPath: " + franchiseeFood.get("uploadPath"));
+			System.out.println("Controller franchiseeNo: " + franchiseeFood.get("franchiseeNo"));
+			// 상품정보 model 로 넘김
+			model.addAttribute("franchiseeFood", franchiseeFood);
+			model.addAttribute("foodCategory", foodCategory);
+			return "franchisee/franchiseeFoodIndex";
+		}
 	// QnA 입력
 	@PostMapping("/QnAFranchisee")
     public String QnAFranchisee(FranchiseeQnA franchiseeQnA, HttpSession session) {
@@ -175,7 +308,7 @@ public class FranchiessController {
 		
 		int rows = franchiseeService.modifyFranchiseeInfo(franchiseeInfoForm);
 		if(rows < 0) 
-			System.out.println("파일 형식 오류");
+			System.out.println("파일 업로드 안 됨");
 		else
 			System.out.println("처리된 행의 수: " + rows);
 		
@@ -274,6 +407,7 @@ public class FranchiessController {
 		System.out.println("detailFranchisee Get 요청");
 		// 세션 검사
 		String ownerNo = (String)session.getAttribute("memberNo");
+		session.setAttribute("franchiseeNo", franchiseeNo);
 		
 		if (ownerNo == null) {
 			return "redirect:/";
@@ -300,6 +434,7 @@ public class FranchiessController {
 	// 가맹점 인덱스 페이지 요청
 	@GetMapping("/franchiseeIndex")
 	public String franchiseeIndex(HttpSession session, Model model) {
+		System.out.println("franchiseeIndex Get 요청");
 		// 세션 검사
 		String ownerNo = (String)session.getAttribute("memberNo");
 		
@@ -310,7 +445,7 @@ public class FranchiessController {
 		
 		// 가맹점 리스트 가져와서 넘김
 		List<Franchisee> franchiseeList = franchiseeService.getFranchiseeList(ownerNo);
-		System.out.println("index franchiseeList:" + franchiseeList);
+		System.out.println("Controller franchiseeList:" + franchiseeList);
 		model.addAttribute("franchiseeList", franchiseeList);
 		
 		// 가맹점 썸네일 사진 가져와서 Model로 넘김
@@ -322,11 +457,14 @@ public class FranchiessController {
 	}
 	
 	// 가맹점 등록 요청
-	@PostMapping("/addFranchisee")
-    public String addFranchisee(Franchisee franchisee, HttpSession session) {
-		System.out.println("addFranchisee param franchisee: " + franchisee);
-        franchisee.setOwnerNo((String)session.getAttribute("memberNo"));
-        franchiseeService.addFranchisee(franchisee);
+	@PostMapping("/addUnverifiedFranchisee")
+    public String addFranchisee(UnverifiedFranchisee unverifiedFranchisee, HttpSession session) {
+		
+		System.out.println("addFranchisee param franchisee: " + unverifiedFranchisee);
+		
+		unverifiedFranchisee.setOwnerNo((String)session.getAttribute("memberNo"));
+        
+        franchiseeService.addUnverifiedFranchisee(unverifiedFranchisee);
         
         return "redirect:/franchiseeIndex";
 	}

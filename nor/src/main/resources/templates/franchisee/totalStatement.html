@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>steament</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/heroic-features.css" rel="stylesheet">
+  <!-- chart js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <!-- bootstrap core jquery -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<style>
+	table {
+	  border-collapse: collapse;
+	  width: 100%;
+	}
+	
+	th, td {
+	  text-align: left;
+	  padding: 8px;
+	}
+	
+	tr:nth-child(even) {background-color: #f2f2f2;}
+</style>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+
+<!-- Navigation -->
+  <div th:fragment="nav">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/franchiseeIndex">PI-CA-BOO</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+        </ul>
+      </div>
+    </div>
+  </nav>
+   </div>
+<form>   
+	<div style="overflow-x:auto;">
+	   <table>
+			<tr>
+			   <th>가맹점번호</th>
+			   <th>음식이름</th> 
+			   <th>주문수</th> 
+			   <th>총금액</th> 
+			</tr>
+			
+			<tr th:each="list:${totalStatement1}">
+			   <td th:text="${list.franchiseeNo}"></td>	
+			   <td th:text="${list.foodName}"></td>
+			   <td th:text="${list.count}"></td>
+				<td th:text="${list.totalCount}"></td>
+			</tr>
+		</table>
+	</div>
+</form>
+<p></p>
+<div class="row">
+    <div class="col-sm-2">
+      <h3>통계 자료</h3>
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="/foodStatement">음식 판매 누적순위</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/todayStatement">today 가맹점 매출</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/totalStatement">가맹점 총매출 현황</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+    </div>
+    
+   <div class="col-sm-10">
+    	<div style="width:800px">
+    		<canvas id="myChart"></canvas>
+		</div>
+    </div>
+</div>
+</body>
+
+
+<script th:inline="javascript">
+
+	let franchiseeNo = "";
+	let foodName = "";
+	let count = 0;
+	let totalCount = 0;
+	let totalStatement1 = /*[[${totalStatement1}]]*/
+	
+	let franchiseeNoList = new Array();
+    let foodNameList = new Array();
+    let countList = new Array();
+    let totalCountList = new Array();
+    
+	$(document).ready(function() {
+		console.log(totalStatement1);
+		
+		$(totalStatement1).each(function(index,item){
+			
+			franchiseeNo = item.franchiseeNo;
+			foodName = item.foodName;
+			count = item.count;
+			totalCount = item.totalCount;
+			
+			
+			franchiseeNoList.push(franchiseeNo),
+			foodNameList.push(foodName),
+			countList.push(count),
+			totalCountList.push(totalCount)
+
+		 })
+		console.log(franchiseeNoList);
+		console.log(foodNameList);
+		console.log(countList);
+		console.log(totalCountList);
+		
+		// 우선 컨텍스트를 가져옵니다. 
+		var ctx = document.getElementById("myChart").getContext('2d');
+		/*
+		- Chart를 생성하면서, 
+		- ctx를 첫번째 argument로 넘겨주고, 
+		- 두번째 argument로 그림을 그릴때 필요한 요소들을 모두 넘겨줍니다. 
+		*/
+		var myChart = new Chart(ctx, {
+		    type: 'pie',
+		    
+		    data: {
+		        labels: foodNameList, // foodName
+		        
+		        datasets: [{
+		            "label": '가맹점 매출',
+		            "data": countList, //카운트 값
+		            backgroundColor: [
+		                'rgba(255, 99, 132, 0.2)',
+		                'rgba(54, 162, 235, 0.2)',
+		                'rgba(255, 206, 86, 0.2)',
+		                'rgba(75, 192, 192, 0.2)',
+		                'rgba(153, 102, 255, 0.2)',
+		                'rgba(255, 159, 64, 0.2)'
+		            ],
+		            borderColor: [
+		                'rgba(255,99,132,1)',
+		                'rgba(54, 162, 235, 1)',
+		                'rgba(255, 206, 86, 1)',
+		                'rgba(75, 192, 192, 1)',
+		                'rgba(153, 102, 255, 1)',
+		                'rgba(255, 159, 64, 1)'
+		            ],
+		            borderWidth: 1
+			    }]
+		
+		    },
+		    options: {
+		        maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero:true
+		                }
+		            }]
+		        }
+		    }
+		});	
+	});
+</script>
+
+</html>

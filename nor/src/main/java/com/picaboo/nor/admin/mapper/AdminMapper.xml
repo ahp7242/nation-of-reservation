@@ -4,6 +4,60 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.admin.mapper.AdminMapper">
+	<!-- 가맹점 등록 -->
+	<insert id="insertFranchisee" parameterType="string">
+	<![CDATA[
+		INSERT INTO franchisee
+			(
+			franchisee_no,
+			franchisee_crn,
+			franchisee_name,
+			franchisee_phone,
+			owner_no)
+		SELECT 
+			franchisee_no,
+			franchisee_crn,
+			franchisee_name,
+			franchisee_phone,
+			owner_no
+		FROM unverified_franchisee
+		
+		WHERE franchisee_no = #{franchiseeNo}
+	]]>
+	</insert>
+	<!-- 신청완료 가맹점 삭제 -->
+	<delete id="delFranchisee" parameterType="string">
+   <![CDATA[
+      DELETE FROM unverified_franchisee
+      WHERE franchisee_no = #{franchiseeNo}
+   ]]>
+   </delete>	
+	<!-- 가맹점 카운트 조회 -->
+	<select id="selectFranchiseeCount" resultType="int" parameterType="string">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM unverified_franchisee
+	 ]]>  
+	</select>
+   
+	<!-- 가맹점 신청 리스트 출력 -->
+	<select id="selectUnverifiedFranchiseeList"
+	      resultType="com.picaboo.nor.admin.vo.UnverifiedFranchisee"
+	      parameterType="com.picaboo.nor.admin.vo.AdminPage">
+	<![CDATA[
+	   SELECT 
+	      franchisee_no as franchiseeNo,
+		  franchisee_crn as franchiseeCrn,
+		  franchisee_name as franchiseeName,
+		  franchisee_phone as franchiseePhone,
+		  owner_no as ownerNo
+	      
+	   FROM unverified_franchisee
+	   LIMIT #{beginRow}, #{rowPerPage}
+	   ]]>
+	</select>
+
+
 	<!-- FAQ 삭제 -->
 	<delete id="deleteFAQ" parameterType="int">
    <![CDATA[

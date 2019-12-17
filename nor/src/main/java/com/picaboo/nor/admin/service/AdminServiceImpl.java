@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picaboo.nor.admin.mapper.AdminMapper;
 import com.picaboo.nor.admin.vo.AdminFAQ;
 import com.picaboo.nor.admin.vo.AdminFAQPage;
+import com.picaboo.nor.admin.vo.AdminPage;
 import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.admin.vo.AdminQnAPage;
+import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
 
 
 @Service
@@ -22,6 +24,47 @@ import com.picaboo.nor.admin.vo.AdminQnAPage;
 public class AdminServiceImpl implements AdminService{
 	@Autowired AdminMapper adminMapper;
 	@Autowired JavaMailSender javaMailSender;
+	
+	//가맹점 신청 완료
+	@Override
+	public int addFranchisee(String franchiseeNo) {	
+		//System.out.println("삭제할 가맹점번호 Impl");
+		adminMapper.insertFranchisee(franchiseeNo);
+		System.out.println("삭제할 가맹점번호 Impl"+franchiseeNo);
+		return adminMapper.delFranchisee(franchiseeNo);
+	}
+	
+	// 가맹점 리스트 조회
+	@Override
+	public Map<String, Object> getUnverifiedFranchiseeList(int currentPage, int rowPerPage) {
+		
+		// 페이징 코드, 검색어 입력
+		// Mapper로 페이징 정보를 넘기기 위해 VO에 값 저장
+		AdminPage adminPage = new AdminPage();
+		adminPage.setRowPerPage(rowPerPage);
+		adminPage.setBeginRow((currentPage-1)*rowPerPage);
+		
+		List<UnverifiedFranchisee> list = adminMapper.selectUnverifiedFranchiseeList(adminPage);
+		System.out.println("serviceImpl List: "+list);
+		
+		// 페이징 버튼을 위한 마지막 페이지 계산
+		int totalRowCount = adminMapper.selectFranchiseeCount();
+		int lastPage = 0;
+		if(totalRowCount % rowPerPage == 0) {
+			lastPage = totalRowCount / rowPerPage;
+		} else {
+			lastPage = totalRowCount / rowPerPage + 1;
+		}
+		
+		// 검색과, 페이징한 리스트와 현재 페이지 정보를 맵에 저장하여 리턴
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		map.put("currentPage", currentPage);
+		map.put("totalRowCount", totalRowCount);
+		map.put("lastPage", lastPage);
+		return map;
+	}	
+	
 	// FAQ삭제
 	@Override
 	public int delFAQ(int faqNo) {		

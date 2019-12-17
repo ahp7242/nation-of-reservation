@@ -6,12 +6,21 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.picaboo.nor.admin.vo.AdminFAQ;
 import com.picaboo.nor.admin.vo.AdminFAQPage;
+import com.picaboo.nor.admin.vo.AdminPage;
 import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.admin.vo.AdminQnAPage;
-import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
+import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
 
 @Mapper
 public interface AdminMapper {
+	// 가맹점 신청완료
+	public int insertFranchisee(String franchiseeNo);
+	// 가맹점 신청완료후 삭제
+	public int delFranchisee(String franchiseeNo);
+	// 가맹점 신청 리스트 출력
+	public List<UnverifiedFranchisee> selectUnverifiedFranchiseeList(AdminPage adminPage);	
+	// 가맹점 신청 리스트 카운트 조회
+	public int selectFranchiseeCount();
 	// FAQ 삭제 
 	public int deleteFAQ(int faqNo);
 	// FAQ 등록 

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Franchisee Index</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/heroic-features.css" rel="stylesheet">
+<style>
+	table {
+	  border-collapse: collapse;
+	  width: 100%;
+	}
+	
+	th, td {
+	  text-align: left;
+	  padding: 8px;
+	}
+	
+	tr:nth-child(even) {background-color: #f2f2f2;}
+</style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+  <div th:fragment="nav">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">PI-CA-BOO</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+        </ul>
+      </div>
+    </div>
+  </nav>
+   </div>
+<form>   
+	<div style="overflow-x:auto;">
+	   <table>
+			<tr>
+			   <th>예약번호</th>
+			   <th>가맹점 번호</th>
+			   <th>좌석 번호</th>
+			   <th>고객 번호</th>
+			   <th>고객 닉네임</th>
+			   <th>예약 시간</th>
+			</tr>
+			
+			<tr th:each="list:${seatReservationList}">
+			   <td th:text="${list.seatReservationNo}"></td>	
+			   <td th:text="${list.franchiseeNo}"></td>	
+			   <td th:text="${list.seatNo}"></td>
+			   <td th:text="${list.customerNo}"></td>
+			   <td th:text="${list.customerName}"></td>
+			   <td th:text="${list.reservationDate}"></td>
+			   <td class="col-md-3 col-sm-6 mb-4">
+	      	   <a href="#" th:href="@{/delSeatReservation?(seatReservationNo=${list.seatReservationNo})}" class="btn btn-primary">삭제</a>
+	    	   </td>
+			</tr>
+		</table>
+	</div>
+	
+</form>
+  <!-- Footer -->
+  <div th:fragment="copyright">
+	  <footer class="py-5 bg-dark">
+	    <div class="container">
+	      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+	    </div>
+	    <!-- /.container -->
+	  </footer>
+  </div>
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+	setTimeout("location.reload()",10000)
+  </script>
+</body>
+
+</html>

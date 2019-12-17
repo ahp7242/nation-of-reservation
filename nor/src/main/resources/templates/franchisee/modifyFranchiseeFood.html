@@ -57,26 +57,27 @@
   <!-- Page Content -->
   <div class="container jumbotron my-4">
   	<h4>가맹점 상품 추가</h4>
-		<form action="/addFranchiseeFood" method="post" enctype="multipart/form-data">
+		<form action="/modifyFranchiseeFood" method="post" enctype="multipart/form-data" th:object="${foodInfo.food}">
 			<div>
-				<input type="hidden" th:value="${franchiseeNo}" name="franchiseeNo">
+				<input type="hidden" name="foodNo" th:value="*{foodNo}">
+				<input type="hidden" name="franchiseeNo" th:value="*{franchisee.franchiseeNo}">
 			</div>
 			<div class="form-group">
 		      <label for="foodName">상품 이름</label>
-		      <input class="form-control" type="text" name="foodName" required="required">
+		      <input class="form-control" type="text" name="foodName" th:value="*{foodName}" required="required">
 			</div>
 			<div class="form-group">
 		      <label for="foodPrice">상품 가격</label>
-		      <input class="form-control" type="text" name="foodPrice" required="required">
+		      <input class="form-control" type="text" name="foodPrice" th:value="*{foodPrice}" required="required">
 			</div>
 			<div class="form-group">
 		      <label for="foodCategory">상품 카테고리</label>
 		      <select class="form-control" name="foodCategory" required="required">
-		      	<option value="Snack">Snack</option>
-		      	<option value="Drink">Drink</option>
-		      	<option value="Dessert">Dessert</option>
-		      	<option value="Noodle">Noodle</option>
-		      	<option value="Meal">Meal</option>
+		      	<option value="Snack" th:selected="*{foodCategory=='Snack'}">Snack</option>
+		      	<option value="Drink" th:selected="*{foodCategory=='Drink'}">Drink</option>
+		      	<option value="Dessert" th:selected="*{foodCategory=='Dessert'}">Dessert</option>
+		      	<option value="Noodle" th:selected="*{foodCategory=='Noodle'}">Noodle</option>
+		      	<option value="Meal" th:selected="*{foodCategory=='Meal'}">Meal</option>
 		      </select>
 			</div>
 				
@@ -84,17 +85,14 @@
 				<label for="foodPic">상품 사진</label> 
 				<input type="file" class="form-control" id="foodPic" placeholder="Enter Pictures" name="foodPic" >
 			</div>
-			
-			<button id="addButton" type="submit" class="btn btn-primary">등록</button>
-		</form>
-		<br>
 		<div class="shadow p-4 mb-4 bg-light">
 			<p>사진 미리보기</p>
-			<div id="preview">
-				<img id="previewImg" width="300" height="200">
+			<div id="preview" th:object="${foodInfo}">
+				<img id="previewImg" th:src="*{uploadPath} + *{foodPic?.fileName}" th:alt="*{food?.foodName}" width="300" height="200">
 			</div>
 		</div>
-
+		<button id="addButton" type="submit" class="btn btn-primary">등록</button>
+		</form>
 	</div>
   <!-- /.container -->
 

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/heroic-features.css" rel="stylesheet">
+<style>
+   .base {
+    padding: 5px;
+    border: 1px;
+   }
+   
+   .preface {
+       padding-bottom: px;
+       background-color: #ff80aa;
+       border-bottom: 1px solid #d1d1d1;
+   }
+   
+   .content {
+       transition: max-height 0.2s ease-in-out;
+       background-color: #ffdb4d;
+       overflow: hidden;
+       max-height: 0;
+   }
+   
+   .expanded {
+       max-height: 2000px;
+   }
+
+   ::-webkit-scrollbar{width: 16px;}
+      ::-webkit-scrollbar-track {background-color:#4C4C4C;}
+      ::-webkit-scrollbar-thumb {background-color:#6799FF;border-radius: 10px;}
+      ::-webkit-scrollbar-thumb:hover {background: #555;}
+      ::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
+      width:16px;height:16px;background:#4C4C4C;} 
+
+</style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+  <div th:fragment="nav">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/adminIndex">PI-CA-BOO</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+        
+           <li class="nav-item">
+            <label class="nav-link" th:text="${memberName}"></label>
+          </li>
+       
+          <!-- 로그아웃 -->
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+   </div>
+  
+  <!-- /.container -->
+  <div class="container jumbotron my-4">
+   <div th:fragment="event">
+      <!-- 가맹점 목록 -->
+      <h3>가맹점 신청 List</h3>
+    </div>
+   </div>
+   <div class="container jumbotron my-4"> 
+	      <a th:if="${map.currentPage > 1}" th:href="@{/unverifiedFranchiseeList?(currentPage=${map.currentPage-1})}" class="btn btn-info">이전</a>
+	      <a th:if="${map.currentPage < map.lastPage}" th:href="@{/unverifiedFranchiseeList?(currentPage=${map.currentPage+1})}" class="btn btn-info">다음</a>
+      
+      <div class="col-lg-6 col-md-6 mb-12" th:each="str:${map.list}">
+	      <div class="base">
+	          <div class="preface">
+	            <form action="/addFranchisee" method="post">
+	            <input type="hidden" th:value="${str.franchiseeNo}" name="franchiseeNo" id="franchiseeNo">
+	            <input type="hidden" th:value="${str.franchiseeCrn}" name="franchiseeCrn" id="franchiseeCrn">
+	            <input type="hidden" th:value="${str.franchiseeName}" name="franchiseeName" id="franchiseeName">
+	            <input type="hidden" th:value="${str.franchiseePhone}" name="franchiseePhone" id="franchiseePhone">
+	            <input type="hidden" th:value="${str.ownerNo}" name="ownerNo" id="ownerNo">
+	            <h5 th:text="${str.franchiseeNo} + . + ' ' + ${str.franchiseeName} + . + ' ' + ${str.franchiseeCrn} + . + ' ' + ${str.franchiseePhone}"></h5>
+	            <button type="submit" class="btn btn-danger">신청완료</button>
+	            </form>   
+	          </div>
+	          <div class="content">
+	              <h5 th:text="${str.franchiseeNo}"></h5>
+	          </div>
+	      </div>
+      </div> 
+       
+   </div>
+   
+   <!-- Footer -->
+   <div th:fragment="copyright">
+      <footer class="py-5 bg-dark">
+       <div class="container">
+         <p class="m-0 text-center text-white">Copyright &copy; PICABOO 2019</p>
+        </div>
+        <!-- /.container -->
+       </footer>
+   </div>
+
+  <!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</body>
+</html>

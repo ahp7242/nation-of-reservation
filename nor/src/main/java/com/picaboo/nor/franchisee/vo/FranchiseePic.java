@@ -4,13 +4,13 @@ import lombok.Data;
 
 /*
  *  가맹점 사진 파일 VO
- *  franchisee_no: 가맹점 번호
- *  pic_no: 사진 번호
+ *  franchiseeNo: 가맹점 번호
+ *  picNo: 사진 번호
  *  filename: 저장된 파일 이름
  *  extension: 파일 확장자
- *  content_type: 컨텐츠 타입
+ *  contentType: 컨텐츠 타입
  *  size: 파일 크기
- *  origin_name: 파일 원래 이름
+ *  originName: 파일 원래 이름
  */
 
 

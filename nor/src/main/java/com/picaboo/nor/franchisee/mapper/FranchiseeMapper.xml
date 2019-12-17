@@ -4,6 +4,149 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!--좌석 예약 취소 -->
+	<delete id="delSeatReservation" parameterType="int">
+    <![CDATA[
+      DELETE
+		FROM seat_reservation
+		WHERE seat_reservation_no = #{seatReservationNo}
+    ]]>
+    </delete>
+   
+	<!-- 좌석 예약 리스트 조회 -->
+	<select id="selectSeatReservationList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.SeatReservationList">
+	<![CDATA[
+		SELECT
+			seat_reservation_no as seatReservationNo,
+			franchisee_no as franchiseeNo,
+			seat_no as seatNo,
+			customer_no as customerNo,
+			customer_name as customerName,
+			reservation_date as reservationDate
+		FROM seat_reservation
+		WHERE franchisee_no = #{franchiseeNo}
+	]]>   
+	
+	</select>
+		
+	<!-- 가맹점별 상품에 따른 매출 현황 -->
+	<select id="selectTotalStatementList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.TotalStatement">
+	<![CDATA[	
+		SELECT 
+			fs.franchisee_no as franchiseeNo, 
+			fd.food_name as foodName, 
+			fr.reservation_count as count,
+			SUM(food_price * reservation_count) as totalCount
+		FROM del_food_reservation fr
+		INNER JOIN food fd
+		INNER JOIN franchisee fs
+		ON fr.food_no= fd.food_no
+		AND fd.franchisee_no = fs.franchisee_no
+		WHERE fs.owner_no = #{ownerNo}
+		GROUP BY fd.franchisee_no, fr.food_no
+	]]>
+	</select>	
+	
+	<!-- 오늘의 가맹점별 매출 현황 -->
+	<select id="selectTodayStatementList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.TodayStatement">
+	<![CDATA[	
+		SELECT
+		fs.franchisee_name as franchiseeNo, 
+		SUM(food_price * reservation_count) as totalCount
+	FROM del_food_reservation fr
+	INNER JOIN food fd
+	INNER JOIN franchisee fs
+	ON fr.food_no= fd.food_no
+	AND fd.franchisee_no = fs.franchisee_no
+	WHERE DATE_FORMAT(fr.reservation_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d')
+	AND fs.owner_no = #{ownerNo}
+	GROUP BY fs.franchisee_no
+	]]>
+	</select>
+
+	<!-- 모든 상품 예약 통계 -->
+	<select id="selectFoodfoodStatementList" resultType="com.picaboo.nor.franchisee.vo.FoodStatement">
+	<![CDATA[
+		SELECT
+			f.food_name AS foodName,
+			SUM(d.reservation_count) AS reservationCount
+			FROM del_food_reservation AS d
+		INNER JOIN food AS f 
+		ON d.food_no = f.food_no 
+		GROUP BY d.food_no
+		ORDER BY reservationCount DESC
+	]]>   
+	</select>
+
+
+	<!-- 가맹점 상품 수정 -->
+	<update id="updateFranchiseeFood" parameterType="com.picaboo.nor.franchisee.vo.Food">
+	<![CDATA[
+		UPDATE food
+		SET 
+			food_name = #{foodName},
+			food_category = #{foodCategory},
+			food_price = #{foodPrice}
+		WHERE food_no = #{foodNo}
+	]]>
+	</update>
+
+	<!-- food와 연결된 franchisee의 franchiseeNo 매핑 -->
+	<resultMap type="com.picaboo.nor.franchisee.vo.Food" id="foodResultMap">
+		<id column="food_no" property="foodNo"/>
+		<result column="food_name" property="foodName"/>
+		<result column="food_category" property="foodCategory"/>
+		<result column="food_price" property="foodPrice"/>
+		<association property="franchisee" javaType="com.picaboo.nor.franchisee.vo.Franchisee">
+			<id column="franchisee_no" property="franchiseeNo"/>
+		</association>
+	</resultMap>
+
+	<!-- 가맹점 상품 조회 -->
+	<select id="selectFood" parameterType="int" resultMap="foodResultMap">
+	<![CDATA[
+		SELECT
+			food_no,
+			franchisee_no,
+			food_name,
+			food_category,
+			food_price
+		FROM food
+		WHERE food_no = #{foodNo}
+	]]>
+	</select>
+	<!-- 가맹점 상품 사진 파일 조회 -->
+	<select id="selectFoodPic" parameterType="int" resultType="com.picaboo.nor.franchisee.vo.FoodPic">
+	<![CDATA[
+		SELECT
+			food_no as foodNo,
+			file_name as fileName,
+			extension as extension,
+			content_type as contentType,
+			size as size,
+			origin_name as originName
+		FROM food_pic
+		WHERE food_no = #{foodNo}
+	]]>
+	</select>
+	<!-- 가맹점 상품  사진 삭제 -->
+	<delete id="deletefranchiseeFoodPic" parameterType="int">
+	<![CDATA[
+		DELETE 
+		FROM food_pic
+		WHERE food_no = #{foodNo}
+	]]>
+	</delete>
+
+	<!-- 가맹점 상품 삭제 -->
+	<delete id="deletefranchiseeFood" parameterType="int">
+	<![CDATA[
+		DELETE 
+		FROM food
+		WHERE food_no = #{foodNo}
+	]]>
+	</delete>
+
 	<!--food 통계 계수 추가-->
 	<insert id="addFoodReservation" parameterType="int">
 	<![CDATA[
@@ -27,7 +170,7 @@
 	]]>
 	</insert>
 	
-	<!--주문완료 음식 삭제 -->
+	<!--주문완료 상품 삭제 -->
 	<delete id="delFoodReservation" parameterType="int">
     <![CDATA[
       DELETE
@@ -36,7 +179,7 @@
     ]]>
     </delete>
    
-	<!-- 음식 서비스 확인가능 -->
+	<!-- 상품 예약 리스트 조회 -->
 	<select id="selectFoodReservationList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FoodReservationList">
 	<![CDATA[
 		SELECT
@@ -55,7 +198,7 @@
 	
 	</select>
 	<!-- 가맹점 상품 사진 리스트 조회 --> 
-	<select id="getFoodPicList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FoodPic">
+	<select id="selectFoodPicList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FoodPic">
 	<![CDATA[
 		SELECT
 		food_no as foodNo,
@@ -74,7 +217,7 @@
 	</select>
 	
 	<!-- 가맹점 상품 리스트 조회 -->
-	<select id="getFoodList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Food">
+	<select id="selectFoodList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.Food">
 	<![CDATA[
 		SELECT
 			food_no as foodNo,
@@ -82,8 +225,19 @@
 			food_category as foodCategory,
 			food_price as foodPrice
 		FROM food
-		WHERE franchisee_no = #{franchiseeNo}
 	]]>
+		<where>
+			<if test="franchiseeNo != null">
+			<![CDATA[
+				franchisee_no = #{franchiseeNo}
+			]]>
+			</if>
+			<if test="foodCategory != null">
+			<![CDATA[
+				AND food_category = #{foodCategory}
+			]]>
+			</if>		
+		</where>
 	</select>
 	<!-- 가맹점 상품 사진 등록 -->
 	<insert id="insertFranchiseeFoodPic" parameterType="com.picaboo.nor.franchisee.vo.FoodPic">
@@ -176,6 +330,7 @@
 	<select id="selectFranchiseeThumbnail" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FranchiseePic">
 	<![CDATA[
 		SELECT 
+			franchisee_no as FranchiseeNo,
 			pic_no as picNo,
 			file_name as fileName,
 			extension as extension,
@@ -423,9 +578,9 @@
 	</insert>
 	
 	<!-- 가맹점 등록 -->
-	<insert id="insertFranchisee" parameterType="com.picaboo.nor.franchisee.vo.Franchisee" >
+	<insert id="insertUnverifiedFranchisee" parameterType="com.picaboo.nor.franchisee.vo.UnverifiedFranchisee" >
 	<![CDATA[
-	   INSERT INTO franchisee(
+	   INSERT INTO unverified_franchisee(
 	      franchisee_no, 
 	      franchisee_crn, 
 	      franchisee_name,

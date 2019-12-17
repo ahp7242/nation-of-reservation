@@ -4,8 +4,13 @@ import java.util.Map;
 
 import com.picaboo.nor.admin.vo.AdminFAQ;
 import com.picaboo.nor.admin.vo.AdminQnA;
+import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
 
 public interface AdminService {
+	// 가맹점 신청완료
+	public int addFranchisee(String franchiseeNo);
+	// 가맹점 리스트 조회
+	public Map<String, Object> getUnverifiedFranchiseeList(int currentPage, int rowPerPage);	
 	// FAQ 삭제
 	public int delFAQ(int faqNo);
 	// FAQ 등록
