@@ -20,12 +20,13 @@ import com.picaboo.nor.franchisee.vo.SeatReservationList;
 import com.picaboo.nor.franchisee.vo.Spec;
 import com.picaboo.nor.franchisee.vo.TodayStatement;
 import com.picaboo.nor.franchisee.vo.TotalStatement;
-import com.picaboo.nor.franchisee.vo.UnverifiedFranchisee;
+import com.picaboo.nor.membership.vo.Address;
 
 @Mapper
 public interface FranchiseeMapper {
+	public int insertAddress(Address address);
 	// 좌석 예약 취소
-	public int delSeatReservation(int seatReservationNo);
+	public int delSeatReservation(SeatReservationList seatReservationList);
 	// 좌석 예약 확인 서비스
 	public List<SeatReservationList> selectSeatReservationList(String franchiseeNo);	
 	// 상품에따른 가맹점별 매출 현황
@@ -99,7 +100,7 @@ public interface FranchiseeMapper {
 	// 좌석 입력
 	public int insertFranchiseeSeat(Seat seat);
 	// 가맹점 신청
-	public int insertUnverifiedFranchisee(UnverifiedFranchisee unverifiedFranchisee);
+	public int insertUnverifiedFranchisee(Franchisee franchisee);
 	// 마지막 가맹점번호 조회
 	public String selectFranchiseeSeq();
 	// 마지막 가맹점번호 갱신

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.Email;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -112,17 +114,19 @@ public class AdminServiceImpl implements AdminService{
 	// admin 답변기능
 	@Override
 	public int modifyQnA(AdminQnA adminQnA) {
-		
 		String email = adminQnA.getCustomerMail();
 		String text = adminQnA.getQnaAnswer();
+
 		System.out.println("service IMPL EMAI:  "+email);
 		System.out.println("service IMPL TEXT:  "+text);
-		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-			simpleMailMessage.setTo(email);
-			simpleMailMessage.setFrom("kuooeee@gmail.com");
-			simpleMailMessage.setSubject("PI-KA-BOO 문의하신 답변내용이 전달되었습니다.");
-			simpleMailMessage.setText(text);
-			javaMailSender.send(simpleMailMessage);
+		if(email.length() > 10) {
+			SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+				simpleMailMessage.setTo(email);
+				simpleMailMessage.setFrom("kuooeee@gmail.com");
+				simpleMailMessage.setSubject("PI-KA-BOO 문의하신 답변내용이 전달되었습니다.");
+				simpleMailMessage.setText(text);
+				javaMailSender.send(simpleMailMessage);
+		}
 		return adminMapper.updateQnA(adminQnA);
 	}
 	

@@ -1,5 +1,7 @@
 package com.picaboo.nor.franchisee.vo;
 
+import com.picaboo.nor.membership.vo.Address;
+
 import lombok.Data;
 
 /*
@@ -14,4 +16,5 @@ public class Franchisee {
 	private String franchiseeName;
 	private String franchiseePhone;
 	private String ownerNo;
+	private Address address;
 }

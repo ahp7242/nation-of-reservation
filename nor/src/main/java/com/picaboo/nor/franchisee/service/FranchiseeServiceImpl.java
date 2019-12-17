@@ -22,6 +22,7 @@ import com.picaboo.nor.franchisee.vo.FoodStatement;
 import com.picaboo.nor.franchisee.vo.Franchisee;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQ;
 import com.picaboo.nor.franchisee.vo.FranchiseeFAQPage;
+import com.picaboo.nor.franchisee.vo.FranchiseeForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseePic;
@@ -32,8 +33,8 @@ import com.picaboo.nor.franchisee.vo.SeatReservationList;
 import com.picaboo.nor.franchisee.vo.Spec;
 import com.picaboo.nor.franchisee.vo.TodayStatement;
 import com.picaboo.nor.franchisee.vo.TotalStatement;
-import com.picaboo.nor.franchisee.vo.UnverifiedFranchisee;
 import com.picaboo.nor.ftp.FTPService;
+import com.picaboo.nor.membership.vo.Address;
 
 @Service
 @Transactional
@@ -41,8 +42,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
 	// 좌석 예약 취소
 	@Override
-	public int delSeatReservation(int seatReservationNo) {
-		return franchiseeMapper.delSeatReservation(seatReservationNo);
+	public int delSeatReservation(SeatReservationList seatReservationList) {
+		return franchiseeMapper.delSeatReservation(seatReservationList);
 	}
 	// 좌석 예약 서비스 확인
 	public List<SeatReservationList> getSeatReservationList(String franchiseeNo) {
@@ -792,7 +793,30 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 	
 	// 가맹점 등록
 	@Override
-	public int addUnverifiedFranchisee(UnverifiedFranchisee unverifiedFranchisee){
+	public int addUnverifiedFranchisee(FranchiseeForm franchiseeForm){
+		
+		// 가맹점 입력 폼 -> 가맹점 정보, 주소로 분리하여 처리
+		System.out.println("Service franchiseeForm: " + franchiseeForm);
+		// 리턴 변수 초기화
+		int rows = 0;
+		// 1. address
+		Address address = new Address();
+		address.setJibunAddress(franchiseeForm.getJibunAddress());
+		address.setRoadAddress(franchiseeForm.getRoadAddress());
+		address.setPostcode(franchiseeForm.getPostcode());
+		address.setDetailAddress(franchiseeForm.getDetailAddress());
+		
+		rows += franchiseeMapper.insertAddress(address);
+		
+		// 2. franchisee
+		Franchisee franchisee = new Franchisee();
+		franchisee.setFranchiseeName(franchiseeForm.getFranchiseeName());
+		franchisee.setFranchiseeCrn(franchiseeForm.getFranchiseeCrn());
+		franchisee.setFranchiseePhone(franchiseeForm.getFranchiseePhone());
+		franchisee.setOwnerNo(franchiseeForm.getOwnerNo());
+		franchisee.setAddress(new Address());
+		franchisee.getAddress().setAddressNo(address.getAddressNo());
+		
 		// 가맹점 번호: "유형" + 숫자7자리
 		// 마지막 가맹점번호 저장
 		String seqNo = franchiseeMapper.selectFranchiseeSeq();
@@ -813,12 +837,14 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		System.out.println("nextNo: " + nextNo);
 		
 		// 다음 가맹점 번호 객체에 저장
-		unverifiedFranchisee.setFranchiseeNo(nextNo);
+		franchisee.setFranchiseeNo(nextNo);
 		// 다음 가맹점 번호로 insert 수행
-		franchiseeMapper.insertUnverifiedFranchisee(unverifiedFranchisee);
+		rows += franchiseeMapper.insertUnverifiedFranchisee(franchisee);
 		// 마지막 가맹점 번호 갱신
-		franchiseeMapper.updateFranchiseeSeq(nextNo);
-		return 0;
+		rows += franchiseeMapper.updateFranchiseeSeq(nextNo);
+		
+		return rows;
+		
 	}
 	
 		

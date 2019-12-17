@@ -18,6 +18,7 @@ import com.picaboo.nor.franchisee.vo.FoodForm;
 import com.picaboo.nor.franchisee.vo.FoodReservationList;
 import com.picaboo.nor.franchisee.vo.FoodStatement;
 import com.picaboo.nor.franchisee.vo.Franchisee;
+import com.picaboo.nor.franchisee.vo.FranchiseeForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
@@ -25,22 +26,25 @@ import com.picaboo.nor.franchisee.vo.Seat;
 import com.picaboo.nor.franchisee.vo.SeatReservationList;
 import com.picaboo.nor.franchisee.vo.TodayStatement;
 import com.picaboo.nor.franchisee.vo.TotalStatement;
-import com.picaboo.nor.franchisee.vo.UnverifiedFranchisee;
 
 @Controller
 public class FranchiseeController {
 	@Autowired FranchiseeService franchiseeService;
 	// 좌석 예약 리스트 삭제
 	@GetMapping("/delSeatReservation")
-    public String delSeatReservation(HttpSession session, @RequestParam(value="seatReservationNo") int seatReservationNo) {
+    public String delSeatReservation(HttpSession session, 
+    		SeatReservationList seatReservationList,
+    		@RequestParam(value="franchiseeNo") String franchiseeNo,
+    		@RequestParam(value="seatNo") int seatNo) {
 		// 세션 검사
 		String ownerNo = (String)session.getAttribute("memberNo");
 		if (ownerNo == null) {
 			return "redirect:/";
 		}
-		franchiseeService.delSeatReservation(seatReservationNo);
-		System.out.println("삭제 번호"+seatReservationNo);
+		seatReservationList.setFranchiseeNo(franchiseeNo);
+		seatReservationList.setSeatNo(seatNo);
 		
+		franchiseeService.delSeatReservation(seatReservationList);
         return "redirect:/seatReservationList";
 	}
 	
@@ -458,13 +462,13 @@ public class FranchiseeController {
 	
 	// 가맹점 등록 요청
 	@PostMapping("/addUnverifiedFranchisee")
-    public String addFranchisee(UnverifiedFranchisee unverifiedFranchisee, HttpSession session) {
+    public String addFranchisee(FranchiseeForm franchiseeForm, HttpSession session) {
 		
-		System.out.println("addFranchisee param franchisee: " + unverifiedFranchisee);
+		System.out.println("addFranchisee param franchiseeForm: " + franchiseeForm);
 		
-		unverifiedFranchisee.setOwnerNo((String)session.getAttribute("memberNo"));
+		franchiseeForm.setOwnerNo((String)session.getAttribute("memberNo"));
         
-        franchiseeService.addUnverifiedFranchisee(unverifiedFranchisee);
+        franchiseeService.addUnverifiedFranchisee(franchiseeForm);
         
         return "redirect:/franchiseeIndex";
 	}

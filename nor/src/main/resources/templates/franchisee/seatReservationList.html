@@ -49,7 +49,6 @@
 	<div style="overflow-x:auto;">
 	   <table>
 			<tr>
-			   <th>예약번호</th>
 			   <th>가맹점 번호</th>
 			   <th>좌석 번호</th>
 			   <th>고객 번호</th>
@@ -58,14 +57,13 @@
 			</tr>
 			
 			<tr th:each="list:${seatReservationList}">
-			   <td th:text="${list.seatReservationNo}"></td>	
 			   <td th:text="${list.franchiseeNo}"></td>	
 			   <td th:text="${list.seatNo}"></td>
 			   <td th:text="${list.customerNo}"></td>
 			   <td th:text="${list.customerName}"></td>
 			   <td th:text="${list.reservationDate}"></td>
 			   <td class="col-md-3 col-sm-6 mb-4">
-	      	   <a href="#" th:href="@{/delSeatReservation?(seatReservationNo=${list.seatReservationNo})}" class="btn btn-primary">삭제</a>
+	      	   <a href="#" th:href="@{/delSeatReservation?(franchiseeNo=${list.franchiseeNo},seatNo=${list.seatNo})}" class="btn btn-primary">삭제</a>
 	    	   </td>
 			</tr>
 		</table>
