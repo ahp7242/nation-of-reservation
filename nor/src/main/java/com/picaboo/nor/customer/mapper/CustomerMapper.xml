@@ -66,14 +66,14 @@
 	</update>
 	
 	<!-- 예약된 좌석중 시간이 10분 지난 리스트 -->
-	<select id="selectSeatReservation" parameterType="String"
-									   resultType="com.picaboo.nor.customer.vo.SeatReservation">
+	<select id="selectSeatReservation" parameterType="String" resultType="com.picaboo.nor.customer.vo.SeatReservation">
 		<![CDATA[
-			SELECT franchisee_no as franchiseeNo,
-				   seat_no as seatNo,
-				   customer_no as customerNo,
-				   customer_name as customerName,
-				   reservation_date as reservationDate
+			SELECT
+				franchisee_no as franchiseeNo,
+				seat_no as seatNo,
+				customer_no as customerNo,
+				customer_name as customerName,
+				reservation_date as reservationDate
 			FROM seat_reservation
 			WHERE reservation_date <= date_add(NOW(),INTERVAL 10 minute) AND franchisee_no = #{franchiseeNo}
 		]]>
@@ -139,15 +139,22 @@
 	</select>
 	
 	<!-- 선택된 프렌차이즈에 등록된 상품목록을 가져옴 -->
-	<select id="selectFoodList" parameterType="String" resultType="com.picaboo.nor.franchisee.vo.Food">
+	<select id="selectFoodList" parameterType="String" resultType="com.picaboo.nor.customer.vo.FoodInfo">
 		<![CDATA[
-			SELECT
-				food_no as foodNo,
-				food_name as foodName,
-				food_category as foodCategory,
-				food_price as foodPrice
-			FROM food
-			WHERE franchisee_no = #{String}
+			SELECT 
+				f.food_no as foodNo, 
+				f.franchisee_no as fanchiseeNo, 
+				f.food_name as foodName, 
+				f.food_category as foodCategory, 
+				f.food_price as foodPrice, 
+				fp.file_name as fileName, 
+				fp.extension as extension, 
+				fp.content_type as contentType,
+				fp.size as size, 
+				fp.origin_name as originName
+			FROM food as f LEFT JOIN food_pic as fp
+			ON fp.food_no = f.food_no
+			WHERE f.franchisee_no = #{franchiseeNo}
 		]]>
 	</select>
 	
@@ -186,7 +193,7 @@
 	<select id="selectFoodReservation" parameterType="String" resultType="com.picaboo.nor.customer.vo.FoodReservation">
 		<![CDATA[
 			SELECT 
-				fr.reservation_no as reservationNo,
+				fr.food_reservation_no as reservationNo,
 				fr.food_no as foodNo, 
 				fr.reservation_count as reservationCount, 
 				fr.reservation_date as reservationDate, 
@@ -202,12 +209,14 @@
 	<insert id="insertCancelFoodReservation" parameterType="com.picaboo.nor.customer.vo.FoodReservation">
 		<![CDATA[
 			INSERT INTO cancel_food_reservation (
+				food_reservation_no,
 				food_no,
 				reservation_count,
 				reservation_date,
 				customer_no,
 				customer_name
 			) VALUES (
+				#{reservationNo},
 				#{foodNo},
 				#{reservationCount},
 				#{reservationDate},
@@ -221,7 +230,120 @@
 	<delete id="deleteFoodReservation" parameterType="int">
 		<![CDATA[
 			DELETE FROM food_reservation
-			WHERE reservation_no = #{reservationNo}
+			WHERE food_reservation_no = #{reservationNo}
 		]]>
 	</delete>
+	
+	<!-- 로그인한 고객의 좌석 예약 기록의 카운트값을 가져옴 -->
+	<select id="selectMySeatReservationList" parameterType="String" resultType="com.picaboo.nor.customer.vo.MySeatReservationPer">
+		<![CDATA[
+			SELECT 
+				a.franchisee_no as franchiseeNo,
+				f.franchisee_name as franchiseeName,
+				count(*) as count
+			FROM (
+				SELECT franchisee_no, customer_no
+				FROM seat_reservation
+				UNION ALL
+				SELECT franchisee_no, customer_no
+				FROM cancel_seat_reservation
+				) as a LEFT JOIN franchisee as f
+			ON a.franchisee_no = f.franchisee_no
+			WHERE a.customer_no = #{customerNo}
+			GROUP BY a.franchisee_no
+		]]>
+	</select>
+	
+	<!-- 로그인한 고객의  상품 예약 기록의 카운트값을 가져옴-->
+	<select id="selectMyFoodReservationList" parameterType="com.picaboo.nor.franchisee.vo.Franchisee" resultType="com.picaboo.nor.customer.vo.MyFoodReservationPer">
+		<![CDATA[
+			SELECT 
+				a.food_no as foodNo, 
+				f.food_name as foodName, 
+				sum(a.reservation_count) as sum
+			FROM (
+				SELECT food_no, customer_no, reservation_count
+				FROM food_reservation
+				UNION ALL
+				SELECT food_no, customer_no, reservation_count
+				FROM cancel_food_reservation
+				) as a left join food as f
+			ON a.food_no = f.food_no
+			WHERE a.customer_no = #{ownerNo} AND f.franchisee_no = #{franchiseeNo}
+			GROUP BY a.food_no
+		]]>
+	</select>
+	<!-- 로그인한 고객의 총 상품 주문 금액 가져옴 -->
+	<select id="selectCustomerTotalPrice" parameterType="String" resultType="com.picaboo.nor.customer.vo.TotalPrice">
+		<![CDATA[
+			SELECT
+				a.food_no as foodNo, 
+				sum(a.reservation_count) as sum, 
+				a.customer_no as customerNo, 
+				a.customer_name as customerName, 
+				f.food_price as foodPrice, 
+				(sum(a.reservation_count)*f.food_price) as totalPrice
+			FROM (
+				SELECT food_no, reservation_count, customer_no, customer_name
+				FROM food_reservation
+				UNION ALL
+				SELECT food_no, reservation_count, customer_no, customer_name
+				FROM cancel_food_reservation
+			) as a INNER JOIN food as f
+			ON a.food_no = f.food_no
+			WHERE a.customer_no = #{customerNo}
+			GROUP BY a.food_no
+		]]>
+	</select>
+	
+	<!-- 로그인한 고객의 답변이 달리지 않은 qna리스트를 가져옴 -->
+	<select id="selectCustomerQnAList" parameterType="String" resultType="com.picaboo.nor.customer.vo.CustomerQnA">
+		<![CDATA[
+			SELECT
+				qna_no as qnaNo,
+				qna_type as qnaType,
+				qna_title as qnaTitle,
+				qna_answer as qnaAnswer,
+				DATE_FORMAT(qna_date, '%Y-%m-%d') as qnaDate
+			FROM customer_qna
+			WHERE customer_no = #{customerNo}
+		]]>
+	</select>
+	
+	<!-- 로그인한 고객작성한 qna 등록 -->
+	<insert id="insertCustomerQnA" parameterType="com.picaboo.nor.customer.vo.CustomerQnA">
+	<![CDATA[
+			INSERT INTO customer_qna(
+				customer_no,
+				qna_type,
+				qna_title,
+				qna_question,
+				qna_answer,
+				qna_date,
+				customer_mail
+			) VALUES (
+				#{customerNo},
+				#{qnaType},
+				#{qnaTitle},
+				#{qnaQuestion},
+				#{qnaAnswer},
+				NOW(),
+				#{customerMail}
+			)
+		]]>
+	</insert>
+	
+	<!-- 1개의 qna내용을 가져옴 -->
+	<select id="selectCustomerQnAOne" parameterType="int" resultType="com.picaboo.nor.customer.vo.CustomerQnA">
+		<![CDATA[
+			SELECT
+				qna_type as qnaType,
+				qna_title as qnaTitle,
+				qna_question as qnaQuestion,
+				qna_answer as qnaAnswer,
+				DATE_FORMAT(qna_date, '%Y-%m-%d') as qnaDate
+			FROM customer_qna
+			WHERE qna_no = #{qnaNo}
+		]]>
+	</select>
 </mapper>

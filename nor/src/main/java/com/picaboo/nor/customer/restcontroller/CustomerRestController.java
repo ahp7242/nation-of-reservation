@@ -61,10 +61,10 @@ public class CustomerRestController {
 	}
 	
 	@PostMapping("/getFoodList")
-	public List<Food> getFoodList(@RequestParam("franchiseeNo")String franchiseeNo) {
+	public List<FoodInfo> getFoodList(@RequestParam("franchiseeNo")String franchiseeNo) {
 		//System.out.println("getFoodList"+franchiseeNo);
 		
-		List<Food> list = customerService.getFoodList(franchiseeNo);
+		List<FoodInfo> list = customerService.getFoodList(franchiseeNo);
 		//System.out.println("getFoodList"+list);
 		return list;
 	}
@@ -99,5 +99,32 @@ public class CustomerRestController {
 		foodReservation.setFoodNo(newFoodNo);
 		
 		customerService.addFoodReservation(foodReservation);
+	}
+	
+	@PostMapping("/getMySeatReservation")
+	public List<MySeatReservationPer> getMySeatReservation(HttpSession session) {
+		String customerNo = (String) session.getAttribute("memberNo");
+		System.out.println("customerNo : "+customerNo);
+		
+		List<MySeatReservationPer> list = customerService.getMySeatReservation(customerNo);
+		System.out.println("list : " + list);
+		
+		
+		return list;
+	}
+	
+	@PostMapping("/getMyFoodReservation")
+	public List<MyFoodReservationPer> getMyFoodReservation(HttpSession session,@RequestParam("franchiseeNo")String franchiseeNo) {
+		String customerNo = (String) session.getAttribute("memberNo");
+		System.out.println("customerNo : " + customerNo);
+		System.out.println("franchiseeNo : " + franchiseeNo);
+		Franchisee franchisee = new Franchisee();
+		franchisee.setFranchiseeNo(franchiseeNo);
+		franchisee.setOwnerNo(customerNo);
+		
+		List<MyFoodReservationPer> list = customerService.getMyFoodReservation(franchisee);
+		System.out.println("list : " + list);
+		
+		return list;
 	}
 }

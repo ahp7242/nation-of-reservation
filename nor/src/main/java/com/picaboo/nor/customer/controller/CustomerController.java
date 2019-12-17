@@ -1,45 +1,63 @@
 package com.picaboo.nor.customer.controller;
  
+import java.text.NumberFormat;
 import java.util.*;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.customer.service.*;
+import com.picaboo.nor.customer.vo.*;
 import com.picaboo.nor.franchisee.service.*;
 import com.picaboo.nor.franchisee.vo.*;
 
 @Controller
 public class CustomerController {
 	@Autowired private CustomerService customerService;
-	@Autowired private FranchiseeService franchiseeService;
 	
 	// QnA 입력
 	@PostMapping("/QnACustomer")
-    public String addFranchisee(FranchiseeQnA franchiseeQnA, HttpSession session) {
+    public String addFranchisee(CustomerQnA customerQnA, HttpSession session) {
 		String customerNo = (String) session.getAttribute("memberNo");
-		franchiseeQnA.setCustomerNo(customerNo);	
+		customerQnA.setCustomerNo(customerNo);	
 		//System.out.println("addFranchisee param franchisee: " + franchiseeQnA);
-        franchiseeService.addFranchiseeQnA(franchiseeQnA);
+		customerService.addCustomerQnA(customerQnA);
         return "redirect:/customerIndex";
 	}
 	
 	// QnA 입력 페이지 요청
 	@GetMapping("/QnACustomer")
-	public String QnAFranchisee(HttpSession session,FranchiseeQnA franchiseeQnA, Model model) {
+	public String QnAFranchisee(HttpSession session, Model model) {
 		// 세션 검사
 		String ownerNo = (String)session.getAttribute("memberNo");
 	    	if (ownerNo == null) {
 	    	return "redirect:/";
 	    }
+	    	
+	    
 	    //System.out.println("session memberNo: " + ownerNo);
 	    model.addAttribute("memberName",session.getAttribute("memberName"));
 	    return "customer/QnACustomer";
 	}
+	
+	// QnA 입력 페이지 요청
+		@GetMapping("/QnACustomerList")
+		public String QnAFranchiseeList(HttpSession session, Model model) {
+			// 세션 검사
+			String ownerNo = (String)session.getAttribute("memberNo");
+		    	if (ownerNo == null) {
+		    	return "redirect:/";
+		    }
+		    List<CustomerQnA> list = customerService.getCustomerQnAList(ownerNo);
+		    //System.out.println("session memberNo: " + ownerNo);
+		    model.addAttribute("memberName",session.getAttribute("memberName"));
+		    model.addAttribute("list",list);
+		    return "customer/QnACustomerList";
+		}
+	
 	//가맹점이 등록한 pc방 좌석을 고객이 확인을 하는 페이지로 get 요청
 	@GetMapping("/selectCustomerSeat")
 	public String customer(HttpSession session, Model model, @RequestParam("franchiseeNo")String franchiseeNo) {
@@ -70,37 +88,67 @@ public class CustomerController {
 		return "customer/selectCustomerSeat";
 	}
 	
-	//기본 인덱스로 get요청
-	@GetMapping("/")
-	public String index(HttpSession session, Model model) {
-		//세션값이 없으면 기본 인덱스로 이동		
-		if (session.getAttribute("memberNo") != null) {
-			String type = (String)session.getAttribute("memberType");			
-			// 세션의 memberType값을 검사하여 각각의 타입으로 분기
+	//로그인후 고객이 보는 인덱스로 get요청
+	@GetMapping({"/customerIndex","/"})
+	public String customerindex(HttpSession session, Model model) {
+		if(session.getAttribute("memberType") != null) {
+			String type = (String)session.getAttribute("memberType");
+			model.addAttribute("memberName",session.getAttribute("memberName"));
 			switch(type){
 				case "N":
 				case "C":
 					//일반 고객페이지로 이동
-					return "redirect:/customerIndex";
+					return "customerIndex";
 				case "O":
 					//점주 페이지로 이동
 					return "redirect:/franchiseeIndex";
 			}
-		}	
-		return "index";
+		}
+		//System.out.println("커스텀인덱스 세션"+session.getAttribute("memberName"));
+		//세션에 저장된 memberName값을 가져와 모델에 저장함
+		
+		
+		return "customerIndex";
 	}
 	
-	//로그인후 고객이 보는 인덱스로 get요청
-	@GetMapping("/customerIndex")
-	public String customerindex(HttpSession session, Model model) {
+	@GetMapping("/myReservation")
+	public String myReservation(HttpSession session, Model model) {
 		//세션값이 없으면 기본 인덱스로 이동
 		if (session.getAttribute("memberNo") == null) {
 			return "redirect:/";
 		}
-		//System.out.println("커스텀인덱스 세션"+session.getAttribute("memberName"));
-		//세션에 저장된 memberName값을 가져와 모델에 저장함
-		model.addAttribute("memberName",session.getAttribute("memberName"));
 		
-		return "customerIndex";
+		String customerNo = (String) session.getAttribute("memberNo");
+		List<TotalPrice> list = customerService.getCustomerTotalPrice(customerNo);
+		int total = 0;
+		for(TotalPrice l:list) {
+			System.out.println(l);
+			total += l.getTotalPrice();
+		}
+		
+		String totalPrice = NumberFormat.getInstance().format(total);
+		System.out.println(totalPrice);
+		System.out.println(total);
+		model.addAttribute("totalPrice",totalPrice);
+		model.addAttribute("memberName",session.getAttribute("memberName"));
+		return "customer/myReservation";
+	}
+	
+	@GetMapping("/QnACustomerDetail")
+	public String QnaCustomerDetail(HttpSession session, Model model, @RequestParam("qnaNo")String qnaNo) {
+		if (session.getAttribute("memberNo") == null) {
+			return "redirect:/";
+		}
+		
+		System.out.println("qnaNo:"+qnaNo);
+		int no =  Integer.parseInt(qnaNo);
+		CustomerQnA customer = customerService.getCustomerQnAOne(no);
+		
+		System.out.println("QnA:"+customer);
+		
+		model.addAttribute("memberName",session.getAttribute("memberName"));
+		model.addAttribute("QnA",customer);
+		
+		return "customer/QnACustomerDetail";
 	}
 }

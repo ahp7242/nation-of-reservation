@@ -1,7 +1,5 @@
 package com.picaboo.nor.membership.service;
 
-import org.springframework.ui.Model;
-
 import com.picaboo.nor.membership.vo.*;
 
 public interface MembershipService {
@@ -10,14 +8,12 @@ public interface MembershipService {
 	//로그인시 회원정보의 유무를 확인하는 서비스
 	public Membership loginMembership(Login login);
 	//회원의 상세정보를 가져오는 서비스
-	public Membership detailMembership(String customerNo);
+	public SignForm detailMembership(String customerNo);
 	//회원의 상세정보를 수정하는 서비스
-	public int modifyMembership(Membership membership);
+	public void modifyMembership(SignForm singForm);
 	//회원탈퇴 서비스
 	public void removeMembership(Membership membership);
 	//회원가입시 아이디 중복확인
 	public int getOverlapCustomerId(String customerId);
-//	//회원가입시 주소입력
-//	public int addAddress(Address address);
 
 }

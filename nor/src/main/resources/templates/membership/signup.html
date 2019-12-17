@@ -24,14 +24,29 @@
 	.gradation{
         background: linear-gradient(to right bottom, #B96BC6, #FE5196);
     }
+    
+    input {
+    	 border-radius: 5px;
+    	 width: 250px;
+    }
+    
+    #customerGender{
+   	 width: 50px;
+    }
+    
+    .round{
+    	border-radius: 2px;
+    }
 </style>
 <body>
 <div id="logo" >
 	<img src="/loginimage/logo.jpg">
 </div>
-	<div th:include="/part/templet::nav" class="gradation"></div>
+	<div th:include="/part/customerNav::befornav" class="gradation"></div>
 	
 	<div class="container">
+		<br>
+		<h3>회원가입</h3>
 		<table class="table table-boardered">
 				<tr hidden="hidden">
 				<td><input type="text" id="customerType" th:value="${customerType}"></td>
@@ -39,60 +54,59 @@
 			<tr>
 				<th>아이디</th>
 				<td>
-					<input type="text" width="80%" class="form-control" id="customerId" required autofocus>
-					
-				</td>
-				<td>
+					<input type="text"id="customerId" required autofocus>
 					<button type="button" class="btn-sm btn-success" id="overlap">중복체크</button>
 				</td>
 			</tr>
 			
 			<tr>
 				<th>비밀번호</th>
-				<td><input type="password" class="form-control" id="customerPw" required></td>
-			</tr>
-			<tr>
-				<th>주소</th>
-				<td>
-					<div>
-						<input type="text" id="postcode" name="postcode" placeholder="우편번호" style="width: 250px;">
-						<button type="button" onclick="execDaumPostcode()" value="우편번호 찾기" class="btn-primary">우편번호</button><br>
-						<input type="text" id="address" name="address" placeholder="주소" style="width: 250px;"><br>
-						<input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" style="width: 250px;">
-						<input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" style="width: 250px;">
-						<input type="text" id="roadAddress" name="roadAddress" hidden="" >
-						<input type="text" id="jibunAddress" name="jibunAddress" hidden="" >
-					</div>
-				</td>														
+				<td><input type="password"id="customerPw" required></td>
 			</tr>
 			<tr>
 				<th>이름</th>
-				<td><input type="text" class="form-control" id="customerName" required></td>
+				<td><input type="text" id="customerName" required></td>
 			</tr>
 				<tr>
 				<th>생일</th>
-				<td><input type="date" class="form-control" id="customerBirth" required></td>
+				<td><input type="date" id="customerBirth" required></td>
 			</tr>
 			
 			<tr>
 				<th>성별</th>
 				<td>
-					<input type="radio" value="M" id="customerGender">남
-					<input type="radio" value="F" id="customerGender">여
+					<input type="radio" name="gender" value="M" id="customerGender">남
+					<input type="radio" name="gender" value="F" id="customerGender">여
 				</td>
 			</tr>
 				<tr>
 				<th>이메일</th>
-				<td><input type="email" class="form-control" id="customerEmail"></td>
+				<td><input type="email" id="customerEmail"></td>
 			</tr>
 				<tr>
 				<th>번호</th>
-				<td><input type="text" class="form-control" id="customerPhone"></td>
+				<td><input type="text" id="customerPhone"></td>
+			</tr>
+			<tr>
+				<th>주소</th>
+				<td>
+					<div>
+						<input type="text" id="postcode" name="postcode" placeholder="우편번호">
+						<button type="button" onclick="execDaumPostcode()" value="우편번호 찾기" class="btn-primary round">우편번호</button><br>
+						<input type="text" id="address" name="address" placeholder="주소"><br>
+						<input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소">
+						<input type="text" id="extraAddress" name="extraAddress" hidden="">
+						<input type="text" id="roadAddress" name="roadAddress" hidden="" >
+						<input type="text" id="jibunAddress" name="jibunAddress" hidden="" >
+					</div>
+				</td>														
 			</tr>
 		</table>
+		<hr>
 		<button type="button" class="btn btn-primary" id="join">회원가입</button>
 	</div>
-	<div th:include="/part/templet::copyright" class="gradation"></div>
+	<br>
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>

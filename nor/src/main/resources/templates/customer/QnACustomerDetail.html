@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<style>
+#logo {
+	text-align: center;
+	height: 170px;
+}
+
+.gradation {
+	background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>singupType</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+</head>
+<body>
+	<div id="logo" >
+	<img src="/loginimage/logo.jpg">
+	</div>
+	<div th:include="/part/customerNav::afternav" class="gradation"></div>
+	<div class="container" style="padding: 10px;">
+		<h4>QnA</h4>
+		<div class="form-group">
+			<label>QnA_Category</label> 
+			<input type="text" th:value="${QnA.qnaType}" class="form-control" readonly="readonly">
+		</div>
+		<div class="form-group">
+			<label for="qnaTitle">QnA_Title:</label> 
+			<input type="text" th:value="${QnA.qnaTitle}" class="form-control" readonly="readonly">
+		</div>
+		<div class="form-group">
+			<label for="qnaContent">QnA_Content:</label>
+			<textarea th:text="${QnA.qnaQuestion}" class="form-control" cols="50" rows="10" name="qnaQuestion" readonly="readonly"></textarea>
+		</div>
+		<div class="form-group" th:if="${QnA.qnaAnswer} != null">
+			<label for="qnaContent">QnA_Answer:</label>
+			<textarea th:text="${QnA.qnaAnswer}" class="form-control" cols="50" rows="1" name="qnaQuestion" readonly="readonly"></textarea>
+		</div>
+	
+	</div>
+
+	<!-- Footer -->
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
+</body>
+
+</html>

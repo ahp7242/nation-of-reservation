@@ -24,40 +24,121 @@
 	.gradation{
         background: linear-gradient(to right bottom, #B96BC6, #FE5196);
     }
+    
+    input {
+    	 border-radius: 5px;
+    	 width: 250px;
+    }
+    
+    .round{
+    	border-radius: 5px;
+    }
 </style>
 <body>
 <div id="logo" >
 	<img src="/loginimage/logo.jpg">
 </div>
-	<div th:include="/part/customerNav::nav" class="gradation"></div>
+	<div th:include="/part/customerNav::afternav" class="gradation"></div>
 
 	<div class="container">
 		<form action="/modifyMembership" method="post">
 			<table class="table table-boardered">
 				<tr>
 					<th>아이디</th>
-					<td><input type="text" class="form-control" th:placeholder="${membership.customerId}"></td>
+					<td><input type="text" name="customerId" th:placeholder="${membership.customerId}" th:value="${membership.customerId}" readonly="readonly"></td>
 				</tr>
 				<tr>
 					<th>이름</th>
-					<td><input type="text" class="form-control" th:placeholder="${membership.customerName}"></td>
+					<td><input type="text" name="customerName" th:placeholder="${membership.customerName}" th:value="${membership.customerName}"></td>
 				</tr>
 				<tr>
 					<th>생일</th>
-					<td><input type="date" class="form-control" th:value="${membership.customerBirth}" readonly="readonly"></td>
+					<td><input type="date" name="customerBirth" readonly="readonly" th:value="${membership.customerBirth}"></td>
 				</tr>
 				<tr>
 					<th>이메일</th>
-					<td><input type="email" class="form-control" th:placeholder="${membership.customerEmail}"></td>
+					<td><input type="text" name="customerEmail"  th:placeholder="${membership.customerEmail}" th:value="${membership.customerEmail}"></td>
 				</tr>
 				<tr>
 					<th>번호</th>
-					<td><input type="text" class="form-control" th:placeholder="${membership.customerPhone}"></td>
+					<td><input type="text" name="customerPhone" th:placeholder="${membership.customerPhone}" th:value="${membership.customerPhone}"></td>
 				</tr>
+				<tr>
+				<th>주소</th>
+				<td style="height:50px;">
+					<div>
+						<input type="text" id="postcode" name="postcode" th:placeholder="${membership.postcode}" th:value="${membership.postcode}">
+						<button type="button" onclick="execDaumPostcode()" value="우편번호 찾기" class="btn-primary round">우편번호</button><br>
+						<input type="text" id="address" name="address" th:placeholder="${membership.roadAddress}" th:value="${membership.roadAddress}">
+						<input type="text" id="detailAddress" name="detailAddress" th:placeholder="${membership.detailAddress}" th:value="${membership.detailAddress}">
+						<input type="text" id="extraAddress" name="extraAddress" hidden="">
+						<input type="text" id="roadAddress" name="roadAddress" hidden="" th:value="${membership.roadAddress}">
+						<input type="text" id="jibunAddress" name="jibunAddress" hidden="" >
+					</div>
+				</td>														
+			</tr>
 			</table>
+			<hr>
 			<button type="submit" class="btn btn-primary">수정</button>
 		</form>
 	</div>
-	<div th:include="/part/customerNav::copyright" class="gradataion"></div>
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("extraAddress").value = extraAddr;
+                
+                } else {
+                    document.getElementById("extraAddress").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById("address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("detailAddress").focus();
+                //console.log(data);
+                console.log(data.jibunAddress);
+                console.log(data.roadAddress);
+                $("#roadAddress").val(data.roadAddress)
+                $("#jibunAddress").val(data.jibunAddress)
+            }
+        }).open();
+    }
+    
+</script>		
 </html>
