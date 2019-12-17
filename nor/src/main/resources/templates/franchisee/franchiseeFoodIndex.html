@@ -57,13 +57,35 @@
     	<!-- 상품 목록 -->
 	    <h3>상품 목록</h3>
 	    <header class="jumbotron my-4">
-	    
+	    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+		  <ul class="navbar-nav">
+		    <li class="nav-item" th:class="${foodCategory == null}? 'active'">
+		      <a class="nav-link" href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchiseeFood.franchiseeNo})}">전체</a>
+		    </li>
+		    <li class="nav-item" th:class="${foodCategory == 'Snack'}? 'active'">
+		      <a class="nav-link" href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchiseeFood.franchiseeNo}, foodCategory='Snack')}">Snack</a>
+		    </li>
+		    <li class="nav-item" th:class="${foodCategory == 'Drink'}? 'active'">
+		      <a class="nav-link" href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchiseeFood.franchiseeNo}, foodCategory='Drink')}">Drink</a>
+		    </li>
+		    <li class="nav-item" th:class="${foodCategory == 'Dessert'}? 'active'">
+		      <a class="nav-link" href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchiseeFood.franchiseeNo}, foodCategory='Dessert')}">Dessert</a>
+		    </li>
+		    <li class="nav-item" th:class="${foodCategory == 'Noodle'}? 'active'">
+		      <a class="nav-link" href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchiseeFood.franchiseeNo}, foodCategory='Noodle')}">Noodle</a>
+		    </li>
+		    <li class="nav-item" th:class="${foodCategory == 'Meal'}? 'active'">
+		      <a class="nav-link" href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchiseeFood.franchiseeNo}, foodCategory='Meal')}">Meal</a>
+		    </li>
+		    
+		  </ul>
+		</nav>
 	    <div class="row text-center">
 	      <div class="col-lg-3 col-md-6 mb-4" th:each="food : ${franchiseeFood.foodList}">
 	        <div class="card h-100">
-			  <img class="card-img-top" src="#" th:each="foodPic : ${franchiseeFood.foodPicList}" th:if="${foodPic.foodNo} == ${food.foodNo}" th:src="${franchiseeFood.uploadPath} + ${foodPic.fileName}" alt="foodPic" >
+			  <img class="card-img-top" src="#" th:each="foodPic : ${franchiseeFood.foodPicList}" th:if="${foodPic.foodNo} == ${food.foodNo}" th:src="${franchiseeFood.uploadPath} + ${foodPic.fileName}" alt="foodPic" width="300"  height="200">
 	          <div class="card-body">
-	            <h4 class="card-title" th:text="${food.foodName}">foodName</h4>
+	            <h5 class="card-title" th:text="${food.foodName}">foodName</h5>
 	            <p class="card-text" th:text="${food.foodPrice}+'원'">foodPrice</p>
 	          </div>
 	          <div class="card-footer">

@@ -16,13 +16,19 @@ import com.picaboo.nor.franchisee.vo.FranchiseePic;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.SeatReservationList;
 import com.picaboo.nor.franchisee.vo.Spec;
 import com.picaboo.nor.franchisee.vo.TodayStatement;
 import com.picaboo.nor.franchisee.vo.TotalStatement;
+import com.picaboo.nor.franchisee.vo.UnverifiedFranchisee;
 
 @Mapper
 public interface FranchiseeMapper {
-// 상품에따른 가맹점별 매출 현황
+	// 좌석 예약 취소
+	public int delSeatReservation(int seatReservationNo);
+	// 좌석 예약 확인 서비스
+	public List<SeatReservationList> selectSeatReservationList(String franchiseeNo);	
+	// 상품에따른 가맹점별 매출 현황
 	public List<TotalStatement> selectTotalStatementList(String ownerNo);
 	// 오늘 매출 가맹점별 매출 현황
 	public List<TodayStatement> selectTodayStatementList (String ownerNo);
@@ -47,7 +53,7 @@ public interface FranchiseeMapper {
 	// 가맹점 상품 사진 조회
 	public List<FoodPic> selectFoodPicList(String franchiseeNo);
 	// 가맹점 상품 리스트 조회
-	public List<Food> selectFoodList(String franchiseeNo);
+	public List<Food> selectFoodList(String franchiseeNo, String foodCategory);
 	// 가맹점 상품 사진 등록
 	public int insertFranchiseeFoodPic(FoodPic foodPic);
 	// 가맹점 상품 등록
@@ -93,7 +99,7 @@ public interface FranchiseeMapper {
 	// 좌석 입력
 	public int insertFranchiseeSeat(Seat seat);
 	// 가맹점 신청
-	public int insertFranchisee(Franchisee franchisee);
+	public int insertUnverifiedFranchisee(UnverifiedFranchisee unverifiedFranchisee);
 	// 마지막 가맹점번호 조회
 	public String selectFranchiseeSeq();
 	// 마지막 가맹점번호 갱신

@@ -4,6 +4,31 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!--좌석 예약 취소 -->
+	<delete id="delSeatReservation" parameterType="int">
+    <![CDATA[
+      DELETE
+		FROM seat_reservation
+		WHERE seat_reservation_no = #{seatReservationNo}
+    ]]>
+    </delete>
+   
+	<!-- 좌석 예약 리스트 조회 -->
+	<select id="selectSeatReservationList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.SeatReservationList">
+	<![CDATA[
+		SELECT
+			seat_reservation_no as seatReservationNo,
+			franchisee_no as franchiseeNo,
+			seat_no as seatNo,
+			customer_no as customerNo,
+			customer_name as customerName,
+			reservation_date as reservationDate
+		FROM seat_reservation
+		WHERE franchisee_no = #{franchiseeNo}
+	]]>   
+	
+	</select>
+		
 	<!-- 가맹점별 상품에 따른 매출 현황 -->
 	<select id="selectTotalStatementList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.TotalStatement">
 	<![CDATA[	
@@ -200,8 +225,19 @@
 			food_category as foodCategory,
 			food_price as foodPrice
 		FROM food
-		WHERE franchisee_no = #{franchiseeNo}
 	]]>
+		<where>
+			<if test="franchiseeNo != null">
+			<![CDATA[
+				franchisee_no = #{franchiseeNo}
+			]]>
+			</if>
+			<if test="foodCategory != null">
+			<![CDATA[
+				AND food_category = #{foodCategory}
+			]]>
+			</if>		
+		</where>
 	</select>
 	<!-- 가맹점 상품 사진 등록 -->
 	<insert id="insertFranchiseeFoodPic" parameterType="com.picaboo.nor.franchisee.vo.FoodPic">
@@ -542,9 +578,9 @@
 	</insert>
 	
 	<!-- 가맹점 등록 -->
-	<insert id="insertFranchisee" parameterType="com.picaboo.nor.franchisee.vo.Franchisee" >
+	<insert id="insertUnverifiedFranchisee" parameterType="com.picaboo.nor.franchisee.vo.UnverifiedFranchisee" >
 	<![CDATA[
-	   INSERT INTO franchisee(
+	   INSERT INTO unverified_franchisee(
 	      franchisee_no, 
 	      franchisee_crn, 
 	      franchisee_name,

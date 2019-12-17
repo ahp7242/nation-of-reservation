@@ -14,16 +14,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.picaboo.nor.admin.service.AdminService;
 import com.picaboo.nor.admin.vo.AdminFAQ;
 import com.picaboo.nor.admin.vo.AdminQnA;
+import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
 
 @Controller
 
 public class AdminController {
 	@Autowired AdminService adminService;
-
+	// 가맹점 등록 완료
+	@PostMapping("/addFranchisee")
+    public String addFranchisee(@RequestParam(value="franchiseeNo") String franchiseeNo) {
+		System.out.println("post요청"+franchiseeNo);
+		adminService.addFranchisee(franchiseeNo);
+        return "redirect:/unverifiedFranchiseeList";
+	}
+	
+	// 가맹점 리스트 페이지
+	@GetMapping("/unverifiedFranchiseeList")
+	public String getUnverifiedFranchiseeList(HttpSession session, Model model, 
+								@RequestParam(value="currentPage", defaultValue="1") int currentPage){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		//System.out.println("currentPage : " + currentPage);
+		
+		int rowPerPage = 10;
+		Map<String, Object> map = adminService.getUnverifiedFranchiseeList(currentPage, rowPerPage);
+		model.addAttribute("map", map);
+		//System.out.println("map : " + map);
+		return "admin/unverifiedFranchiseeList";
+	}
 	// FAQ 삭제
 		@PostMapping("/delFAQ")
 	    public String delFAQ(HttpSession session,@RequestParam(value="qnaNo") int faqNo ) {
-			String customerNo = (String) session.getAttribute("memberNo");
 			adminService.delFAQ(faqNo);
 			System.out.println("faqNo"+faqNo);
 	        return "redirect:/FAQAdmin";
@@ -32,7 +56,6 @@ public class AdminController {
 	// FAQ 등록
 		@PostMapping("/addFAQ")
 	    public String addFAQ(AdminFAQ adminFAQ, HttpSession session) {
-			String customerNo = (String) session.getAttribute("memberNo");
 			adminService.addFAQ(adminFAQ);
 	        return "redirect:/FAQAdmin";
 		}

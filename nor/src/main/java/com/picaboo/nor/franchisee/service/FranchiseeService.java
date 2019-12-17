@@ -11,10 +11,16 @@ import com.picaboo.nor.franchisee.vo.FranchiseeInfoForm;
 import com.picaboo.nor.franchisee.vo.FranchiseeOwner;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.SeatReservationList;
 import com.picaboo.nor.franchisee.vo.TodayStatement;
 import com.picaboo.nor.franchisee.vo.TotalStatement;
+import com.picaboo.nor.franchisee.vo.UnverifiedFranchisee;
 
 public interface FranchiseeService {
+	// 좌석예약 취소
+	public int delSeatReservation(int seatReservationNo);
+	// 좌석 리스트 확인 서비스
+	public List<SeatReservationList> getSeatReservationList(String franchiseeNo);	
 	// 상품에따른 가맹점별 매출 현황
 	public List<TotalStatement> getTotalStatementList(String ownerNo);
 	// 오늘 매출 가맹점별 매출 현황
@@ -32,7 +38,7 @@ public interface FranchiseeService {
 	// 음식 리스트 확인 서비스
 	public List<FoodReservationList> getFoodReservationList(String franchiseeNo);
 	// 가맹점 상품 리스트 조회
-	public Map<String,Object> getFranchiseeFood(String franchiseeNo);
+	public Map<String,Object> getFranchiseeFood(String franchiseeNo, String foodCategory);
 	// 가맹점 상품 등록
 	public int addFranchiseeFood(FoodForm foodForm);
 	// 회원문의 정보 확인 서비스
@@ -66,6 +72,6 @@ public interface FranchiseeService {
 	// 좌석 입력
 	public int addFranchiseeSeat(Map<String, String> seatMap);
 	// 가맹점 신청
-	public int addFranchisee(Franchisee franchisee);
+	public int addUnverifiedFranchisee(UnverifiedFranchisee unverifiedFranchisee);
 	
 }

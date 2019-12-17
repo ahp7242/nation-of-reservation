@@ -28,15 +28,27 @@ import com.picaboo.nor.franchisee.vo.FranchiseePic;
 import com.picaboo.nor.franchisee.vo.FranchiseeQnA;
 import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
 import com.picaboo.nor.franchisee.vo.Seat;
+import com.picaboo.nor.franchisee.vo.SeatReservationList;
 import com.picaboo.nor.franchisee.vo.Spec;
 import com.picaboo.nor.franchisee.vo.TodayStatement;
 import com.picaboo.nor.franchisee.vo.TotalStatement;
+import com.picaboo.nor.franchisee.vo.UnverifiedFranchisee;
 import com.picaboo.nor.ftp.FTPService;
 
 @Service
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	// 좌석 예약 취소
+	@Override
+	public int delSeatReservation(int seatReservationNo) {
+		return franchiseeMapper.delSeatReservation(seatReservationNo);
+	}
+	// 좌석 예약 서비스 확인
+	public List<SeatReservationList> getSeatReservationList(String franchiseeNo) {
+		System.out.println("service Impl :  " + franchiseeNo);
+		return franchiseeMapper.selectSeatReservationList(franchiseeNo);
+	}
 	
 	// 상품에따른 가맹점별 매출 현황	
 	public List<TotalStatement> getTotalStatementList(String ownerNo) {
@@ -236,14 +248,14 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 	
 	// 가맹점 상품 정보 가져오기
 	@Override
-	public Map<String, Object> getFranchiseeFood(String franchiseeNo) {
+	public Map<String, Object> getFranchiseeFood(String franchiseeNo, String foodCategory) {
 		System.out.println("Service franchiseNo: " + franchiseeNo);
 		
 		// 상품 리스트와 상품 사진 리스트를 가지는 맵
 		Map<String, Object> franchiseeFood = new HashMap<String, Object>();
 		
 		// 상품 리스트
-		List<Food> foodList = franchiseeMapper.selectFoodList(franchiseeNo);
+		List<Food> foodList = franchiseeMapper.selectFoodList(franchiseeNo, foodCategory);
 		franchiseeFood.put("foodList", foodList);
 		// 상품 사진 리스트
 		List<FoodPic> foodPicList = franchiseeMapper.selectFoodPicList(franchiseeNo);
@@ -251,6 +263,8 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		
 		String uploadPath = "http://ahp7242.cdn3.cafe24.com/food/";
 		franchiseeFood.put("uploadPath", uploadPath);
+		
+		franchiseeFood.put("franchiseeNo", franchiseeNo);
 		
 		return franchiseeFood;
 	}
@@ -778,7 +792,7 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 	
 	// 가맹점 등록
 	@Override
-	public int addFranchisee(Franchisee franchisee) {
+	public int addUnverifiedFranchisee(UnverifiedFranchisee unverifiedFranchisee){
 		// 가맹점 번호: "유형" + 숫자7자리
 		// 마지막 가맹점번호 저장
 		String seqNo = franchiseeMapper.selectFranchiseeSeq();
@@ -799,9 +813,9 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 		System.out.println("nextNo: " + nextNo);
 		
 		// 다음 가맹점 번호 객체에 저장
-		franchisee.setFranchiseeNo(nextNo);
+		unverifiedFranchisee.setFranchiseeNo(nextNo);
 		// 다음 가맹점 번호로 insert 수행
-		franchiseeMapper.insertFranchisee(franchisee);
+		franchiseeMapper.insertUnverifiedFranchisee(unverifiedFranchisee);
 		// 마지막 가맹점 번호 갱신
 		franchiseeMapper.updateFranchiseeSeq(nextNo);
 		return 0;
