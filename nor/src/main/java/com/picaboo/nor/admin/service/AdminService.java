@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.picaboo.nor.admin.vo.AdminFAQ;
 import com.picaboo.nor.admin.vo.AdminQnA;
-import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
+import com.picaboo.nor.admin.vo.FeedBack;
 
 public interface AdminService {
 	// 가맹점 신청완료
@@ -23,4 +23,11 @@ public interface AdminService {
 	public AdminQnA getQnAOne(int qnaNo); 
 	// QnA 리스트 조회
 	public Map<String, Object> getAdminQnA(int currentPage, int rowPerPage);
+	
+	// FeedBack 등록
+	public int addFeedBack(FeedBack feedBack);
+	// FeedBack 리스트 조회
+	public Map<String, Object> getFeedBackBoardList(int currentPage, int rowPerPage);
+	// FeedBack 상세 조회
+	public FeedBack getFeedBackBoardListOne(int feedBackBoardNo);
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Add FeedBack</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+<style>
+	#logo{
+		text-align: center;
+		height:170px;
+	}
+	
+	.gradation{
+        background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+    }
+</style>
+</head>
+<body>
+	<div id="logo" >
+		<img src="/loginimage/logo.jpg">
+	</div>	
+	<!-- 메뉴바 -->
+	<div th:include="/part/customerNav::befornav" class="gradation"></div>
+  
+	<!-- Page Content -->
+	<div class="container">
+	<h4>FeedBack</h4>
+	<form action="/addFeedBack" class="was-validated" method="post">  
+		<div class="form-group">
+			<label for="feedBackBoardTitle">FeedBack_Title:</label> 
+			<input type="text" class="form-control" id="feedBackBoardTitle" placeholder="Enter qnaTitle" name="feedBackBoardTitle" required>
+			<div class="valid-feedback">입력완료.</div>
+			<div class="invalid-feedback">제목을 입력해주세요.</div>
+		</div>
+		<div class="form-group">
+			<label for="feedBackBoardContent">FeedBack_Content:</label> 
+			<textarea class="form-control" cols="50" rows="10" id="feedBackBoardContent" name="feedBackBoardContent" required></textarea>
+			<div class="valid-feedback">입력완료.</div>
+			<div class="invalid-feedback">내용을 입력해주세요.</div>
+		</div>
+		<button id="addButton" type="submit" class="btn btn-primary">입력</button>	
+	</form>
+	</div>
+  <!-- Footer -->
+  <div th:include="/part/customerNav::copyright" class="gradation"></div>
+</body>
+
+</html>
