@@ -20,6 +20,8 @@ public interface FranchiseeService {
 	//QnA디테일	
 	public List<FranchiseeQnA> getQnaDetail(int qnaNo);
 	// 좌석예약 취소
+	public int cancelSeatReservation(SeatReservationList seatReservationList);
+	// 좌석예약 확인
 	public int delSeatReservation(SeatReservationList seatReservationList);
 	// 좌석 리스트 확인 서비스
 	public List<SeatReservationList> getSeatReservationList(String franchiseeNo);	

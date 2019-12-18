@@ -63,7 +63,8 @@
 			   <td th:text="${list.customerName}"></td>
 			   <td th:text="${list.reservationDate}"></td>
 			   <td class="col-md-3 col-sm-6 mb-4">
-	      	   <a href="#" th:href="@{/delSeatReservation?(franchiseeNo=${list.franchiseeNo},seatNo=${list.seatNo})}" class="btn btn-primary">삭제</a>
+	      	   <a href="#" th:href="@{/delSeatReservation?(franchiseeNo=${list.franchiseeNo},seatNo=${list.seatNo})}" class="btn btn-primary">확인</a>
+	    	   <a href="#" th:href="@{/cancelSeatReservation?(franchiseeNo=${list.franchiseeNo},seatNo=${list.seatNo})}" class="btn btn-primary">취소</a>
 	    	   </td>
 			</tr>
 		</table>

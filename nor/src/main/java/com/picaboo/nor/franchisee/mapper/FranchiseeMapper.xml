@@ -4,6 +4,68 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+
+	<!-- seat 테이블에 use를 UPDATE 수행 Y로 업데이트  -->
+	<update id="cancelUpdateSeatReservation" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
+	<![CDATA[
+		UPDATE seat
+		SET 
+		seat_use = 'N'
+		WHERE franchisee_no = #{franchiseeNo} AND seat_no = #{seatNo}
+	]]>
+	</update>
+	
+	<!-- del_seat_reservation 테이블에 INSERT 수행  -->
+	<insert id="cancelInsertSeatReservation" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
+	<![CDATA[
+		INSERT INTO cancel_seat_reservation
+			(
+			franchisee_no,
+			seat_no,
+			customer_no,
+			customer_name,
+			reservation_date)
+		SELECT 
+			franchisee_no,
+			seat_no,
+			customer_no,
+			customer_name,
+			reservation_date
+		FROM seat_reservation
+		WHERE seat_no = #{seatNo}
+	]]>
+	</insert>
+	<!-- seat 테이블에 use를 UPDATE 수행 Y로 업데이트  -->
+	<update id="updateSeatReservation" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
+	<![CDATA[
+		UPDATE seat
+		SET 
+		seat_use = 'Y'
+		WHERE franchisee_no = #{franchiseeNo} AND seat_no = #{seatNo}
+	]]>
+	</update>
+	
+	<!-- del_seat_reservation 테이블에 INSERT 수행  -->
+	<insert id="insertSeatReservation" parameterType="com.picaboo.nor.franchisee.vo.FranchiseeQnA">
+	<![CDATA[
+		INSERT INTO del_seat_reservation
+			(
+			franchisee_no,
+			seat_no,
+			customer_no,
+			customer_name,
+			reservation_date)
+		SELECT 
+			franchisee_no,
+			seat_no,
+			customer_no,
+			customer_name,
+			reservation_date
+		FROM seat_reservation
+		WHERE seat_no = #{seatNo}
+	]]>
+	</insert>
+	
 	<!-- QnA 상세보기 -->
 	<select id="selectQnaDetail" resultType="com.picaboo.nor.franchisee.vo.FranchiseeQnA" parameterType="int">
 	<![CDATA[
