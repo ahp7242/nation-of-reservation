@@ -40,6 +40,10 @@ import com.picaboo.nor.membership.vo.Address;
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	//QnA디테일	
+	public List<FranchiseeQnA> getQnaDetail(int qnaNo) {
+		return franchiseeMapper.selectQnaDetail(qnaNo);
+	}	
 	// 좌석 예약 취소
 	@Override
 	public int delSeatReservation(SeatReservationList seatReservationList) {

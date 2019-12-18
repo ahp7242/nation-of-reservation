@@ -4,6 +4,25 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.franchisee.mapper.FranchiseeMapper">
+	<!-- QnA 상세보기 -->
+	<select id="selectQnaDetail" resultType="com.picaboo.nor.franchisee.vo.FranchiseeQnA" parameterType="int">
+	<![CDATA[
+		
+		SELECT 
+			customer_no as customerNo,
+			qna_type as qnaType,
+			qna_title as qnaTitle,
+			qna_question as qnaQuestion,
+			qna_answer as qnaAnswer,
+			qna_date as qnaDate,
+			customer_mail as customerMail
+			
+		FROM franchisee_qna
+		WHERE qna_no = #{qnaNo}
+		
+	]]>   
+	</select>
+	
 	<!-- 주소 입력 -->
 	<insert id="insertAddress" parameterType="com.picaboo.nor.membership.vo.Address" useGeneratedKeys="true" keyProperty="addressNo">
 	<![CDATA[

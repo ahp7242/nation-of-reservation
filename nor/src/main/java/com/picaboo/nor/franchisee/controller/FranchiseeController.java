@@ -30,6 +30,26 @@ import com.picaboo.nor.franchisee.vo.TotalStatement;
 @Controller
 public class FranchiseeController {
 	@Autowired FranchiseeService franchiseeService;
+	
+	//QnA디테일
+	@GetMapping("/QnAFranchiseeDetail")
+    public String QnAFranchiseeDetail(HttpSession session,
+    									Model model,
+    									@RequestParam(value="qnaNo") int qnaNo) {
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		System.out.println("a"+qnaNo);
+		List<FranchiseeQnA> franchiseeQnAselect = franchiseeService.getQnaDetail(qnaNo);
+		
+		System.out.println(franchiseeQnAselect);
+		model.addAttribute("franchiseeQnAselect",franchiseeQnAselect);
+		
+        return "franchisee/QnAFranchiseeDetail";
+	}	
+	
 	// 좌석 예약 리스트 삭제
 	@GetMapping("/delSeatReservation")
     public String delSeatReservation(HttpSession session, 

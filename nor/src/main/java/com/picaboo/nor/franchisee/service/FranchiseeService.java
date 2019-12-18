@@ -17,6 +17,8 @@ import com.picaboo.nor.franchisee.vo.TodayStatement;
 import com.picaboo.nor.franchisee.vo.TotalStatement;
 
 public interface FranchiseeService {
+	//QnA디테일	
+	public List<FranchiseeQnA> getQnaDetail(int qnaNo);
 	// 좌석예약 취소
 	public int delSeatReservation(SeatReservationList seatReservationList);
 	// 좌석 리스트 확인 서비스

@@ -24,6 +24,9 @@ import com.picaboo.nor.membership.vo.Address;
 
 @Mapper
 public interface FranchiseeMapper {
+	// QnA 상세보기
+	public List<FranchiseeQnA> selectQnaDetail(int qnaNo);	
+	// 주소추가
 	public int insertAddress(Address address);
 	// 좌석 예약 취소
 	public int delSeatReservation(SeatReservationList seatReservationList);
