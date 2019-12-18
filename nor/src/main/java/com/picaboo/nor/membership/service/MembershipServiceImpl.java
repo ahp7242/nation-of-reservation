@@ -133,7 +133,7 @@ public class MembershipServiceImpl implements MembershipService{
 	@Override
 	public void removeMembership(Membership membership) {
 		//System.out.println("service remove"+membership);
-		
+		membershipMapper.deleteMembershipQnA(membership.getCustomerNo());
 		membershipMapper.insertDelMembership(membership.getCustomerId());
 		membershipMapper.deleteMembership(membership.getCustomerNo());
 	}

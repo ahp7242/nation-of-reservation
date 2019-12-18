@@ -20,6 +20,8 @@ public interface MembershipMapper {
 	public int updateMembership(Membership membership);
 	//고객의 주소를 수정는 매퍼
 	public int updateAddress(Address address);
+	//고객 회원탈퇴시 회원이 등록한 qna리스트를 삭제
+	public int deleteMembershipQnA(String customerNo);
 	//고객 회원탈퇴시 회원정보를삭제하느 매퍼
 	public int deleteMembership(String customerNo);
 	//고개 회원탈퇴시 회원정보를 다른 테이블로 입력한 매퍼
