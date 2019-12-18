@@ -207,6 +207,21 @@ public class FranchiseeController {
 		
         return "redirect:/foodReservationList";
 	}
+	// 음식 예약 리스트 삭제
+	@GetMapping("/cancelFoodReservation")
+    public String cancelFoodReservation(HttpSession session, @RequestParam(value="reservationNo") int reservationNo) {
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		franchiseeService.cancelFoodReservation(reservationNo);
+		System.out.println("삭제 번호"+reservationNo);
+		
+        return "redirect:/foodReservationList";
+	}
+	
+	
 	
 	// 음식 예약 리스트 확인
 	@GetMapping("/foodReservationList")

@@ -79,12 +79,57 @@ public class AdminController {
 		return "admin/FAQAdmin";
 	}
 		
+	//QnA 답변 post요청 고객쪽0
+	@PostMapping("/QnAUpdateCustomer")
+	public String modifyQnACustomer(AdminQnA adminQnA) {
+		System.out.println("수정후 " + adminQnA);
+		adminService.modifyQnACustomer(adminQnA);
+		return "redirect:/QnAListCustomer";
+	}
+		
+	// QnA 상세 페이지 요청 고객쪽1
+	@GetMapping("/QnADetailCustomer")
+	public String detailQnACustomer(HttpSession session, @RequestParam(value="qnaNo") int qnaNo, Model model) {	
+		//System.out.println("QnADetail Get 요청");
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		// 가맹점 좌석정보 가져와서 넘김
+		AdminQnA adminQnA = adminService.getQnAOneCustomer(qnaNo);
+		
+		model.addAttribute("adminQnA", adminQnA);
+
+		return "admin/QnADetailCustomer";
+	}
+		
+	// QnA 리스트 페이지 고객쪽3
+	@GetMapping("/QnAListCustomer")
+	public String getQnAListCustomer(HttpSession session, Model model, 
+								@RequestParam(value="currentPage", defaultValue="1") int currentPage
+								){
+		// 세션 검사
+		String ownerNo = (String)session.getAttribute("memberNo");
+		if (ownerNo == null) {
+			return "redirect:/";
+		}
+		//System.out.println("currentPage : " + currentPage);
+		int rowPerPage = 10;
+		Map<String, Object> map = adminService.getAdminQnACustomer(currentPage, rowPerPage);
+		model.addAttribute("map", map);
+		//System.out.println("map : " + map);
+		//System.out.println("map list: " + map.get("list"));
+		return "admin/QnAListCustomer";
+	}	
+	
+	
 	//QnA 답변 post요청
 	@PostMapping("/QnAUpdate")
 	public String modifyQnA(AdminQnA adminQnA) {
 		System.out.println("수정후 " + adminQnA);
 		adminService.modifyQnA(adminQnA);
-		return "redirect:/QnAList";
+		return "redirect:/QnAListCustomer";
 	}
 		
 	// QnA 상세 페이지 요청

@@ -4,6 +4,58 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.picaboo.nor.admin.mapper.AdminMapper">
+<!-- QnA 상세정보를 수정하는 매퍼 1고객 -->
+	<update id="updateQnACustomer" parameterType="com.picaboo.nor.admin.vo.AdminQnA">
+	<![CDATA[
+	  UPDATE customer_qna SET 
+	     qna_answer = #{qnaAnswer}
+	  WHERE 
+	     qna_no = #{qnaNo}
+	]]>
+	</update>
+	<!-- QnA 상세정보 조회 2고객-->
+	<select id="selectQnAOneCustomer" parameterType="int" resultType="com.picaboo.nor.admin.vo.AdminQnA">
+	<![CDATA[
+	   SELECT 
+	    qna_no as qnaNo,
+		customer_no as customerNo,
+		qna_type as qnaType,
+		qna_title as qnaTitle,
+		qna_question as qnaQuestion,
+		qna_answer as qnaAnswer,
+		qna_date as qnaDate,
+		customer_mail as customerMail
+	   FROM customer_qna
+	   WHERE qna_no = #{qnaNo}
+	]]>   
+	</select>
+	
+	<!-- QnA 카운트 조회 3고객-->
+	<select id="selectAdminQnACountCustomer" resultType="int" parameterType="string">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM customer_qna
+	]]>	
+	</select>
+   
+	<!-- QnA 리스트 출력 4고객-->
+	<select id="selectAdminQnACustomer"
+	      resultType="com.picaboo.nor.admin.vo.AdminQnA"
+	      parameterType="com.picaboo.nor.admin.vo.AdminQnAPage">
+	<![CDATA[
+	   SELECT 
+		qna_no as qnaNo,
+		customer_no as customerNo,
+		qna_type as qnaType,
+		qna_title as qnaTitle,
+		qna_question as qnaQuestion,
+		qna_answer as qnaAnswer,
+		qna_date as qnaDate
+	   FROM customer_qna
+	   LIMIT #{beginRow}, #{rowPerPage}
+	   ]]>
+	</select>	
+
 	<!-- 가맹점 등록 -->
 	<insert id="insertFranchisee" parameterType="string">
 	<![CDATA[

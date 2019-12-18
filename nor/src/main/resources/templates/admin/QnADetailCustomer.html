@@ -72,12 +72,13 @@
   <!-- Page Content -->
    <div class="container jumbotron my-4">
    <h4>QnA 답변</h4>
-      <form action="/QnAUpdate" method="post" >
+      <form action="/QnAUpdateCustomer" method="post" >
          <input type="hidden" th:value="${adminQnA.qnaNo}" name="qnaNo" id="qnaNo">
          <input type="hidden" th:value="${adminQnA.customerNo}" name="customerNo" id="customerNo">
          <input type="hidden" th:value="${adminQnA.qnaType}" name="qnaType" id="qnaType">
          <input type="hidden" th:value="${adminQnA.qnaDate}" name="qnaDate" id="qnaDate">
          <input type="hidden" th:value="${adminQnA.customerMail}" name="customerMail" id="customerMail">
+         
          <div class="form-group">
             <label class="form-control" th:text="${adminQnA.qnaTitle}" id="qnaTitle" name="qnaTitle" readonly="readonly">QnA_Title:</label> 
          </div>

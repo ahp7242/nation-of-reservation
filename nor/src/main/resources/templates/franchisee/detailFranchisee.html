@@ -42,6 +42,54 @@
 		::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
 		width:16px;height:16px;background:#4C4C4C;} 
 	
+
+  height:100%;
+}
+body{
+  text-align:center;
+}
+body:before{
+  content:'';
+  height:100%;
+  display:inline-block;
+  vertical-align:middle;
+}
+button{
+  background:#2478FF;
+  color:#fff;
+  border:none;
+  position:relative;
+  height:38px;
+  font-size:0.9em;
+  padding:0 2em;
+  cursor:pointer;
+  transition:800ms ease all;
+  outline:none;
+}
+button:hover{
+  background:#fff;
+  color:#1AAB8A;
+}
+button:before,button:after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  height:2px;
+  width:0;
+  background: #1AAB8A;
+  transition:400ms ease all;
+}
+button:after{
+  right:inherit;
+  top:inherit;
+  left:0;
+  bottom:0;
+}
+button:hover:before,button:hover:after{
+  width:100%;
+  transition:800ms ease all;
+}
 </style>
 </head>
 
@@ -134,39 +182,42 @@
 	  <!-- 가맹점 관리 버튼 -->
 	  <h3 class="my-4">관리 메뉴</h3>
 	
-	  <div class="row">
+	  <div class="row" style="text-align:center">
 		
 			
-	    <div th:if="${seatSize<1}" class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${seatSize<1}" class="col-md-2 col-sm-5 mb-4">
 	      <a href="#" th:href="@{/addFranchiseeSeat?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">좌석 입력</a>
 	    </div>
 	
-		<div th:if="${seatSize>0}" class="col-md-3 col-sm-6 mb-4">
+		<div th:if="${seatSize>0}" class="col-md-2 col-sm-5 mb-4">
 	      <a href="#" th:href="@{/removeSeat?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">좌석 삭제</a>
 	    </div>
 	
-	    <div th:if="${franchiseeInfo.franchiseeSpec == null}" class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${franchiseeInfo.franchiseeSpec == null}" class="col-md-2 col-sm-5 mb-4">
 	      <a href="#" th:href="@{/addFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 정보 입력</a>
 	    </div>
 	
-	    <div th:if="${franchiseeInfo.franchiseeSpec != null}" class="col-md-3 col-sm-6 mb-4">
+	    <div th:if="${franchiseeInfo.franchiseeSpec != null}" class="col-md-2 col-sm-5 mb-4">
 	      <a href="#" th:href="@{/modifyFranchiseeInfo?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 정보 수정</a>
 	    </div>
 		
-		<div class="col-md-3 col-sm-6 mb-4">
+		<div class="col-md-2 col-sm-5 mb-4">
 	      <a href="#" th:href="@{/franchiseeFoodIndex?(franchiseeNo=${franchisee.franchiseeNo})}" class="btn btn-primary">가맹점 상품 관리</a>
 	    </div>
-		
-		<div class="col-md-3 col-sm-6 mb-4">
-		<button id="food" class="btn btn-primary" onclick="window.open('foodReservationList','window_name','width=780,height=600,location=no,status=no,scrollbars=yes');">음식주문 확인</button>
+
+		<div class="col-md-2 col-sm-5 mb-4">
+		<button id="food"  onclick="window.open('foodReservationList','window_name','width=780,height=600,location=no,status=no,scrollbars=yes');">음식주문 확인</button>
 	  	</div>
-	  </div>
-	  <div class="col-md-3 col-sm-6 mb-4">
-		<button id="seat" class="btn btn-primary" onclick="window.open('seatReservationList','window_name','width=780,height=600,location=no,status=no,scrollbars=yes');">좌석예약 확인</button>
+	  
+	  <div class="col-md-2 col-sm-5 mb-4">
+		<button id="seat"  onclick="window.open('seatReservationList','window_name','width=780,height=600,location=no,status=no,scrollbars=yes');">좌석예약 확인</button>
 	  	</div>
+	  	</div>
+	  	
 	  <!-- /.row -->
 	
-	</div>
+	 </div>
+	
   </div>
   <!-- /.container -->
   <!-- Footer -->

@@ -66,7 +66,8 @@
 			   <td th:text="${list.customerName}"></td>
 			   <td th:text="${list.reservationDate}"></td>
 			   <td class="col-md-3 col-sm-6 mb-4">
-	      	   <a href="#" th:href="@{/delFoodReservation?(reservationNo=${list.reservationNo})}" class="btn btn-primary">삭제</a>
+	      	   <a href="#" th:href="@{/delFoodReservation?(reservationNo=${list.reservationNo})}" class="btn btn-primary">완료</a>
+	      	   <a href="#" th:href="@{/cancelFoodReservation?(reservationNo=${list.reservationNo})}" class="btn btn-primary">주문취소</a>
 	    	   </td>
 			</tr>
 			

@@ -250,13 +250,14 @@
 	<![CDATA[
 		INSERT INTO del_food_reservation
 			(
+			food_reservation_no,
 			food_no,
 			reservation_count,
 			reservation_date,
 			customer_no,
 			customer_name)
 		SELECT 
-
+			food_reservation_no,
 			food_no,
 			reservation_count,
 			reservation_date,
@@ -264,7 +265,7 @@
 			customer_name
 		FROM food_reservation
 		
-		WHERE reservation_no = #{reservationNo}
+		WHERE food_reservation_no = #{reservationNo}
 	]]>
 	</insert>
 	
@@ -273,10 +274,43 @@
     <![CDATA[
       DELETE
 		FROM food_reservation
-		WHERE reservation_no = #{reservationNo}
+		WHERE food_reservation_no = #{reservationNo}
     ]]>
     </delete>
-   
+    
+    <!--food 통계 계수 추가-->
+	<insert id="addFoodReservationCancel" parameterType="int">
+	<![CDATA[
+		INSERT INTO cancel_food_reservation
+			(
+			food_reservation_no,
+			food_no,
+			reservation_count,
+			reservation_date,
+			customer_no,
+			customer_name)
+		SELECT 
+			food_reservation_no,
+			food_no,
+			reservation_count,
+			reservation_date,
+			customer_no,
+			customer_name
+		FROM food_reservation
+		
+		WHERE food_reservation_no = #{reservationNo}
+	]]>
+	</insert>
+	
+	<!--주문취소 상품 삭제 -->
+	<delete id="delFoodReservationCancel" parameterType="int">
+    <![CDATA[
+      DELETE
+		FROM food_reservation
+		WHERE food_reservation_no = #{reservationNo}
+    ]]>
+    </delete>   
+    
 	<!-- 상품 예약 리스트 조회 -->
 	<select id="selectFoodReservationList" parameterType="string" resultType="com.picaboo.nor.franchisee.vo.FoodReservationList">
 	<![CDATA[

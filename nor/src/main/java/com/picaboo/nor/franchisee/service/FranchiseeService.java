@@ -37,6 +37,8 @@ public interface FranchiseeService {
 	public Map<String, Object> getFranchiseeFoodOne(int foodNo);
 	// 가맹점 상품 삭제
 	public int removeFranchiseeFood(int foodNo);
+	// 주문취소
+	public int cancelFoodReservation(int reservationNo);	
 	// 주문완료 상품 삭제
 	public int delFoodReservation(int reservationNo);
 	// 음식 리스트 확인 서비스

@@ -15,6 +15,15 @@ import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
 
 @Mapper
 public interface AdminMapper {
+	
+	// QnA 를수정하는 매퍼1 고객
+	public int updateQnACustomer(AdminQnA adminQnA);
+	// QnA 상세정보 조회2 고객
+	public AdminQnA selectQnAOneCustomer(int qnaNo);
+	// QnA 리스트 카운트 조회3 고객
+	public int selectAdminQnACountCustomer();
+	// QnA 리스트 출력4 고객
+	public List<AdminQnA> selectAdminQnACustomer(AdminQnAPage adminQnAPage);	
 	// 가맹점 신청완료
 	public int insertFranchisee(String franchiseeNo);
 	// 가맹점 신청완료후 삭제

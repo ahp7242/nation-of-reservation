@@ -17,6 +17,12 @@ public interface AdminService {
 	public int addFAQ(AdminFAQ adminFAQ);
 	// FAQ 리스트 조회
 	public Map<String, Object> getAdminFAQList(int currentPage, int rowPerPage, String searchWord);
+	//QnA 수정하는 서비스1고객
+	public int modifyQnACustomer(AdminQnA adminQnA);
+	// QnA 상세 조회2고객
+	public AdminQnA getQnAOneCustomer(int qnaNo); 
+	// QnA 리스트 조회3고객
+	public Map<String, Object> getAdminQnACustomer(int currentPage, int rowPerPage);
 	//QnA 수정하는 서비스
 	public int modifyQnA(AdminQnA adminQnA);
 	// QnA 상세 조회

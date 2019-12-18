@@ -1,38 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>QnA Index</title>
+  <title>Admin QnA Answerd</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
   <link href="css/heroic-features.css" rel="stylesheet">
-  <style>
-   .box {
-      height: 50px;
-      width: 50px;
-      text-align: center;
-      border: 1px solid black;
-      border-radius: 5px;
+<style>
+   .base {
+    padding: 5px;
+    border: 1px;
    }
    
-   .center {
-      text-align: center;
+   .preface {
+       padding-bottom: px;
+       background-color: #ff80aa;
+       border-bottom: 1px solid #d1d1d1;
    }
    
+   .content {
+       transition: max-height 0.2s ease-in-out;
+       background-color: #ffdb4d;
+       overflow: hidden;
+       max-height: 0;
+   }
+   
+   .expanded {
+       max-height: 2000px;
+   }
+
    ::-webkit-scrollbar{width: 16px;}
       ::-webkit-scrollbar-track {background-color:#4C4C4C;}
       ::-webkit-scrollbar-thumb {background-color:#6799FF;border-radius: 10px;}
       ::-webkit-scrollbar-thumb:hover {background: #555;}
       ::-webkit-scrollbar-button:start:decrement,::-webkit-scrollbar-button:end:increment {
       width:16px;height:16px;background:#4C4C4C;} 
-   
+
 </style>
 </head>
 
@@ -67,39 +78,55 @@
       </div>
     </div>
   </nav>
-  </div>
-  
-  <!-- Page Content -->
-   <div class="container jumbotron my-4">
-   <h4>QnA 답변</h4>
-      <form action="/QnAUpdate" method="post" >
-         <input type="hidden" th:value="${adminQnA.qnaNo}" name="qnaNo" id="qnaNo">
-         <input type="hidden" th:value="${adminQnA.customerNo}" name="customerNo" id="customerNo">
-         <input type="hidden" th:value="${adminQnA.qnaType}" name="qnaType" id="qnaType">
-         <input type="hidden" th:value="${adminQnA.qnaDate}" name="qnaDate" id="qnaDate">
-         <input type="hidden" th:value="${adminQnA.customerMail}" name="customerMail" id="customerMail">
-         <div class="form-group">
-            <label class="form-control" th:text="${adminQnA.qnaTitle}" id="qnaTitle" name="qnaTitle" readonly="readonly">QnA_Title:</label> 
-         </div>
-         <div class="form-group">
-            <label for="qnaContent">QnA_Question:</label>
-            <textarea class="form-control" th:text="${adminQnA.qnaQuestion}" cols="50" rows="10" id="qnaQuestion" name="qnaQuestion" readonly="readonly"></textarea>
-         </div>
-         <div class="form-group">
-            <label for="qnaAnswer">QnA_Answer:</label>
-            <textarea class="form-control" cols="50" rows="10" id="qnaAnswer" name="qnaAnswer"></textarea>
-         </div>
-         <button type="submit" id="addButton" class="btn btn-info">입력</button>
-      </form>
    </div>
-     
-  <div th:fragment="copyright">
-     <footer class="py-5 bg-dark">
+  <!-- /.container -->
+  <div class="container jumbotron my-4">
+   <div th:fragment="event">
+       <!-- 가맹점 목록 -->
+       <header class="jumbotron my-4">
+       <h3>QnA List</h3>
+      <div class="row text-center">
+         <div class="col-lg-3 col-md-6 mb-4"  th:each="str:${map.list}" th:if="${str.qnaAnswer == null}">
+      
+         <div class="card h-100"> 
+           <div class="card-body">
+               <h4 class="card-title" th:text="${str.customerNo}">customerNo</h4>
+             </div>
+             
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.qnaType}">qnaType</h4>
+             </div>
+             
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.qnaTitle}">qnaTitle</h4>
+             </div> 
+             
+             <div class="card-body">
+               <h4 class="card-title" th:text="${str.qnaDate}">qnaDate</h4>
+             </div>
+             
+             <div class="card-footer">
+               <a href="#" class="btn btn-primary" th:href="@{/QnADetailCustomer?(qnaNo=${str.qnaNo})}" th:text="답변입력하기">답변입력하기</a>
+           </div>
+         </div>
+   
+   </div>
+    </div>
+      <a th:if="${map.currentPage > 1}" th:href="@{/QnAListCustomer?(currentPage=${map.currentPage-1})}">이전</a>
+       <a th:if="${map.currentPage < map.lastPage}" th:href="@{/QnAListCustomer?(currentPage=${map.currentPage+1})}">다음</a>
+ 
+       </header>
+   </div>
+   </div>
+   <!-- Footer -->
+   <div th:fragment="copyright">
+      <footer class="py-5 bg-dark">
        <div class="container">
          <p class="m-0 text-center text-white">Copyright &copy; PICABOO 2019</p>
-       </div>
-     </footer>
-  </div>
-</body>
+        </div>
+        <!-- /.container -->
+       </footer>
+   </div>
 
+</body>
 </html>

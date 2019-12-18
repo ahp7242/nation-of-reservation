@@ -254,9 +254,16 @@ public class FranchiseeServiceImpl implements FranchiseeService{
 	@Override
 	public int delFoodReservation(int reservationNo) {
 		franchiseeMapper.addFoodReservation(reservationNo);
-
 		return franchiseeMapper.delFoodReservation(reservationNo);
 	}
+	// 주문취소
+	@Override
+	public int cancelFoodReservation(int reservationNo) {
+		franchiseeMapper.addFoodReservationCancel(reservationNo);
+		return franchiseeMapper.delFoodReservationCancel(reservationNo);
+	}	
+	
+	
 	// 음식 주문 서비스 확인
 	public List<FoodReservationList> getFoodReservationList(String franchiseeNo) {
 		System.out.println("service Impl :  " + franchiseeNo);

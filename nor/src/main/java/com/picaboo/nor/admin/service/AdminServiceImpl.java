@@ -27,6 +27,64 @@ public class AdminServiceImpl implements AdminService{
 	@Autowired AdminMapper adminMapper;
 	@Autowired JavaMailSender javaMailSender;
 	
+	// admin 답변기능
+	@Override
+	public int modifyQnACustomer(AdminQnA adminQnA) {
+		String email = adminQnA.getCustomerMail();
+		String text = adminQnA.getQnaAnswer();
+
+		System.out.println("service IMPL EMAI:  "+email);
+		System.out.println("service IMPL TEXT:  "+text);
+		if(email.length() > 10) {
+			SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+				simpleMailMessage.setTo(email);
+				simpleMailMessage.setFrom("kuooeee@gmail.com");
+				simpleMailMessage.setSubject("PI-KA-BOO 문의하신 답변내용이 전달되었습니다.");
+				simpleMailMessage.setText(text);
+				javaMailSender.send(simpleMailMessage);
+		}
+		return adminMapper.updateQnACustomer(adminQnA);
+	}
+	
+	// QnA 상세정보 조회
+	@Override
+	public AdminQnA getQnAOneCustomer(int qnaNo) {
+		System.out.println("ServiceImpl.getFranchiseeOne franchiseeNo: " + qnaNo);
+		return adminMapper.selectQnAOneCustomer(qnaNo);
+	}
+		
+	// QnA 리스트 조회
+	@Override
+	public Map<String, Object> getAdminQnACustomer(int currentPage, int rowPerPage) {
+		
+		// 페이징 코드
+		// Mapper로 페이징 정보를 넘기기 위해 VO에 값 저장
+		AdminQnAPage adminQnAPage = new AdminQnAPage();
+		adminQnAPage.setRowPerPage(rowPerPage);
+		adminQnAPage.setBeginRow((currentPage-1)*rowPerPage);
+		
+		List<AdminQnA> qnaList = adminMapper.selectAdminQnACustomer(adminQnAPage);
+		System.out.println("serviceImpl List: "+qnaList);
+		
+		// 페이징 버튼을 위한 마지막 페이지 계산
+		int totalRowCount = adminMapper.selectAdminQnACountCustomer();
+		int lastPage = 0;
+		if(totalRowCount % rowPerPage == 0) {
+			lastPage = totalRowCount / rowPerPage;
+		} else {
+			lastPage = totalRowCount / rowPerPage + 1;
+		}
+		
+		// 페이징한 리스트와 현재 페이지 정보를 맵에 저장하여 리턴
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", qnaList);
+		map.put("currentPage", currentPage);
+		map.put("totalRowCount", totalRowCount);
+		map.put("lastPage", lastPage);
+			return map;
+		}	
+	
+	
 	//가맹점 신청 완료
 	@Override
 	public int addFranchisee(String franchiseeNo) {	

@@ -59,6 +59,10 @@ public interface FranchiseeMapper {
 	// 가맹점 상품 삭제
 	public int deletefranchiseeFood(int foodNo);
 	// food 통계 계수 추가
+	public int addFoodReservationCancel(int reservationNo);
+	// 주문취소
+	public int delFoodReservationCancel(int reservationNo);
+	// food 통계 계수 추가
 	public int addFoodReservation(int reservationNo);
 	// 주문완료 음식 삭제
 	public int delFoodReservation(int reservationNo);
