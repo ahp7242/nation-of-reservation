@@ -168,4 +168,56 @@
 	   LIMIT #{beginRow}, #{rowPerPage}
 	   ]]>
 	</select>
+	
+	<!-- FeedBack 등록 -->
+	<insert id="insertFeedBack" parameterType="com.picaboo.nor.admin.vo.FeedBack">
+		<![CDATA[
+			INSERT INTO feedback( 
+				feedback_board_title,
+				feedback_board_content,
+				feedback_board_date
+			) VALUES (			
+				#{feedBackBoardTitle},
+				#{feedBackBoardContent},
+				NOW()
+			)		
+		]]>
+	</insert>
+	
+	<!-- FeedBack 리스트 출력 -->
+	<select id="selectFeedBackBoardList"
+			resultType="com.picaboo.nor.admin.vo.FeedBack"
+			parameterType="com.picaboo.nor.admin.vo.FeedBackPage">
+		<![CDATA[
+			SELECT
+				feedback_board_no as feedBackBoardNo, 
+				feedback_board_title as feedBackBoardTitle, 
+				feedback_board_content as feedBackBoardContent,
+				feedback_board_date as feedBackBoardDate
+			FROM feedback
+			ORDER BY feedback_board_date DESC
+			LIMIT #{beginRow}, #{rowPerPage}
+		]]>
+	</select>
+	
+	<!-- FeedBack 카운트 조회 -->
+	<select id="selectFeedBackBoardListCount" resultType="int" parameterType="string">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM feedback
+	]]>	
+	</select>
+	
+	<!-- FeedBack 리스트 상세정보 조회 -->
+	<select id="selectFeedBackBoardListOne" parameterType="int" resultType="com.picaboo.nor.admin.vo.FeedBack">
+		<![CDATA[
+			SELECT 
+				feedback_board_no as feedBackBoardNo, 
+				feedback_board_title as feedBackBoardTitle, 
+				feedback_board_content as feedBackBoardContent,
+				feedback_board_date as feedBackBoardDate
+			FROM feedback
+			WHERE feedback_board_no = #{feedBackBoardNo}
+		]]>   
+	</select>
 </mapper>

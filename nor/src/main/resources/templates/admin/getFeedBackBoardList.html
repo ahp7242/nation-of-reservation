@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Feed Back List</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+<style>
+	#logo{
+		text-align: center;
+		height:170px;
+	}
+	
+	.gradation{
+        background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+    }
+    
+    .jumbotron{
+        background-color: #FBEFF5;
+    }
+</style>
+</head>
+<body>
+	<div id="logo" >
+		<img src="/loginimage/logo.jpg">
+	</div>	
+	<!-- 메뉴바 -->
+	<div th:include="/part/customerNav::befornav" class="gradation"></div>
+	
+	<!-- list -->
+	<div class="container jumbotron">
+	<h1>Feed Back List</h1>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>BoardNo</th>
+					<th>BoardTitle</th>
+					<th>BoardDate</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="str:${map.list}">
+					<td th:text="${str.feedBackBoardNo}"></td>
+					<td><a th:href="@{/detailFeedBack?(feedBackBoardNo=${str.feedBackBoardNo})}" th:text="${str.feedBackBoardTitle}"></a></td>
+					<td th:text="${str.feedBackBoardDate}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<a href="/addFeedBack" class="btn btn-primary">AddFeedBack</a>
+		<br>
+		<!-- 페이징 -->
+		<div class="previous"><a th:if="${map.currentPage > 1}" th:href="@{/getFeedBackBoardList?(currentPage=${map.currentPage-1})}" class="btn btn-active">이전</a></div>
+		<div class="previous"><a th:if="${map.currentPage < map.lastPage}" th:href="@{/getFeedBackBoardList?(currentPage=${map.currentPage+1})}" class="btn btn-active">다음</a></div>
+	</div>	
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
+</body>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</html>

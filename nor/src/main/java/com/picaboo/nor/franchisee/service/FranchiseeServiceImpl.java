@@ -40,9 +40,25 @@ import com.picaboo.nor.membership.vo.Address;
 @Transactional
 public class FranchiseeServiceImpl implements FranchiseeService{
 	@Autowired FranchiseeMapper franchiseeMapper;
+	// QnA디테일	
+	public List<FranchiseeQnA> getQnaDetail(int qnaNo) {
+		return franchiseeMapper.selectQnaDetail(qnaNo);
+	}	
 	// 좌석 예약 취소
 	@Override
+	public int cancelSeatReservation(SeatReservationList seatReservationList) {
+		franchiseeMapper.cancelInsertSeatReservation(seatReservationList);
+	    franchiseeMapper.cancelUpdateSeatReservation(seatReservationList);	
+		return franchiseeMapper.delSeatReservation(seatReservationList);
+	}	
+	// 좌석 예약 확인
+	@Override
 	public int delSeatReservation(SeatReservationList seatReservationList) {
+		 // 1. del_seat_reservation 테이블에 INSERT 수행 
+		franchiseeMapper.insertSeatReservation(seatReservationList);
+	    // 3. seat 테이블에 use를 UPDATE 수행 Y로 업데이트
+	    franchiseeMapper.updateSeatReservation(seatReservationList);
+	    
 		return franchiseeMapper.delSeatReservation(seatReservationList);
 	}
 	// 좌석 예약 서비스 확인

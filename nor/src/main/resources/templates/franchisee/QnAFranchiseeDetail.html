@@ -73,59 +73,30 @@
    </nav>
   </div>
   
-  <!-- 수정가능 테이블 -->
-  <div class="container">
-  	<div class="low">
-	<form action="/modifyFranchiseeOwner" method="post">
-		<table class="table table-boardered">
-			<tr>
-				<th>아이디</th>
-				<td><input type="text" name="customerId" class="form-control" th:value="${franchiseeNo}" th:placeholder="${franchiseeOwner.customerId}" readonly="readonly" ></td>
-			</tr>
-			<tr>
-				<th>이름</th>
-				<td><input type="text" name="customerName" class="form-control" th:value="${franchiseeOwner.customerName}"></td>
-			</tr>
-			<tr>
-				<th>생일</th>
-				<td><input type="date" name="customerBirth" class="form-control" th:value="${franchiseeOwner.customerBirth}" readonly="readonly"></td>
-			</tr>
-			<tr>
-				<th>이메일</th>
-				<td><input type="email" name="customerEmail" class="form-control" th:value="${franchiseeOwner.customerEmail}"></td>
-			</tr>
-			<tr>
-				<th>번호</th>
-				<td><input type="text" name="customerPhone" class="form-control" th:value="${franchiseeOwner.customerPhone}"></td>
-			</tr>
-		</table>
-		<button type="submit" class="btn btn-primary" id="modifyFranchiseeMypage">수정</button>
-	</form>
+	<div class="container" style="padding: 10px;">
+	<div th:each="list:${franchiseeQnAselect}">
+	
+		<h4>QnA</h4>
+		<div class="form-group">
+			<label>QnA_Category</label> 
+			<input type="text" th:value="${list.qnaType}" class="form-control" readonly="readonly">
+		</div>
+		
+		<div class="form-group">
+			<label for="qnaTitle">QnA_Title:</label> 
+			<input type="text" th:value="${list.qnaTitle}" class="form-control" readonly="readonly">
+		</div>
+		<div class="form-group">
+			<label for="qnaContent">QnA_Content:</label>
+			<textarea th:text="${list.qnaQuestion}" class="form-control" cols="50" rows="10" name="qnaQuestion" readonly="readonly"></textarea>
+		</div>
+		<div class="form-group" th:if="${list.qnaAnswer} != null">
+			<label for="qnaContent">QnA_Answer:</label>
+			<textarea th:text="${list.qnaAnswer}" class="form-control" cols="50" rows="1" name="qnaQuestion" readonly="readonly"></textarea>
+		</div>
+	</div>
 	</div>
 
-	<header class="jumbotron my-4">
-	<div class="container" style="padding: 10px;">
-		<h3>QnA 리스트</h3>
-		<hr>
-		<div class="row text-center">
-			<div class="col-lg-3 col-md-6 mb-4" th:each="list:${franchiseeQnaList}">
-				<div class="card h-100 zoom">
-					<div class="card-body">
-						<h4 class="card-title" id="qnaNo" th:text="${list.qnaNo}" hidden="hidden"></h4>
-						<h4 class="card-title" th:text="${list.qnaTitle}"></h4>
-						<h4 class="card-title" th:text="${list.qnaType}"></h4>
-						<h4 class="card-title" th:text="${list.qnaDate}"></h4>
-						<h6 th:if="${list.qnaAnswer} == null" class="card-title text-danger" th:text="답변대기"></h6>
-						<h6 th:unless="${list.qnaAnswer} == null" class="card-title text-primary" th:text="답변완료"></h6>
-					</div>
-				</div>
-			</div>
-		</div>
-		<hr>
-	</div>
-	    
-    </header>
-  </div>
   <!-- Footer -->
   <div th:fragment="copyright">
 	  <footer class="py-5 bg-dark">
@@ -138,21 +109,6 @@
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script>
-	$("#modifyFranchiseeMypage").click(function(){
-	 alert("수정이 완료되었습니다.");
-	});
-	
-	$(document).ready(function(){
-		$(".zoom").on("click",function(){
-			let qnaNo = $(this).children().children("#qnaNo").text()
-			console.log(qnaNo)
-			$(location).attr('href',"/QnAFranchiseeDetail?qnaNo="+qnaNo);
-		})
-	})
-	
-  </script>
-	
 </body>
 
 </html>

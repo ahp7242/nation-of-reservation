@@ -9,6 +9,8 @@ import com.picaboo.nor.admin.vo.AdminFAQPage;
 import com.picaboo.nor.admin.vo.AdminPage;
 import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.admin.vo.AdminQnAPage;
+import com.picaboo.nor.admin.vo.FeedBack;
+import com.picaboo.nor.admin.vo.FeedBackPage;
 import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
 
 @Mapper
@@ -37,5 +39,13 @@ public interface AdminMapper {
 	public int selectAdminQnACount();
 	// QnA 리스트 출력
 	public List<AdminQnA> selectAdminQnA(AdminQnAPage adminQnAPage);
-
+	
+	// FeedBack 등록
+	public int insertFeedBack(FeedBack feedBack);
+	// FeedBack 리스트 출력
+	public List<FeedBack> selectFeedBackBoardList(FeedBackPage feedBackPage);
+	// FeedBack 리스트 카운트 조회
+	public int selectFeedBackBoardListCount();
+	// FeedBack 리스트 상세정보 조회
+	public FeedBack selectFeedBackBoardListOne(int feedBackBoardNo);
 }

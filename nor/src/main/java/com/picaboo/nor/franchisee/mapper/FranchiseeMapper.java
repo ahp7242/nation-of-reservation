@@ -24,6 +24,19 @@ import com.picaboo.nor.membership.vo.Address;
 
 @Mapper
 public interface FranchiseeMapper {
+    // cancel_seat_reservation 테이블에 INSERT 수행 
+	public int cancelInsertSeatReservation(SeatReservationList seatReservationList);
+    // seat 테이블에 use를 UPDATE 수행 N로 업데이트
+	public int cancelUpdateSeatReservation(SeatReservationList seatReservationList);	
+	// 좌석 예약 취소
+	public int cancelSeatReservation(SeatReservationList seatReservationList);	
+    // del_seat_reservation 테이블에 INSERT 수행 
+	public int insertSeatReservation(SeatReservationList seatReservationList);
+    // seat 테이블에 use를 UPDATE 수행 Y로 업데이트
+	public int updateSeatReservation(SeatReservationList seatReservationList);
+	// QnA 상세보기
+	public List<FranchiseeQnA> selectQnaDetail(int qnaNo);	
+	// 주소추가
 	public int insertAddress(Address address);
 	// 좌석 예약 취소
 	public int delSeatReservation(SeatReservationList seatReservationList);

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.constraints.Email;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +16,8 @@ import com.picaboo.nor.admin.vo.AdminFAQPage;
 import com.picaboo.nor.admin.vo.AdminPage;
 import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.admin.vo.AdminQnAPage;
+import com.picaboo.nor.admin.vo.FeedBack;
+import com.picaboo.nor.admin.vo.FeedBackPage;
 import com.picaboo.nor.admin.vo.UnverifiedFranchisee;
 
 
@@ -167,4 +167,48 @@ public class AdminServiceImpl implements AdminService{
 		map.put("lastPage", lastPage);
 			return map;
 		}
+	
+	// FeedBack 등록
+	@Override
+	public int addFeedBack(FeedBack feedBack) {
+		System.out.println(feedBack);
+		System.out.println("impl");
+		return adminMapper.insertFeedBack(feedBack);
+	}
+	
+	// FeedBack 리스트 조회
+	@Override
+	public Map<String, Object> getFeedBackBoardList(int currentPage, int rowPerPage) {
+		// 페이징
+		FeedBackPage feedBackPage = new FeedBackPage();
+		feedBackPage.setRowPerPage(rowPerPage);
+		feedBackPage.setBeginRow((currentPage-1)*rowPerPage);
+		
+		List<FeedBack> feedBackBoardList = adminMapper.selectFeedBackBoardList(feedBackPage);
+		System.out.println("serviceImpl List : " + feedBackBoardList);
+		
+		// 페이징 처음 마지막 계산
+		int totalRowCount = adminMapper.selectFeedBackBoardListCount();
+		int lastPage = 0;
+		if(totalRowCount % rowPerPage == 0) {
+			lastPage = totalRowCount / rowPerPage;
+		} else {
+			lastPage = totalRowCount / rowPerPage + 1;
+		}
+		// 페이징한 리스트와 현재 페이지 정보를 맵에 저장하여 리턴
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", feedBackBoardList);
+		map.put("currentPage", currentPage);
+		map.put("totalRowCount", totalRowCount);
+		map.put("lastPage", lastPage);
+		
+		return map;
+	}
+	
+	// FeedBack 상세정보 조회
+	@Override
+	public FeedBack getFeedBackBoardListOne(int feedBackBoardNo) {
+		System.out.println("ServiceImpl.getFeedBackBoardListOne feedBackBoardNo: " + feedBackBoardNo);
+		return adminMapper.selectFeedBackBoardListOne(feedBackBoardNo);
+	}
 }
