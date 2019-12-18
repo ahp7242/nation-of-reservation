@@ -128,21 +128,14 @@
 				html += "<h4 class='card-title'>";
 				html += item.franchiseeName;
 				html += "</h4>";
-				html += "<div class='spec dropdown'><p class='card-text'>spec</p>";
-				html += "<div class='dropdown-content' id='spec";
+				html += "<div class='spec dropdown'><p class='card-text'>사양</p>";
+				html += "<div class='dropdown-content' id='사양";
 				html += index;
-				html += "'></div>"
-				html += "</div>";
-				html += "</div>";
+				html += "'></div> </div> </div>";
 				html += "<div class='card-footer'>";
 				html += "<a href='/selectCustomerSeat?franchiseeNo="
 				html += item.franchiseeNo;
-				html += "' class='btn btn-primary'>";
-				html += "상세";
-				html += "</a>";
-				html += "</div>";
-				html += "</div>";
-				html += "</div>";
+				html += "' class='btn btn-primary'> 상세 보기 </a> </div> </div> </div>";
 			})
 			$("#main").append(html);
 			$(fpList).each(function(index,item){
