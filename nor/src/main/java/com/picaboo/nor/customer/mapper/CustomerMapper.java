@@ -2,6 +2,7 @@ package com.picaboo.nor.customer.mapper;
 
 import java.util.*;
 import org.apache.ibatis.annotations.Mapper;
+import com.picaboo.nor.admin.vo.*;
 import com.picaboo.nor.customer.vo.*;
 import com.picaboo.nor.franchisee.vo.*;
 
@@ -28,7 +29,7 @@ public interface CustomerMapper {
 	//선택된 프렌차이즈의 이미지를 가져옴
 	public List<FranchiseePic> selectFranchiseeThumbnailList(String franchiseeNo);
 	//선택된 프렌차이즈에 등록된 상품목록을 가져옴
-	public List<Food> selectFoodList(String franchiseeNo);
+	public List<FoodInfo> selectFoodList(String franchiseeNo);
 	//프렌차이즈의 스펙을 가져옴
 	public List<FranchiseeSpec> selectSpecList();
 	//예약한 상품을 데이터베이스에 저장
@@ -39,4 +40,16 @@ public interface CustomerMapper {
 	public void insertCancelFoodReservation(FoodReservation foodreservation);
 	//예약된 상품중 기간이 10분지난 목록을 예약 테이블에서 삭제
 	public void deleteFoodReservation(int reservationNo);
+	//로그인한 고객의 좌석 예약 기록의 카운트값을 가져옴
+	public List<MySeatReservationPer> selectMySeatReservationList(String customerNo);
+	//로그인한 고객의  상품 예약 기록의 카운트값을 가져옴
+	public List<MyFoodReservationPer> selectMyFoodReservationList(Franchisee franchisee);
+	//로그인한 고객의 총 상품 주문 금액 가져옴
+	public List<TotalPrice> selectCustomerTotalPrice(String customerNo);
+	//로그인한 고객의 답변이 달리지 않은 qna리스트를 가져옴
+	public List<CustomerQnA> selectCustomerQnAList(String customerNo);
+	//로그인한 고객작성한 qna 등록 
+	public int insertCustomerQnA(CustomerQnA customerQnA);
+	//1개의 qna내용을 가져옴
+	public CustomerQnA selectCustomerQnAOne(int qnaNo);
 }

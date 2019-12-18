@@ -3,7 +3,6 @@ package com.picaboo.nor.membership.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import com.picaboo.nor.membership.mapper.MembershipMapper;
 import com.picaboo.nor.membership.vo.Address;
@@ -16,13 +15,6 @@ import com.picaboo.nor.membership.vo.SignForm;
 @Transactional
 public class MembershipServiceImpl implements MembershipService{
 	@Autowired private MembershipMapper membershipMapper;
-	
-	/*
-	 * //회원가입시 주소를 입력하는 서비스
-	 * 
-	 * @Override public int addAddress(Address address) { return
-	 * membershipMapper.insertAddress(address); }
-	 */
 	
 	//회원가입정보를 입력하는 서비스
 	@Override
@@ -85,16 +77,56 @@ public class MembershipServiceImpl implements MembershipService{
 	
 	//회원의 상세정보를 가져오는 서비스
 	@Override
-	public Membership detailMembership(String customerNo) {
+	public SignForm detailMembership(String customerNo) {
 		//System.out.println("service customerNo:" + customerNo);
-		return membershipMapper.selectMembershipOne(customerNo);
+		
+		//회원정보
+		Membership membership = membershipMapper.selectMembershipOne(customerNo);
+		System.out.println("servicce membership" + membership);
+		SignForm signForm = new SignForm();
+		
+		signForm.setCustomerNo(customerNo);
+		signForm.setCustomerBirth(membership.getCustomerBirth());
+		signForm.setCustomerEmail(membership.getCustomerEmail());
+		signForm.setCustomerId(membership.getCustomerId());
+		signForm.setCustomerName(membership.getCustomerName());
+		signForm.setCustomerNo(membership.getCustomerNo());
+		signForm.setCustomerPhone(membership.getCustomerPhone());
+			
+		//주소정보
+		Address address = membershipMapper.selectAddress(membership.getAddressNo());	
+		System.out.println("service address" + address);
+		signForm.setAddressNo(membership.getAddressNo());
+		signForm.setDetailAddress(address.getDetailAddress());
+		signForm.setRoadAddress(address.getRoadAddress());
+		signForm.setJibunAddress(address.getJibunAddress());
+		signForm.setPostcode(address.getPostcode());		
+						
+		return signForm;
 	}
 	
 	//회원의 상세정보를 수정하는 서비스
 	@Override
-	public int modifyMembership(Membership membership) {
-		//System.out.println("service modify membership:"+membership);
-		return membershipMapper.updateMembership(membership);
+	public void modifyMembership(SignForm signForm) {
+		Membership membership = new Membership();
+		Address address = new Address();
+		
+		System.out.println("email"+signForm.getCustomerEmail());
+		membership.setCustomerNo(signForm.getCustomerNo());
+		membership.setCustomerName(signForm.getCustomerName());
+		membership.setCustomerEmail(signForm.getCustomerEmail());
+		membership.setCustomerPhone(signForm.getCustomerPhone());
+		System.out.println("service membership: " + membership);
+		
+		address.setAddressNo(signForm.getAddressNo());
+		address.setRoadAddress(signForm.getRoadAddress());
+		address.setJibunAddress(signForm.getJibunAddress());
+		address.setPostcode(signForm.getPostcode());
+		address.setDetailAddress(signForm.getDetailAddress());
+		System.out.println("service address: " + address);
+		
+		membershipMapper.updateMembership(membership);
+		membershipMapper.updateAddress(address);
 	}
 	
 	//회원의 회원탈퇴를 해주는 서비스

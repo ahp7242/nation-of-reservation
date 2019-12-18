@@ -19,60 +19,63 @@
 	.gradation{
         background: linear-gradient(to right bottom, #B96BC6, #FE5196);
     }
+    
+    input {
+    	 border-radius: 5px;
+    	 width: 250px;
+    }
+    
+    .round{
+    	border-radius: 2px;
+    }
 </style>
 <body>
 <div id="logo" >
 	<img src="/loginimage/logo.jpg">
 </div>
-	<div th:include="/part/customerNav::nav" class="gradation"></div>
+	<div th:include="/part/customerNav::afternav" class="gradation"></div>
 
 	<div class="container">
+		<br><h2>내 정보</h2><br>
 		<table class="table table-boardered">
 			<tr>
 				<th>아이디</th>
-				<td><input type="text" class="form-control" th:value="${membership.customerId}" readonly="readonly"></td>
+				<td><input type="text" th:value="${membership.customerId}" readonly="readonly"></td>
 			</tr>
 			<tr>
 				<th>이름</th>
-				<td><input type="text" class="form-control" th:value="${membership.customerName}" readonly="readonly"></td>
+				<td><input type="text" th:value="${membership.customerName}" readonly="readonly"></td>
 			</tr>
 
 			<tr>
 				<th>생일</th>
-				<td><input type="date" class="form-control" th:value="${membership.customerBirth}" readonly="readonly"></td>
+				<td><input type="date" th:value="${membership.customerBirth}" readonly="readonly"></td>
 			</tr>
 
 			<tr>
 				<th>이메일</th>
-				<td><input type="email" class="form-control" th:value="${membership.customerEmail}" readonly="readonly"></td>
+				<td><input type="email" th:value="${membership.customerEmail}" readonly="readonly"></td>
 			</tr>
 
 			<tr>
 				<th>번호</th>
-				<td><input type="text" class="form-control" th:value="${membership.customerPhone}" readonly="readonly"></td>
+				<td><input type="text" th:value="${membership.customerPhone}" readonly="readonly"></td>
 			</tr>
-
+			<tr>
+				<th>주소</th>
+				<td>
+					<div>
+						<input type="text" id="postcode" name="postcode" th:value="${membership.postcode}" readonly="readonly"><br>
+						<input type="text" id="address" name="address" th:value="${membership.roadAddress}" readonly="readonly">
+						<input type="text" id="detailAddress" name="detailAddress" th:value="${membership.detailAddress}" readonly="readonly"> 
+					</div>
+				</td>														
+			</tr>
 		</table>
+		<hr>
 		<a th:href="@{/modifyMembership}" class="btn btn-primary">수정</a> 
 		<a th:href="@{/removeMembership(customerId=${membership.customerId})}" class="btn btn-danger">탈퇴</a>	
 		<hr>
-		<h3>QnA 리스트</h3>
-		<div class="row text-center">
-			<div class="col-lg-3 col-md-6 mb-4"
-				th:each="list:${franchiseeQnaList}">
-				<div class="card h-100">
-					<div class="card-body">
-						<h4 class="card-title" th:text="${list.qnaNo}">qnaNo</h4>
-						<h4 class="card-title" th:text="${list.customerNo}">customerNo</h4>
-						<h4 class="card-title" th:text="${list.qnaType}">qnaType</h4>
-						<h4 class="card-title" th:text="${list.qnaTitle}">qnaTitle</h4>
-						<h4 class="card-title" th:text="${list.qnaQuestion}">qnaQuestion</h4>
-						<h4 class="card-title" th:text="${list.qnaAnswer}">qnaAnswer</h4>
-						<h4 class="card-title" th:text="${list.qnaDate}">qnaDate</h4>
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<div th:include="/part/customerNav::copyright" class="gradation"></div>

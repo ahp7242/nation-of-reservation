@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<style>
+#logo {
+	text-align: center;
+	height: 170px;
+}
+
+.gradation {
+	background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+}
+
+.zoom {
+	transition: transform .2s; /* Animation */
+	margin: 0 auto;
+}
+
+.zoom:hover {
+	transform: scale(1.03);
+	box-shadow: 10px 10px 5px grey;
+	/* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+#add{
+	text-align:right;
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>singupType</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+</head>
+<body>
+	<div id="logo" >
+	<img src="/loginimage/logo.jpg">
+	</div>
+	<!-- Navigation(상단메뉴) -->
+	<div th:include="/part/customerNav::afternav" class="gradation"></div>
+	<div class="container" style="padding: 10px;">
+		<h3>QnA 리스트</h3>
+		<div id="add">
+			<a href="/QnACustomer" class="text-dark btn btn-light">추가</a>
+		</div>
+		<hr>
+		<div class="row text-center">
+			<div class="col-lg-3 col-md-6 mb-4" th:each="list:${list}">
+				<div class="card h-100 zoom">
+					<div class="card-body">
+						<h4 class="card-title" id="qnaNo" th:text="${list.qnaNo}" hidden="hidden"></h4>
+						<h4 class="card-title" th:text="${list.qnaTitle}"></h4>
+						<h4 class="card-title" th:text="${list.qnaType}"></h4>
+						<h4 class="card-title" th:text="${list.qnaDate}"></h4>
+						<h6 th:if="${list.qnaAnswer} == null" class="card-title text-danger" th:text="답변대기"></h6>
+						<h6 th:unless="${list.qnaAnswer} == null" class="card-title text-primary" th:text="답변완료"></h6>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr>
+	</div>
+
+	<!-- Footer -->
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	$(".zoom").on("click",function(){
+		let qnaNo = $(this).children().children("#qnaNo").text()
+		console.log(qnaNo)
+		$(location).attr('href',"/QnACustomerDetail?qnaNo="+qnaNo);
+	})
+})
+</script>
+</html>

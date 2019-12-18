@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.customer.mapper.CustomerMapper;
 import com.picaboo.nor.customer.vo.*;
 import com.picaboo.nor.franchisee.vo.*;
@@ -91,9 +92,9 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	//선택된 프렌차이즈에 등록된 상품 리스트를 가져오는 서비스
 	@Override
-	public List<Food> getFoodList(String franchiseeNo) {
+	public List<FoodInfo> getFoodList(String franchiseeNo) {
 		//System.out.println(franchiseeNo);
-		List<Food> list = customerMapper.selectFoodList(franchiseeNo);
+		List<FoodInfo> list = customerMapper.selectFoodList(franchiseeNo);
 		//System.out.println(list);
 		return list;
 	}
@@ -111,5 +112,42 @@ public class CustomerServiceImpl implements CustomerService {
 		System.out.println("service"+foodReservation);
 		customerMapper.insertFoodReservation(foodReservation);
 		 
+	}
+	
+	//로그인한 고객의 예약목록을 가져오는 서비스	
+	@Override
+	public List<MySeatReservationPer> getMySeatReservation(String customerNo) {
+		
+		return customerMapper.selectMySeatReservationList(customerNo);
+	}
+	
+	@Override
+	public List<MyFoodReservationPer> getMyFoodReservation(Franchisee franchisee) {
+		
+		return customerMapper.selectMyFoodReservationList(franchisee);
+	}
+	
+	@Override
+	public List<TotalPrice> getCustomerTotalPrice(String customerNo) {
+		
+		return customerMapper.selectCustomerTotalPrice(customerNo);
+	}
+	
+	@Override
+	public List<CustomerQnA> getCustomerQnAList(String customerNo) {
+		
+		return customerMapper.selectCustomerQnAList(customerNo);
+	}
+	
+	@Override
+	public int addCustomerQnA(CustomerQnA customerQnA) {
+		
+		return customerMapper.insertCustomerQnA(customerQnA);
+	}
+	
+	@Override
+	public CustomerQnA getCustomerQnAOne(int qnaNo) {
+		
+		return customerMapper.selectCustomerQnAOne(qnaNo);
 	}
 }

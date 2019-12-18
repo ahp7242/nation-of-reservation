@@ -3,7 +3,23 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.picaboo.nor.membership.mapper.MembershipMapper">
-   
+
+	<!-- 회원정보에 주소정보를 나타냄 -->
+	<select id="selectAddress" parameterType="int" resultType="com.picaboo.nor.membership.vo.Address">
+	<![CDATA[
+		SELECT
+			address_no as addressNo, 
+			road_address as roadAddress,
+			jibun_address as jibunAddress,
+			detail_address as detailAddress,
+			postcode as postcode
+		FROM
+			address
+		WHERE 			
+   			address_no = #{addressNo}
+   	]]>
+   	
+   </select>
   
     <!--회원가입시 주소등록 매퍼  -->
 	<insert id="insertAddress" parameterType="com.picaboo.nor.membership.vo.Address" useGeneratedKeys="true" keyProperty="addressNo">
@@ -79,9 +95,11 @@
    <!-- 고객의 상세정보를 불러오는 매퍼 -->
    <select id="selectMembershipOne" parameterType="String" resultType="com.picaboo.nor.membership.vo.Membership">
    <![CDATA[
-      SELECT  customer_no as customerNo,
+      SELECT 
+      		customer_no as customerNo,
             customer_id as customerId,
             customer_pw as customerPw,
+            address_no as addressNo,
             customer_name as customerName,
             customer_birth as customerBirth,
             customer_gender as customerGender,
@@ -101,6 +119,18 @@
          customer_phone = #{customerPhone}
       WHERE 
          customer_no = #{customerNo}
+   ]]>
+   </update>
+   <!-- 고객의 주소를 수정는 매퍼 -->
+    <update id="updateAddress" parameterType="com.picaboo.nor.membership.vo.Address">
+   <![CDATA[
+      UPDATE address SET 
+         road_address = #{roadAddress},
+         jibun_address = #{jibunAddress},
+         detail_address = #{detailAddress},
+         postcode = #{postcode}
+      WHERE 
+         address_no = #{addressNo}
    ]]>
    </update>
    <!-- 고객의 회원탈퇴시 정보를 삭제하는 매퍼 -->

@@ -22,7 +22,7 @@ public class MembershipController {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
 		
 		// 세션에서 memberNo값 검사
-		if (session.getAttribute("memberNo") != null) {
+		if (session.getAttribute("memberName") != null) {
 			String type = (String)session.getAttribute("memberType");
 			//System.out.println("membershipcontroller type : " + type);
 			
@@ -46,7 +46,7 @@ public class MembershipController {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
 		
 		// 세션의 memberNo값 검사
-		if (session.getAttribute("memberNo") != null) {
+		if (session.getAttribute("memberName") != null) {
 			String type = (String)session.getAttribute("memberType");
 			//System.out.println("membershipcontroller type : " + type);
 			
@@ -77,11 +77,11 @@ public class MembershipController {
 	
 	//로그인 폼으로 get요청
 	@GetMapping("/login")
-	public String login(HttpSession session) {
+	public String login(HttpSession session, Model model) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
 		
 		// 세션의 memberNo값 검사
-		if (session.getAttribute("memberNo") != null) {
+		if (session.getAttribute("memberName") != null) {
 			String type = (String)session.getAttribute("memberType");
 			//System.out.println("membershipcontroller type : " + type);
 			
@@ -103,12 +103,13 @@ public class MembershipController {
 	public String login(HttpSession session, Login login, Model model) {
 		// 로그인시 입력된 아이디와 비밀번호로 등록된 정보를 호출하여 Membership타입에 저장
 		Membership member = membershipService.loginMembership(login);
+		//System.out.println("login member : "+member);
 		
 		// 로그인후 반환된 값이 null이 아닐경우
 		if (member != null) {
 			//System.out.println("customer no:"+member.getCustomerNo());
 			String type = member.getCustomerNo().substring(0,1);
-			//System.out.println("type"+type);
+			System.out.println("type"+type);
 			
 			//member에 저장된 값을 세션에 저장
 			session.setAttribute("memberEmail", member.getCustomerEmail());
@@ -140,7 +141,7 @@ public class MembershipController {
 	
 	//고객 상세정보 페이지로 get요청
 	@GetMapping("/profile")
-	public String profile(HttpSession session, Model model) {
+	public String profile(HttpSession session, Model model, SignForm signForm) {
 		// System.out.println("membershipcontroller session : " + session.getAttribute("memberNo"));
 		
 		// 세션에서 memberNo값 검사
@@ -159,10 +160,11 @@ public class MembershipController {
 		//System.out.println("profile customerNo"+customerNo);
 		
 		// 로그인한 회원의 상세정보를 Membership타입에 저장한다.
-		Membership membership = membershipService.detailMembership(customerNo);
-		model.addAttribute("membership", membership);
+		signForm = membershipService.detailMembership(customerNo);
+		model.addAttribute("membership", signForm);
 		model.addAttribute("memberName",session.getAttribute("memberName"));
-		return "membership/profile";
+		//System.out.println("signformController :" + signForm);
+		return "membership/profile";	
 	}
 	
 	//고객 상세정보 수정페이지로 get요청
@@ -178,23 +180,28 @@ public class MembershipController {
 		//System.out.println("modify customerNo:"+customerNo);
 		
 		// 로그인한 회원의 상세정보를 Membership타입에 저장한다.
-		Membership membership = membershipService.detailMembership(customerNo);
+		SignForm signForm = membershipService.detailMembership(customerNo);
+		System.out.println(signForm.getAddressNo());
+		session.setAttribute("addressNo",signForm.getAddressNo());
 		//System.out.println("modify membership:"+membership);
-		model.addAttribute("membership", membership);
+		model.addAttribute("memberName",session.getAttribute("memberName"));
+		model.addAttribute("membership", signForm);
 		
 		return "membership/modifyMembership";
 	}
 	//고객 상세정보 수정후 post요청
 	@PostMapping("/modifyMembership")
-	public String modifyMembership(HttpSession session, Membership membership) {
+	public String modifyMembership(HttpSession session, SignForm singForm) {
 		String cusNo = (String)session.getAttribute("memberNo");
-		System.out.println("post :"+ cusNo);
-		//System.out.println("수정후 " + membership);		
+		int addressNo = (int) session.getAttribute("addressNo");
+		//System.out.println("post :"+ cusNo);
+		//System.out.println("수정후 " + singForm);		
 		//System.out.println("postMod :"+membership);
-		membership.setCustomerNo(cusNo);
+		singForm.setCustomerNo(cusNo);
+		singForm.setAddressNo(addressNo);
 		session.removeAttribute("memberName");
-		session.setAttribute("memberName", membership.getCustomerName());
-		membershipService.modifyMembership(membership);
+		session.setAttribute("memberName", singForm.getCustomerName());
+		membershipService.modifyMembership(singForm);
 		//System.out.println("@#@@#"+membershipService.modifyMembership(membership));
 		return "redirect:/profile";
 	}

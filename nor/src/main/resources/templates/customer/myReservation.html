@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Heroic Features - Start Bootstrap Template</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<style>
+#logo {
+	text-align: center;
+	height: 170px;
+}
+
+.gradation {
+	background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+}
+
+.size{
+	height: 500px;
+	width: 500px;
+}
+
+.center{
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<div id="logo">
+		<img src="/loginimage/logo.jpg">
+	</div>
+	<!-- Navigation(상단메뉴) -->
+	<div th:include="/part/customerNav::afternav" class="gradation"></div>
+
+	<div class="container">
+	<hr>
+		<div class="row">
+		
+			<div class="col-sm-2"></div>
+			<div class="col-sm-8 center">
+				<h2>총 주문금액</h2>
+				<h3 th:text="${totalPrice}+원"></h3>
+			</div>
+			<div class="col-sm-2"></div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-sm-5 center size">
+				<h4>pc방</h4>
+				<canvas id="mySeatChart"></canvas>
+			</div>
+			<div class="col-sm-2"></div>
+			<div class="col-sm-5 center size" id="food">
+				
+			</div>
+		</div>
+	</div>
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
+</body>
+<script>
+let dynamicColors = function() {
+	var r = Math.floor(Math.random() * 255);
+	var g = Math.floor(Math.random() * 255);
+	var b = Math.floor(Math.random() * 255);
+	return "rgba(" + r + "," + g + "," + b + ",0.8)";
+}
+
+let seatper = new Array();
+let seatcolorList = new Array();
+let seatnameList = new Array();
+let franchiseeNoList = new Array();
+
+
+var seatctx = document.getElementById('mySeatChart').getContext('2d');
+
+
+var seatChart = new Chart(seatctx, {
+	type : 'doughnut',
+	
+	data : {
+		labels : seatnameList,
+		
+		datasets : [ {
+			label : franchiseeNoList,
+			data : seatper,
+			backgroundColor : seatcolorList,
+			borderColor : seatcolorList
+		} ]
+	},
+	options: {
+           maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+           'onClick' : function(evt, item) {
+				if (item[0] == null) {
+					return;
+				}
+				let foodper = new Array();
+				let foodcolorList = new Array();
+				let foodnameList = new Array();
+				$("#food").empty()
+				$("#food").append("<h4>상품</h4><canvas id='myFoodChart'></canvas>")
+				var foodctx = document.getElementById('myFoodChart')
+						.getContext('2d');
+				//console.log("클릭", item[0]._model.label)
+				let franchiseeNo = item[0]._model.label
+
+				$.ajax({
+					url : "/getMyFoodReservation",
+					method : "POST",
+					data : {
+						"franchiseeNo" : franchiseeNo
+					},
+					success : function(json) {
+
+						//console.log("success")
+						//console.log("json",json)
+
+						$(json).each(function(index, item) {
+							let sum = item.sum
+							let name = item.foodName
+							foodper.push(sum)
+							foodcolorList.push(dynamicColors())
+							foodnameList.push(name)
+						})
+
+						var foodChart = new Chart(foodctx, {
+							type : 'doughnut',
+
+							data : {
+								labels : foodnameList,
+
+								datasets : [ {
+									label : foodnameList,
+									data : foodper,
+									backgroundColor : foodcolorList,
+									borderColor : foodcolorList
+								} ]
+							},
+							options : {
+								maintainAspectRatio : true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+
+							}
+						})
+						foodChart.update()
+					}
+				})
+			}
+		}
+	})
+
+	$(document).ready(function() {
+
+		$.ajax({
+			url : "/getMySeatReservation",
+			method : "POST",
+			success : function(json) {
+				//console.log("success")
+				//console.log("json",json)
+				$(json).each(function(index, item) {
+					let count = item.count
+					let name = item.franchiseeName
+					let no = item.franchiseeNo
+					seatper.push(count)
+					seatcolorList.push(dynamicColors())
+					seatnameList.push(name)
+					franchiseeNoList.push(no)
+				})
+				seatChart.update()
+			}
+		})
+
+		//console.log(seatper)
+		//console.log(foodper)
+		//console.log(seatcolorList)
+		//console.log(foodcolorList)
+		//console.log(seatnameList)
+		//console.log(foodnameList)
+
+	})
+</script>
+</html>
