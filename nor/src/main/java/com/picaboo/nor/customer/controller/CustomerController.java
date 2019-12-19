@@ -1,22 +1,54 @@
 package com.picaboo.nor.customer.controller;
  
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.picaboo.nor.admin.vo.AdminQnA;
-import com.picaboo.nor.customer.service.*;
-import com.picaboo.nor.customer.vo.*;
-import com.picaboo.nor.franchisee.service.*;
-import com.picaboo.nor.franchisee.vo.*;
+import com.picaboo.nor.customer.mapper.CustomerMapper;
+import com.picaboo.nor.customer.service.CustomerService;
+import com.picaboo.nor.customer.vo.Customer;
+import com.picaboo.nor.customer.vo.CustomerQnA;
+import com.picaboo.nor.customer.vo.TotalPrice;
+import com.picaboo.nor.franchisee.vo.Franchisee;
+import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.Seat;
 
 @Controller
 public class CustomerController {
 	@Autowired private CustomerService customerService;
+	
+	// 가맹점 지도 검색
+	@GetMapping("/searchOnMap")
+	public String searchFranchisee(HttpSession session, Model model) {
+		System.out.println("searchFranchisee Get요청");
+		// 세션 검사
+		String customerNo = (String)session.getAttribute("memberNo");
+	    if (customerNo == null) {
+	    	return "redirect:/";
+	    }
+	    System.out.println("customerNo: " + customerNo);
+	    
+	    // 고객 주소 정보 조회
+	    Customer customer = customerService.getCustomerAddress(customerNo);
+	    System.out.println("customer: " + customer.toString());
+	    // 가맹점 주소 정보 조회
+	    List<Franchisee> franchiseeList = customerService.getFranchiseeAddress();
+	    System.out.println("franchiseeList: " + franchiseeList.toString());
+	    
+	    // Model로 넘김
+	    model.addAttribute("customer", customer);
+	    model.addAttribute("franchiseeList", franchiseeList);
+	    
+		return "customer/searchOnMap";
+	}
 	
 	// QnA 입력
 	@PostMapping("/QnACustomer")

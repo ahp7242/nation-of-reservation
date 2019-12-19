@@ -6,15 +6,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picaboo.nor.admin.vo.AdminQnA;
 import com.picaboo.nor.customer.mapper.CustomerMapper;
-import com.picaboo.nor.customer.vo.*;
-import com.picaboo.nor.franchisee.vo.*;
+import com.picaboo.nor.customer.vo.Customer;
+import com.picaboo.nor.customer.vo.CustomerQnA;
+import com.picaboo.nor.customer.vo.FoodInfo;
+import com.picaboo.nor.customer.vo.FoodReservation;
+import com.picaboo.nor.customer.vo.MyFoodReservationPer;
+import com.picaboo.nor.customer.vo.MySeatReservationPer;
+import com.picaboo.nor.customer.vo.SeatReservation;
+import com.picaboo.nor.customer.vo.TotalPrice;
+import com.picaboo.nor.franchisee.vo.Franchisee;
+import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
+import com.picaboo.nor.franchisee.vo.Seat;
 
 @Service
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
 	@Autowired private CustomerMapper customerMapper;
+	// 가맹점 주소정보 조회
+	public List<Franchisee> getFranchiseeAddress() {
+		System.out.println("Service");
+		List<Franchisee> franchiseeList = customerMapper.selectFranchiseeAddressList();
+		System.out.println("franchiseeList: " + franchiseeList.toString());
+		
+		return franchiseeList;
+	}
+	
+	// 회원의 주소정보 조회
+	@Override
+	public Customer getCustomerAddress(String customerNo) {
+		System.out.println("Service customerNo: " + customerNo);
+		
+		return customerMapper.selectCustomerAddress(customerNo);
+	}
 	
 	//데이터베이스의 저장된 좌석 가져오는 서비스
 	@Override

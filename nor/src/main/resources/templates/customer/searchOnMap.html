@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Heroic Features - Start Bootstrap Template</title>
+<!-- Bootstrap core CSS -->
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/heroic-features.css" rel="stylesheet">
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<style>
+#logo {
+	text-align: center;
+	height: 170px;
+}
+
+.gradation {
+	background: linear-gradient(to right bottom, #B96BC6, #FE5196);
+}
+.map_wrap {position:relative;overflow:hidden;width:100%;height:499px;}
+            
+</style>
+</head>
+<body>
+	<div id="logo">
+		<img src="/loginimage/logo.jpg">
+	</div>
+	<!-- Navigation(상단메뉴) -->
+	<div th:include="/part/customerNav::afternav" class="gradation"></div>
+	
+	<div class="container">
+		<!-- 주소 검색 -->
+		<div class="form-group">
+				<br>
+				<button type="button" onclick="execDaumPostcode()" value="우편번호 찾기" class="btn-primary">주소찾기</button>
+				<button type="button" id="search" class="btn-primary">검색</button>
+			</div>
+			<div class="form-group">
+				<input type="text" class="form-control" id="postcode" name="postcode" placeholder="우편번호" style="width: 250px;" hidden="">
+				<input type="text" class="form-control" id="address" name="address" placeholder="주소" style="width: 250px;" required="required" >
+			</div>
+			<div class="form-group">
+				<input type="text" class="form-control" id="detailAddress" name="detailAddress" placeholder="상세주소" style="width: 250px;" hidden="">
+				<input type="text" class="form-control" id="extraAddress" name="extraAddress" placeholder="참고항목" style="width: 250px;" hidden="">
+				<input type="text" id="roadAddress" name="roadAddress" hidden="" >
+				<input type="text" id="jibunAddress" name="jibunAddress" hidden="" >
+		</div>
+		<div class="map_wrap">
+		    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+		</div>
+	</div>
+	
+	<div th:include="/part/customerNav::copyright" class="gradation"></div>
+	<!-- 카카오 지도 services와 clusterer, drawing 라이브러리 불러오기 -->
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=85a58cfdaef447c30f256b7ef482b788&libraries=services,clusterer,drawing"></script>
+	<!-- 카카오 주소 -->
+	<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	
+	<script th:inline="javascript">
+		let mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+		    mapOption = { 
+		        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+		        level: 3 // 지도의 확대 레벨
+		    };  
+		
+		let map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+		
+		let customerAddress = /*[[${customer.address}]]*/;
+		//console.log("customerAddress", customerAddress);
+		//console.log("customerAddress roadAddress", customerAddress.roadAddress);
+		
+		
+		//마커를 표시할 위치와 내용을 가지고 있는 객체 배열입니다 
+		let positions = [
+		    {
+		        content: '<div>카카오</div>', 
+		        latlng: new kakao.maps.LatLng(33.450705, 126.570677)
+		    },
+		    {
+		        content: '<div>생태연못</div>', 
+		        latlng: new kakao.maps.LatLng(33.450936, 126.569477)
+		    },
+		    {
+		        content: '<div>텃밭</div>', 
+		        latlng: new kakao.maps.LatLng(33.450879, 126.569940)
+		    },
+		    {
+		        content: '<div>근린공원</div>',
+		        latlng: new kakao.maps.LatLng(33.451393, 126.570738)
+		    },
+		    {
+		    	content: "<div>구디 아카데미</div>",
+				latlng: new kakao.maps.LatLng(37.47836359150607, 126.87938176254293)
+		    },
+		    
+		];
+		
+		// 마커를 표시할 가맹점의 위치와 이름을 가지는 객체
+		function Position(content, latlng) {
+			this.content = '<div>' + content + '</div>';
+			this.latlng = latlng;
+		}
+		
+		// 가맹점 주소 리스트
+    	let franchiseeList = /*[[${franchiseeList}]]*/;
+		//console.log("franchiseeList", franchiseeList);
+		
+		// 주소-좌표 변환하여 배열에 저장
+		for(let i = 0; i < franchiseeList.length; i++) {
+			// 주소-좌표 변환 객체를 생성합니다
+			let geocoder = new kakao.maps.services.Geocoder();
+			
+			// 주소로 좌표를 검색합니다
+			geocoder.addressSearch("서울 금천구 가산디지털2로 115", function(result, status) {
+
+			    // 정상적으로 검색이 완료됐으면 
+			     if (status === kakao.maps.services.Status.OK) {
+			        let coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+					
+			        //console.log("coords", coords);
+			        positions.push( {"content":"<div>"+franchiseeList[i].franchiseeName+"</div>", "latlng":coords} );
+			    } 
+			});
+		}
+		
+		//console.log("positions", positions);
+		
+		// 마커 생성
+		for (let i = 0; i < positions.length; i ++) {
+			//console.log("마커 생성 시작")
+			//console.log("positions", positions);
+			//console.log("positions["+i+"]", positions[i]);
+			
+		    // 마커를 생성합니다
+		    let marker = new kakao.maps.Marker({
+		        map: map, // 마커를 표시할 지도
+		        position: positions[i].latlng // 마커의 위치
+		    });
+		
+		    // 마커에 표시할 인포윈도우를 생성합니다 
+		    let infowindow = new kakao.maps.InfoWindow({
+		        content: positions[i].content // 인포윈도우에 표시할 내용
+		    });
+		
+		    // 마커에 mouseover 이벤트와 mouseout 이벤트를 등록합니다
+		    // 이벤트 리스너로는 클로저를 만들어 등록합니다 
+		    // for문에서 클로저를 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
+		    kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+		    kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+		}
+		
+		// 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+		function makeOverListener(map, marker, infowindow) {
+		    return function() {
+		        infowindow.open(map, marker);
+		    };
+		}
+		
+		// 인포윈도우를 닫는 클로저를 만드는 함수입니다 
+		function makeOutListener(infowindow) {
+		    return function() {
+		        infowindow.close();
+		    };
+		}
+		
+		// 주소 검색버튼 클릭 시 이벤트
+		$("#search").click(function() {
+			// 입력한 주소로 검색
+			if($("#address").val() != null) {
+				// 주소-좌표 변환 객체를 생성합니다
+				let geocoder = new kakao.maps.services.Geocoder();
+				
+				// 주소로 좌표를 검색합니다
+				geocoder.addressSearch($("#address").val(), function(result, status) {
+
+				    // 정상적으로 검색이 완료됐으면 
+				    if (status === kakao.maps.services.Status.OK) {
+				    	
+						let coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+				        
+						console.log("coords", coords);
+						
+						map.setCenter(coords);
+				    }
+				});
+			}
+		})
+		
+		function execDaumPostcode() {
+			new daum.Postcode({
+				oncomplete: function(data) {
+					// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+					
+					// 각 주소의 노출 규칙에 따라 주소를 조합한다.
+					// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+					let addr = ''; // 주소 변수
+					let extraAddr = ''; // 참고항목 변수
+					
+					//사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+					if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+						addr = data.roadAddress;
+					} else { // 사용자가 지번 주소를 선택했을 경우(J)
+					    addr = data.jibunAddress;
+					}
+					
+					// 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+					if(data.userSelectedType === 'R'){
+					    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+					    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+					    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+					        extraAddr += data.bname;
+					    }
+					    // 건물명이 있고, 공동주택일 경우 추가한다.
+					    if(data.buildingName !== '' && data.apartment === 'Y'){
+					        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+					    }
+					    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+					    if(extraAddr !== ''){
+					        extraAddr = ' (' + extraAddr + ')';
+					    }
+					    // 조합된 참고항목을 해당 필드에 넣는다.
+					    document.getElementById("extraAddress").value = extraAddr;
+					    
+					    } else {
+					        document.getElementById("extraAddress").value = '';
+					    }
+					
+					    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+					    document.getElementById('postcode').value = data.zonecode;
+					    document.getElementById("address").value = addr;
+					    // 커서를 상세주소 필드로 이동한다.
+					    document.getElementById("detailAddress").focus();
+					    //console.log(data);
+					    console.log(data.jibunAddress);
+					    console.log(data.roadAddress);
+					    $("#roadAddress").val(data.roadAddress)
+					    $("#jibunAddress").val(data.jibunAddress)
+					}
+		        }).open();
+		    }
+		
+		// 고객의 주소를 시작지점으로 저장
+		$(document).ready(function() {
+			// 주소-좌표 변환 객체를 생성합니다
+			let geocoder = new kakao.maps.services.Geocoder();
+			
+			// 주소로 좌표를 검색합니다
+			geocoder.addressSearch(customerAddress.roadAddress, function(result, status) {
+
+			    // 정상적으로 검색이 완료됐으면 
+			    if (status === kakao.maps.services.Status.OK) {
+			    	
+					let coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+			        
+					//console.log("coords", coords);
+					
+					// 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+					map.setCenter(coords);
+			    }
+			});
+			
+		})
+	</script>
+</body>
+</html>

@@ -4,6 +4,68 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.picaboo.nor.customer.mapper.CustomerMapper">
+	<resultMap type="com.picaboo.nor.franchisee.vo.Franchisee" id="franchiseeResultMap">
+		<id column="franchisee_no" property="franchiseeNo"/>
+		<result column="franchisee_name" property="franchiseeName"/>
+		<result column="franchisee_phone" property="franchiseePhone"/>
+		<result column="owner_no" property="ownerNo"/>
+		<association property="address" javaType="com.picaboo.nor.membership.vo.Address">
+			<id column="address_no" property="addressNo"/>
+			<result column="road_address" property="roadAddress"/>
+			<result column="jibun_address" property="jibunAddress"/>
+			<result column="detail_address" property="detailAddress"/>
+		</association>
+	</resultMap>
+
+	<!-- 가맹점 주소정보 조회 -->
+	<select id="selectFranchiseeAddressList" resultMap="franchiseeResultMap">
+	<![CDATA[
+		SELECT
+			f.franchisee_no,
+			f.franchisee_name,
+			f.franchisee_phone,
+			f.owner_no,
+			a.address_no,
+			a.road_address,
+			a.jibun_address,
+			a.detail_address
+		FROM franchisee f
+		INNER JOIN address a
+		ON f.address_no = a.address_no
+	]]>
+	</select>
+	
+	<!-- 회원 주소 정보 조회를 위한 매핑 -->
+	<resultMap type="com.picaboo.nor.customer.vo.Customer" id="customerResultMap" >
+		<id column="customer_no" property="customerNo"/>
+		<result column="customer_id" property="customerId"/>
+		<result column="customer_name" property="customerName"/>
+		<result column="customer_type" property="customerType"/>
+		<association property="address" javaType="com.picaboo.nor.membership.vo.Address">
+			<id column="address_no" property="addressNo"/>
+			<result column="road_address" property="roadAddress"/>
+			<result column="jibun_address" property="jibunAddress"/>
+			<result column="detail_address" property="detailAddress"/>
+		</association>
+	</resultMap>
+	
+	<!-- 고객 주소정보 조회 -->
+	<select id="selectCustomerAddress" parameterType="string" resultMap="customerResultMap">
+	<![CDATA[
+		SELECT
+			 customer_id,
+			 customer_name,
+			 customer_type,
+			 a.address_no,
+			 road_address,
+			 jibun_address,
+			 detail_address
+		FROM customer c
+		INNER JOIN address a
+		ON c.address_no = a.address_no
+		WHERE c.customer_no = #{customerNo}
+	]]>
+	</select>
 	
 	<!-- 좌석 출력 -->
 	<select id="selectSeat" resultType="com.picaboo.nor.franchisee.vo.Seat" parameterType="String">

@@ -5,6 +5,10 @@ import com.picaboo.nor.customer.vo.*;
 import com.picaboo.nor.franchisee.vo.*;
 
 public interface CustomerService {
+	// 가맹점 주소정보 조회
+	public List<Franchisee> getFranchiseeAddress();
+	// 회원 주소정보 조회
+	public Customer getCustomerAddress(String customerNo);
 	//데이터베이스의 저장된 좌석 가져오는 서비스
 	public List<Seat> getSeat(String franchiseeNo);
 	//프렌차이즈 번호 목록을 가져오는 서비스

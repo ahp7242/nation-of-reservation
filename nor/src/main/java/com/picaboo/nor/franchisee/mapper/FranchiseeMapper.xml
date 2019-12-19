@@ -717,13 +717,15 @@
 	      franchisee_crn, 
 	      franchisee_name,
 	      franchisee_phone,
-	      owner_no
+	      owner_no,
+	      address_no
 	   ) VALUES(
 	      #{franchiseeNo},
 	      #{franchiseeCrn}, 
 	      #{franchiseeName},
 	      #{franchiseePhone},
-	      #{ownerNo}
+	      #{ownerNo},
+	      #{address.addressNo}
 	   )
 	]]>
 	</insert>

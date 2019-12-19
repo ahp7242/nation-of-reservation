@@ -1,13 +1,28 @@
 package com.picaboo.nor.customer.mapper;
 
-import java.util.*;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
-import com.picaboo.nor.admin.vo.*;
-import com.picaboo.nor.customer.vo.*;
-import com.picaboo.nor.franchisee.vo.*;
+
+import com.picaboo.nor.customer.vo.Customer;
+import com.picaboo.nor.customer.vo.CustomerQnA;
+import com.picaboo.nor.customer.vo.FoodInfo;
+import com.picaboo.nor.customer.vo.FoodReservation;
+import com.picaboo.nor.customer.vo.MyFoodReservationPer;
+import com.picaboo.nor.customer.vo.MySeatReservationPer;
+import com.picaboo.nor.customer.vo.SeatReservation;
+import com.picaboo.nor.customer.vo.TotalPrice;
+import com.picaboo.nor.franchisee.vo.Franchisee;
+import com.picaboo.nor.franchisee.vo.FranchiseePic;
+import com.picaboo.nor.franchisee.vo.FranchiseeSpec;
+import com.picaboo.nor.franchisee.vo.Seat;
 
 @Mapper
 public interface CustomerMapper {
+	// 가맹점 주소 조회
+	public List<Franchisee>selectFranchiseeAddressList();
+	// 회원 주소 정보 조회
+	public Customer selectCustomerAddress(String customerNo);
 	//좌석 출력
 	public List<Seat> selectSeat(String franchiseeNo);
 	//모든 프렌차이즈 정보를 가져옴
